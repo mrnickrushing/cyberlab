@@ -113,6 +113,8 @@ extension String {
         return self
     }
 
+    var relativeTime: String { formattedDate }
+
     var formattedFullDate: String {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
