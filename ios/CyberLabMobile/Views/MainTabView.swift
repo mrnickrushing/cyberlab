@@ -23,23 +23,29 @@ struct MainTabView: View {
                 }
                 .tag(2)
 
+            NetworksView()
+                .tabItem {
+                    Label("Networks", systemImage: "network")
+                }
+                .tag(3)
+
             FindingsView()
                 .tabItem {
                     Label("Findings", systemImage: "exclamationmark.triangle")
                 }
-                .tag(3)
+                .tag(4)
 
             NotesView()
                 .tabItem {
                     Label("Notes", systemImage: "note.text")
                 }
-                .tag(4)
+                .tag(5)
 
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
-                .tag(5)
+                .tag(6)
         }
         .tint(.cyberGreen)
     }
