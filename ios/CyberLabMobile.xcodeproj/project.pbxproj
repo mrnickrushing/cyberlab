@@ -34,21 +34,21 @@
 		BB0000000000000000000218 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000118 /* NotesView.swift */; };
 		BB0000000000000000000219 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000119 /* SettingsView.swift */; };
 		BB000000000000000000021A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011A /* Extensions.swift */; };
-		BB000000000000000000021B /* AIAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011B /* AIAssistantView.swift */; };
-		BB000000000000000000021C /* AIChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011C /* AIChat.swift */; };
-		BB000000000000000000021D /* NetworkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011D /* NetworkDetailView.swift */; };
-		BB000000000000000000021E /* NetworkDiffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011E /* NetworkDiffView.swift */; };
-		BB000000000000000000021F /* NetworkMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011F /* NetworkMap.swift */; };
-		BB0000000000000000000220 /* NetworkTopologyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000120 /* NetworkTopologyView.swift */; };
-		BB0000000000000000000221 /* NetworksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000121 /* NetworksView.swift */; };
-		BB0000000000000000000222 /* OSINTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000122 /* OSINTView.swift */; };
-		BB0000000000000000000223 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000123 /* PDFExporter.swift */; };
-		BB0000000000000000000224 /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000124 /* Report.swift */; };
-		BB0000000000000000000225 /* ReportDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000125 /* ReportDetailView.swift */; };
-		BB0000000000000000000226 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000126 /* ReportsView.swift */; };
-		BB0000000000000000000227 /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000127 /* Schedule.swift */; };
-		BB0000000000000000000228 /* SchedulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000128 /* SchedulesView.swift */; };
-		BB0000000000000000000229 /* WebAssessmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000129 /* WebAssessmentView.swift */; };
+		BB0000000000000000000400 /* AIAssistantView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000300 /* AIAssistantView.swift */; };
+		BB0000000000000000000401 /* AIChat.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000301 /* AIChat.swift */; };
+		BB0000000000000000000402 /* NetworkDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000302 /* NetworkDetailView.swift */; };
+		BB0000000000000000000403 /* NetworkDiffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000303 /* NetworkDiffView.swift */; };
+		BB0000000000000000000404 /* NetworkMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000304 /* NetworkMap.swift */; };
+		BB0000000000000000000405 /* NetworkTopologyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000305 /* NetworkTopologyView.swift */; };
+		BB0000000000000000000406 /* NetworksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000306 /* NetworksView.swift */; };
+		BB0000000000000000000407 /* OSINTView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000307 /* OSINTView.swift */; };
+		BB0000000000000000000408 /* PDFExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000308 /* PDFExporter.swift */; };
+		BB0000000000000000000409 /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000309 /* Report.swift */; };
+		BB000000000000000000040A /* ReportDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000030A /* ReportDetailView.swift */; };
+		BB000000000000000000040B /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000030B /* ReportsView.swift */; };
+		BB000000000000000000040C /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000030C /* Schedule.swift */; };
+		BB000000000000000000040D /* SchedulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000030D /* SchedulesView.swift */; };
+		BB000000000000000000040E /* WebAssessmentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000030E /* WebAssessmentView.swift */; };
 		BB000000000000000000021B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011B /* Info.plist */; };
 		BB000000000000000000021C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011C /* Assets.xcassets */; };
 		BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011D /* LocalAuthentication.framework */; };
@@ -83,21 +83,21 @@
 		BB0000000000000000000118 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000119 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB000000000000000000011A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		BB000000000000000000011B /* AIAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AI/AIAssistantView.swift; sourceTree = "<group>"; };
-		BB000000000000000000011C /* AIChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AIChat.swift; sourceTree = "<group>"; };
-		BB000000000000000000011D /* NetworkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkDetailView.swift; sourceTree = "<group>"; };
-		BB000000000000000000011E /* NetworkDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkDiffView.swift; sourceTree = "<group>"; };
-		BB000000000000000000011F /* NetworkMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/NetworkMap.swift; sourceTree = "<group>"; };
-		BB0000000000000000000120 /* NetworkTopologyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkTopologyView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000121 /* NetworksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworksView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000122 /* OSINTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/OSINT/OSINTView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000123 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/PDFExporter.swift; sourceTree = "<group>"; };
-		BB0000000000000000000124 /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Report.swift; sourceTree = "<group>"; };
-		BB0000000000000000000125 /* ReportDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/ReportDetailView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000126 /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/ReportsView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000127 /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Schedule.swift; sourceTree = "<group>"; };
-		BB0000000000000000000128 /* SchedulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Schedules/SchedulesView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000129 /* WebAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WebAssessment/WebAssessmentView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000300 /* AIAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AI/AIAssistantView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000301 /* AIChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AIChat.swift; sourceTree = "<group>"; };
+		BB0000000000000000000302 /* NetworkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkDetailView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000303 /* NetworkDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkDiffView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000304 /* NetworkMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/NetworkMap.swift; sourceTree = "<group>"; };
+		BB0000000000000000000305 /* NetworkTopologyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkTopologyView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000306 /* NetworksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworksView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000307 /* OSINTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/OSINT/OSINTView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000308 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/PDFExporter.swift; sourceTree = "<group>"; };
+		BB0000000000000000000309 /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Report.swift; sourceTree = "<group>"; };
+		BB000000000000000000030A /* ReportDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/ReportDetailView.swift; sourceTree = "<group>"; };
+		BB000000000000000000030B /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/ReportsView.swift; sourceTree = "<group>"; };
+		BB000000000000000000030C /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Schedule.swift; sourceTree = "<group>"; };
+		BB000000000000000000030D /* SchedulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Schedules/SchedulesView.swift; sourceTree = "<group>"; };
+		BB000000000000000000030E /* WebAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WebAssessment/WebAssessmentView.swift; sourceTree = "<group>"; };
 		BB000000000000000000011B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB000000000000000000011C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB000000000000000000011D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
@@ -368,21 +368,21 @@
 				BB0000000000000000000218 /* NotesView.swift in Sources */,
 				BB0000000000000000000219 /* SettingsView.swift in Sources */,
 				BB000000000000000000021A /* Extensions.swift in Sources */,
-				BB000000000000000000021B /* AIAssistantView.swift in Sources */,
-				BB000000000000000000021C /* AIChat.swift in Sources */,
-				BB000000000000000000021D /* NetworkDetailView.swift in Sources */,
-				BB000000000000000000021E /* NetworkDiffView.swift in Sources */,
-				BB000000000000000000021F /* NetworkMap.swift in Sources */,
-				BB0000000000000000000220 /* NetworkTopologyView.swift in Sources */,
-				BB0000000000000000000221 /* NetworksView.swift in Sources */,
-				BB0000000000000000000222 /* OSINTView.swift in Sources */,
-				BB0000000000000000000223 /* PDFExporter.swift in Sources */,
-				BB0000000000000000000224 /* Report.swift in Sources */,
-				BB0000000000000000000225 /* ReportDetailView.swift in Sources */,
-				BB0000000000000000000226 /* ReportsView.swift in Sources */,
-				BB0000000000000000000227 /* Schedule.swift in Sources */,
-				BB0000000000000000000228 /* SchedulesView.swift in Sources */,
-				BB0000000000000000000229 /* WebAssessmentView.swift in Sources */,
+				BB0000000000000000000400 /* AIAssistantView.swift in Sources */,
+				BB0000000000000000000401 /* AIChat.swift in Sources */,
+				BB0000000000000000000402 /* NetworkDetailView.swift in Sources */,
+				BB0000000000000000000403 /* NetworkDiffView.swift in Sources */,
+				BB0000000000000000000404 /* NetworkMap.swift in Sources */,
+				BB0000000000000000000405 /* NetworkTopologyView.swift in Sources */,
+				BB0000000000000000000406 /* NetworksView.swift in Sources */,
+				BB0000000000000000000407 /* OSINTView.swift in Sources */,
+				BB0000000000000000000408 /* PDFExporter.swift in Sources */,
+				BB0000000000000000000409 /* Report.swift in Sources */,
+				BB000000000000000000040A /* ReportDetailView.swift in Sources */,
+				BB000000000000000000040B /* ReportsView.swift in Sources */,
+				BB000000000000000000040C /* Schedule.swift in Sources */,
+				BB000000000000000000040D /* SchedulesView.swift in Sources */,
+				BB000000000000000000040E /* WebAssessmentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
