@@ -40,7 +40,7 @@ router.get("/dashboard", authenticate, async (req: AuthRequest, res): Promise<vo
 
     db
       .select({
-        job: scanJobsTable,
+        ...scanJobsTable,
         targetName: targetsTable.name,
         targetAddress: targetsTable.address,
       })

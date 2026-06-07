@@ -15,6 +15,7 @@ export const auditActionEnum = pgEnum("audit_action", [
   "report_generated",
   "note_created",
   "finding_updated",
+  "legal_acknowledged",
 ]);
 
 export const auditLogsTable = pgTable("audit_logs", {

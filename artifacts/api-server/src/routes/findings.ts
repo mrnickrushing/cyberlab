@@ -44,7 +44,7 @@ router.get("/findings", authenticate, async (req: AuthRequest, res): Promise<voi
 
   const findings = await db
     .select({
-      finding: findingsTable,
+      ...findingsTable,
       targetName: targetsTable.name,
       targetAddress: targetsTable.address,
     })

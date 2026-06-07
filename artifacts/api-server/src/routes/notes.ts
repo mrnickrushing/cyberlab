@@ -26,7 +26,7 @@ router.get("/notes", authenticate, async (req: AuthRequest, res): Promise<void> 
 
   const notes = await db
     .select({
-      note: notesTable,
+      ...notesTable,
       targetName: targetsTable.name,
       targetAddress: targetsTable.address,
     })

@@ -51,7 +51,12 @@ router.post("/auth/register", async (req, res): Promise<void> => {
   const [user] = await db
     .insert(usersTable)
     .values({ username, email, passwordHash })
-    .returning({ id: usersTable.id, username: usersTable.username, email: usersTable.email });
+    .returning({
+      id: usersTable.id,
+      username: usersTable.username,
+      email: usersTable.email,
+      createdAt: usersTable.createdAt,
+    });
 
   await logAudit({ userId: user.id, action: "login", details: "User registered" }, req);
 

@@ -84,7 +84,7 @@ router.get("/scans", authenticate, async (req: AuthRequest, res): Promise<void> 
 
   const jobs = await db
     .select({
-      job: scanJobsTable,
+      ...scanJobsTable,
       targetAddress: targetsTable.address,
       targetName: targetsTable.name,
     })
