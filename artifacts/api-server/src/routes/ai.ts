@@ -1,12 +1,12 @@
 import { Router, type IRouter } from "express";
-import OpenAI from "openai";
+import Anthropic from "@anthropic-ai/sdk";
 import { authenticate, type AuthRequest } from "../middleware/authenticate";
 import { z } from "zod";
 
 const router: IRouter = Router();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY ?? "",
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY ?? "",
 });
 
 const AI_MODE_SYSTEM_PROMPTS: Record<string, string> = {
@@ -68,33 +68,16 @@ const chatSchema = z.object({
       reportRiskLabel: z.string().optional(),
       reportOpenFindings: z.number().optional(),
       reportBySeverity: z
-        .object({
-          critical: z.number(),
-          high: z.number(),
-          medium: z.number(),
-          low: z.number(),
-          info: z.number(),
-        })
+        .object({ critical: z.number(), high: z.number(), medium: z.number(), low: z.number(), info: z.number() })
         .optional(),
       reportToolsUsed: z.array(z.string()).optional(),
       reportTopFindings: z
-        .array(
-          z.object({
-            title: z.string(),
-            severity: z.string(),
-            cveId: z.string().nullable().optional(),
-          })
-        )
+        .array(z.object({ title: z.string(), severity: z.string(), cveId: z.string().nullable().optional() }))
         .optional(),
     })
     .optional(),
   history: z
-    .array(
-      z.object({
-        role: z.enum(["user", "assistant"]),
-        content: z.string(),
-      })
-    )
+    .array(z.object({ role: z.enum(["user", "assistant"]), content: z.string() }))
     .max(20)
     .optional(),
 });
@@ -135,8 +118,8 @@ function buildContextBlock(ctx: NonNullable<z.infer<typeof chatSchema>["context"
 
 // POST /ai/chat
 router.post("/ai/chat", authenticate, async (req: AuthRequest, res): Promise<void> => {
-  if (!process.env.OPENAI_API_KEY) {
-    res.status(503).json({ error: "OPENAI_API_KEY is not configured on this server." });
+  if (!process.env.ANTHROPIC_API_KEY) {
+    res.status(503).json({ error: "ANTHROPIC_API_KEY is not configured on this server." });
     return;
   }
 
@@ -149,44 +132,43 @@ router.post("/ai/chat", authenticate, async (req: AuthRequest, res): Promise<voi
   const { message, mode, context, history } = parsed.data;
   const systemPrompt = AI_MODE_SYSTEM_PROMPTS[mode];
   const contextBlock = context ? buildContextBlock(context) : "";
+  const userContent = contextBlock ? `${contextBlock}\n\n---\n${message}` : message;
 
-  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-    { role: "system", content: systemPrompt },
-  ];
+  const messages: Anthropic.MessageParam[] = [];
 
-  // Inject prior conversation turns
   if (history?.length) {
     for (const turn of history) {
       messages.push({ role: turn.role, content: turn.content });
     }
   }
-
-  // Append context block to the user message if present
-  const userContent = contextBlock ? `${contextBlock}\n\n---\n${message}` : message;
   messages.push({ role: "user", content: userContent });
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+    const response = await anthropic.messages.create({
+      model: "claude-sonnet-4-6",
+      max_tokens: 1500,
+      system: systemPrompt,
       messages,
-      max_completion_tokens: 1500,
-      temperature: 0.4,
     });
 
-    const reply = completion.choices[0]?.message?.content ?? "No response generated.";
-    const inputTokens = completion.usage?.prompt_tokens ?? 0;
-    const outputTokens = completion.usage?.completion_tokens ?? 0;
+    const reply =
+      response.content.find((b) => b.type === "text")?.text ?? "No response generated.";
 
-    res.json({ reply, mode, inputTokens, outputTokens });
+    res.json({
+      reply,
+      mode,
+      inputTokens: response.usage.input_tokens,
+      outputTokens: response.usage.output_tokens,
+    });
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "OpenAI request failed";
+    const msg = err instanceof Error ? err.message : "Anthropic request failed";
     res.status(502).json({ error: msg });
   }
 });
 
-// GET /ai/status — check if AI is configured
+// GET /ai/status
 router.get("/ai/status", authenticate, async (_req, res): Promise<void> => {
-  res.json({ configured: !!process.env.OPENAI_API_KEY });
+  res.json({ configured: !!process.env.ANTHROPIC_API_KEY });
 });
 
 export default router;
