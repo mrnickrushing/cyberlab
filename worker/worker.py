@@ -550,10 +550,12 @@ def run_scan(self, job_id: str):
             if network_map_id:
                 populate_network_hosts(network_map_id, parsed_data.get("hosts", []))
         update_job_status(job_id, "completed")
+        dispatch_scan_notification(job_id, job["user_id"], tool, address, "completed")
         logger.info(f"Scan job {job_id} completed ({tool} on {address})")
     except Exception as exc:
         logger.exception(f"Scan job {job_id} failed: {exc}")
         update_job_status(job_id, "failed", error_message=str(exc)[:500])
+        dispatch_scan_notification(job_id, job.get("user_id", ""), tool, address, "failed")
         raise self.retry(exc=exc, countdown=30)
 
 
@@ -1118,3 +1120,128 @@ def run_hibp(address: str, flags: str = "") -> tuple[str, dict]:
             raise
     except Exception as exc:
         return "", {"error": str(exc)}
+
+
+# ─── Phase 8: Notification Dispatch ──────────────────────────────────────────
+
+API_URL = os.environ.get("API_URL", "")
+INTERNAL_NOTIFY_SECRET = os.environ.get("INTERNAL_NOTIFY_SECRET", "")
+
+
+def count_critical_findings(job_id: str) -> int:
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT COUNT(*) FROM findings WHERE scan_job_id = %s AND severity = 'critical'",
+                (job_id,),
+            )
+            return cur.fetchone()[0] or 0
+    except Exception:
+        return 0
+    finally:
+        conn.close()
+
+
+def dispatch_scan_notification(job_id: str, user_id: str, tool: str, address: str, status: str):
+    """POST to the API's internal notify endpoint after a scan completes or fails."""
+    if not API_URL or not INTERNAL_NOTIFY_SECRET or not user_id:
+        return
+    try:
+        critical_count = count_critical_findings(job_id) if status == "completed" else 0
+        body = json.dumps({
+            "userId": user_id,
+            "jobId": job_id,
+            "tool": tool,
+            "address": address,
+            "status": status,
+            "criticalCount": critical_count,
+        }).encode()
+        req = _urllib_request.Request(
+            f"{API_URL.rstrip('/')}/api/notify/internal",
+            data=body,
+            headers={
+                "Content-Type": "application/json",
+                "x-internal-secret": INTERNAL_NOTIFY_SECRET,
+            },
+            method="POST",
+        )
+        with _urllib_request.urlopen(req, timeout=8):
+            pass
+    except Exception as exc:
+        logger.debug(f"Notification dispatch skipped: {exc}")
+
+
+# ─── Phase 8: Schedule Poller ─────────────────────────────────────────────────
+
+def _compute_next_run(cron_expr: str):
+    try:
+        from croniter import croniter
+        return croniter(cron_expr, datetime.now(timezone.utc)).get_next(datetime)
+    except Exception:
+        from datetime import timedelta
+        return datetime.now(timezone.utc) + timedelta(hours=24)
+
+
+def _schedule_poller():
+    """Background thread: polls schedules table every 60s and enqueues due jobs."""
+    import time
+    logger.info("Schedule poller started")
+    while True:
+        try:
+            conn = get_db()
+            try:
+                now = datetime.now(timezone.utc)
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        SELECT s.id, s.user_id, s.target_id, s.tool,
+                               s.flags, s.cron_expression
+                        FROM schedules s
+                        JOIN targets t ON t.id = s.target_id
+                        WHERE s.enabled = TRUE
+                          AND (s.next_run_at IS NULL OR s.next_run_at <= %s)
+                        """,
+                        (now,),
+                    )
+                    due = cur.fetchall()
+
+                for row in due:
+                    sid, user_id, target_id, tool, flags_json, cron_expr = row
+                    try:
+                        flags = (flags_json or {}).get("flags", "") if isinstance(flags_json, dict) else ""
+                        with conn.cursor() as cur:
+                            cur.execute(
+                                """
+                                INSERT INTO scan_jobs
+                                    (id, user_id, target_id, tool, flags, status, created_at, updated_at)
+                                VALUES (gen_random_uuid(), %s, %s, %s, %s, 'pending', %s, %s)
+                                RETURNING id
+                                """,
+                                (user_id, target_id, tool, flags, now, now),
+                            )
+                            job_id = str(cur.fetchone()[0])
+                        conn.commit()
+                        run_scan.delay(job_id)
+                        logger.info(f"Scheduled scan enqueued: {tool} (schedule {sid})")
+                        next_run = _compute_next_run(cron_expr)
+                        with conn.cursor() as cur:
+                            cur.execute(
+                                "UPDATE schedules SET last_run_at=%s, next_run_at=%s, updated_at=%s WHERE id=%s",
+                                (now, next_run, now, sid),
+                            )
+                        conn.commit()
+                    except Exception as exc:
+                        logger.warning(f"Failed to enqueue schedule {sid}: {exc}")
+                        try:
+                            conn.rollback()
+                        except Exception:
+                            pass
+            finally:
+                conn.close()
+        except Exception as exc:
+            logger.warning(f"Schedule poller error: {exc}")
+        time.sleep(60)
+
+
+threading.Thread(target=_schedule_poller, daemon=True).start()
