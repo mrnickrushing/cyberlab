@@ -263,25 +263,55 @@ struct ReportDetailView: View {
     }
 
     private func exportButton(_ r: FullReport) -> some View {
-        Button {
-            Task { await exportPDF(r) }
-        } label: {
-            HStack {
-                if isExporting {
-                    ProgressView().tint(.black).scaleEffect(0.8)
-                } else {
-                    Image(systemName: "square.and.arrow.up.fill")
+        VStack(spacing: 10) {
+            NavigationLink(destination: AIAssistantView(
+                mode: .summarize,
+                prefillContext: AIChatContext(
+                    reportTargetName: r.target.name,
+                    reportRiskScore: r.riskScore,
+                    reportRiskLabel: r.riskLabel,
+                    reportOpenFindings: r.summary.openFindings,
+                    reportBySeverity: r.summary.bySeverity,
+                    reportToolsUsed: r.summary.toolsUsed,
+                    reportTopFindings: r.findings.prefix(15).map {
+                        ReportTopFinding(title: $0.title, severity: $0.severity, cveId: $0.cveId)
+                    }
+                ),
+                prefillMessage: "Summarize the security posture of this target and give me a prioritized action plan."
+            )) {
+                HStack {
+                    Image(systemName: "brain.head.profile")
+                    Text("Ask AI to Summarize Report")
+                        .font(.system(size: 14, weight: .semibold))
                 }
-                Text(isExporting ? "Generating PDF…" : "Export as PDF")
-                    .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(.cyberGreen)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.cyberGreen.opacity(0.12))
+                .cornerRadius(10)
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cyberGreen.opacity(0.4), lineWidth: 1))
             }
-            .foregroundColor(.black)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
-            .background(Color.cyberGreen)
-            .cornerRadius(10)
+
+            Button {
+                Task { await exportPDF(r) }
+            } label: {
+                HStack {
+                    if isExporting {
+                        ProgressView().tint(.black).scaleEffect(0.8)
+                    } else {
+                        Image(systemName: "square.and.arrow.up.fill")
+                    }
+                    Text(isExporting ? "Generating PDF…" : "Export as PDF")
+                        .font(.system(size: 15, weight: .semibold))
+                }
+                .foregroundColor(.black)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.cyberGreen)
+                .cornerRadius(10)
+            }
+            .disabled(isExporting)
         }
-        .disabled(isExporting)
     }
 
     private func load() async {
