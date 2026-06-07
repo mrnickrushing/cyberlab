@@ -1,0 +1,539 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BB0000000000000000000200 /* CyberLabMobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000100 /* CyberLabMobileApp.swift */; };
+		BB0000000000000000000201 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000101 /* ContentView.swift */; };
+		BB0000000000000000000202 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000102 /* User.swift */; };
+		BB0000000000000000000203 /* Target.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000103 /* Target.swift */; };
+		BB0000000000000000000204 /* ScanJob.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000104 /* ScanJob.swift */; };
+		BB0000000000000000000205 /* Finding.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000105 /* Finding.swift */; };
+		BB0000000000000000000206 /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000106 /* Note.swift */; };
+		BB0000000000000000000207 /* DashboardStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000107 /* DashboardStats.swift */; };
+		BB0000000000000000000208 /* ScanProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000108 /* ScanProfile.swift */; };
+		BB0000000000000000000209 /* AuditLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000109 /* AuditLog.swift */; };
+		BB000000000000000000020A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010A /* APIClient.swift */; };
+		BB000000000000000000020B /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010B /* APIEndpoints.swift */; };
+		BB000000000000000000020C /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010C /* AuthManager.swift */; };
+		BB000000000000000000020D /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010D /* BiometricAuthManager.swift */; };
+		BB000000000000000000020E /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010E /* KeychainManager.swift */; };
+		BB000000000000000000020F /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010F /* MainTabView.swift */; };
+		BB0000000000000000000210 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000110 /* LoginView.swift */; };
+		BB0000000000000000000211 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000111 /* DashboardView.swift */; };
+		BB0000000000000000000212 /* TargetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000112 /* TargetsView.swift */; };
+		BB0000000000000000000213 /* TargetDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000113 /* TargetDetailView.swift */; };
+		BB0000000000000000000214 /* AddTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000114 /* AddTargetView.swift */; };
+		BB0000000000000000000215 /* ScansView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000115 /* ScansView.swift */; };
+		BB0000000000000000000216 /* ScanDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000116 /* ScanDetailView.swift */; };
+		BB0000000000000000000217 /* FindingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000117 /* FindingsView.swift */; };
+		BB0000000000000000000218 /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000118 /* NotesView.swift */; };
+		BB0000000000000000000219 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000119 /* SettingsView.swift */; };
+		BB000000000000000000021A /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011A /* Extensions.swift */; };
+		BB000000000000000000021B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011B /* Info.plist */; };
+		BB000000000000000000021C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011C /* Assets.xcassets */; };
+		BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011D /* LocalAuthentication.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		BB000000000000000000000E /* CyberLabMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CyberLabMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000000000000000000100 /* CyberLabMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabMobileApp.swift; sourceTree = "<group>"; };
+		BB0000000000000000000101 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000102 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		BB0000000000000000000103 /* Target.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Target.swift; sourceTree = "<group>"; };
+		BB0000000000000000000104 /* ScanJob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanJob.swift; sourceTree = "<group>"; };
+		BB0000000000000000000105 /* Finding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Finding.swift; sourceTree = "<group>"; };
+		BB0000000000000000000106 /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
+		BB0000000000000000000107 /* DashboardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStats.swift; sourceTree = "<group>"; };
+		BB0000000000000000000108 /* ScanProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanProfile.swift; sourceTree = "<group>"; };
+		BB0000000000000000000109 /* AuditLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditLog.swift; sourceTree = "<group>"; };
+		BB000000000000000000010A /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		BB000000000000000000010B /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
+		BB000000000000000000010C /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		BB000000000000000000010D /* BiometricAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthManager.swift; sourceTree = "<group>"; };
+		BB000000000000000000010E /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		BB000000000000000000010F /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000110 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000111 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000112 /* TargetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetsView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000113 /* TargetDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetDetailView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000114 /* AddTargetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTargetView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000115 /* ScansView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScansView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000116 /* ScanDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDetailView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000117 /* FindingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindingsView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000118 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000119 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		BB000000000000000000011A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		BB000000000000000000011B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BB000000000000000000011C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BB000000000000000000011D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BB0000000000000000000007 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BB0000000000000000000002 /* CyberLab */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000000F /* CyberLabMobile */,
+				BB000000000000000000001C /* Frameworks */,
+				BB0000000000000000000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000000E /* CyberLabMobile.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BB000000000000000000000F /* CyberLabMobile */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000100 /* CyberLabMobileApp.swift */,
+				BB0000000000000000000101 /* ContentView.swift */,
+				BB000000000000000000011B /* Info.plist */,
+				BB000000000000000000011C /* Assets.xcassets */,
+				BB0000000000000000000010 /* Models */,
+				BB0000000000000000000011 /* Network */,
+				BB0000000000000000000012 /* Auth */,
+				BB0000000000000000000013 /* Views */,
+				BB000000000000000000001B /* Utilities */,
+			);
+			path = CyberLabMobile;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000010 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000102 /* User.swift */,
+				BB0000000000000000000103 /* Target.swift */,
+				BB0000000000000000000104 /* ScanJob.swift */,
+				BB0000000000000000000105 /* Finding.swift */,
+				BB0000000000000000000106 /* Note.swift */,
+				BB0000000000000000000107 /* DashboardStats.swift */,
+				BB0000000000000000000108 /* ScanProfile.swift */,
+				BB0000000000000000000109 /* AuditLog.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000011 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000010A /* APIClient.swift */,
+				BB000000000000000000010B /* APIEndpoints.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000012 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000010C /* AuthManager.swift */,
+				BB000000000000000000010D /* BiometricAuthManager.swift */,
+				BB000000000000000000010E /* KeychainManager.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000013 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000010F /* MainTabView.swift */,
+				BB0000000000000000000014 /* Login */,
+				BB0000000000000000000015 /* Dashboard */,
+				BB0000000000000000000016 /* Targets */,
+				BB0000000000000000000017 /* Scans */,
+				BB0000000000000000000018 /* Findings */,
+				BB0000000000000000000019 /* Notes */,
+				BB000000000000000000001A /* Settings */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000014 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000110 /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000015 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000111 /* DashboardView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000016 /* Targets */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000112 /* TargetsView.swift */,
+				BB0000000000000000000113 /* TargetDetailView.swift */,
+				BB0000000000000000000114 /* AddTargetView.swift */,
+			);
+			path = Targets;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000017 /* Scans */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000115 /* ScansView.swift */,
+				BB0000000000000000000116 /* ScanDetailView.swift */,
+			);
+			path = Scans;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000018 /* Findings */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000117 /* FindingsView.swift */,
+			);
+			path = Findings;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000019 /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000118 /* NotesView.swift */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
+		BB000000000000000000001A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000119 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		BB000000000000000000001B /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000011A /* Extensions.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		BB000000000000000000001C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000011D /* LocalAuthentication.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BB0000000000000000000004 /* CyberLabMobile */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB0000000000000000000009 /* Build configuration list for PBXNativeTarget "CyberLabMobile" */;
+			buildPhases = (
+				BB0000000000000000000005 /* Sources */,
+				BB0000000000000000000006 /* Resources */,
+				BB0000000000000000000007 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CyberLabMobile;
+			productName = CyberLabMobile;
+			productReference = BB000000000000000000000E /* CyberLabMobile.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BB0000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					BB0000000000000000000004 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = BB0000000000000000000008 /* Build configuration list for PBXProject "CyberLabMobile" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BB0000000000000000000002 /* CyberLab */;
+			productRefGroup = BB0000000000000000000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BB0000000000000000000004 /* CyberLabMobile */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BB0000000000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB000000000000000000021C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BB0000000000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0000000000000000000200 /* CyberLabMobileApp.swift in Sources */,
+				BB0000000000000000000201 /* ContentView.swift in Sources */,
+				BB0000000000000000000202 /* User.swift in Sources */,
+				BB0000000000000000000203 /* Target.swift in Sources */,
+				BB0000000000000000000204 /* ScanJob.swift in Sources */,
+				BB0000000000000000000205 /* Finding.swift in Sources */,
+				BB0000000000000000000206 /* Note.swift in Sources */,
+				BB0000000000000000000207 /* DashboardStats.swift in Sources */,
+				BB0000000000000000000208 /* ScanProfile.swift in Sources */,
+				BB0000000000000000000209 /* AuditLog.swift in Sources */,
+				BB000000000000000000020A /* APIClient.swift in Sources */,
+				BB000000000000000000020B /* APIEndpoints.swift in Sources */,
+				BB000000000000000000020C /* AuthManager.swift in Sources */,
+				BB000000000000000000020D /* BiometricAuthManager.swift in Sources */,
+				BB000000000000000000020E /* KeychainManager.swift in Sources */,
+				BB000000000000000000020F /* MainTabView.swift in Sources */,
+				BB0000000000000000000210 /* LoginView.swift in Sources */,
+				BB0000000000000000000211 /* DashboardView.swift in Sources */,
+				BB0000000000000000000212 /* TargetsView.swift in Sources */,
+				BB0000000000000000000213 /* TargetDetailView.swift in Sources */,
+				BB0000000000000000000214 /* AddTargetView.swift in Sources */,
+				BB0000000000000000000215 /* ScansView.swift in Sources */,
+				BB0000000000000000000216 /* ScanDetailView.swift in Sources */,
+				BB0000000000000000000217 /* FindingsView.swift in Sources */,
+				BB0000000000000000000218 /* NotesView.swift in Sources */,
+				BB0000000000000000000219 /* SettingsView.swift in Sources */,
+				BB000000000000000000021A /* Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BB000000000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BB000000000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BB000000000000000000000C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CyberLabMobile/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cyberlab.mobile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BB000000000000000000000D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CyberLabMobile/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.cyberlab.mobile;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BB0000000000000000000008 /* Build configuration list for PBXProject "CyberLabMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB000000000000000000000A /* Debug */,
+				BB000000000000000000000B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB0000000000000000000009 /* Build configuration list for PBXNativeTarget "CyberLabMobile" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB000000000000000000000C /* Debug */,
+				BB000000000000000000000D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+	};
+	rootObject = BB0000000000000000000001 /* Project object */;
+}
