@@ -22,4 +22,4 @@ RUN pnpm --filter @workspace/api-server run build
 ENV NODE_ENV=production
 EXPOSE 8080
 
-CMD ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
+CMD ["sh", "-c", "pnpm --filter @workspace/db run push --force && node --enable-source-maps artifacts/api-server/dist/index.mjs"]
