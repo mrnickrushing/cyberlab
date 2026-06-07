@@ -1,7 +1,7 @@
 """
 CyberLab Scanner Worker
-Picks scan jobs from Redis queue, runs tools inside this container, writes results back to DB.
-Phase 1-4: Nmap, arp-scan, DNS, traceroute, ping, nikto, nuclei, whatweb, testssl, whois, shodan, virustotal
+Picks scan jobs from Redis queue, runs tools inside this container,
+writes results + auto-generated findings back to DB.
 """
 import os
 import json
@@ -21,7 +21,6 @@ DATABASE_URL = os.environ.get("DATABASE_URL", "")
 
 SHODAN_API_KEY = os.environ.get("SHODAN_API_KEY", "")
 VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY", "")
-ABUSEIPDB_API_KEY = os.environ.get("ABUSEIPDB_API_KEY", "")
 
 app = Celery("cyberlab", broker=REDIS_URL, backend=REDIS_URL)
 
@@ -93,7 +92,7 @@ def get_job(job_id: str) -> dict:
             cur.execute(
                 """
                 SELECT sj.id, sj.tool, sj.flags, sj.target_id,
-                       t.address, t.type
+                       t.address, t.type, sj.user_id
                 FROM scan_jobs sj
                 JOIN targets t ON t.id = sj.target_id
                 WHERE sj.id = %s
@@ -110,10 +109,293 @@ def get_job(job_id: str) -> dict:
                 "target_id": row[3],
                 "address": row[4],
                 "target_type": row[5],
+                "user_id": row[6],
             }
     finally:
         conn.close()
 
+
+# ─── Auto-Findings ────────────────────────────────────────────────────────────
+
+# Port → (title, severity, description, remediation)
+INTERESTING_PORTS = {
+    21:   ("FTP Service Exposed", "medium",
+           "FTP transmits credentials and data in plaintext.",
+           "Disable FTP and use SFTP or SCP instead. If FTP is required, enforce TLS (FTPS)."),
+    22:   ("SSH Service Detected", "info",
+           "SSH service is open. Verify it is intentional and hardened.",
+           "Disable password authentication, use key-based auth, restrict to known IPs."),
+    23:   ("Telnet Service Exposed", "high",
+           "Telnet transmits all data including credentials in plaintext.",
+           "Disable Telnet immediately and replace with SSH."),
+    25:   ("SMTP Service Exposed", "low",
+           "SMTP service is open. May allow relay abuse if misconfigured.",
+           "Restrict SMTP relay to authenticated clients only."),
+    53:   ("DNS Service Exposed", "info",
+           "DNS service is open. Verify zone transfer is disabled.",
+           "Disable recursive DNS for external clients. Restrict AXFR/zone transfers."),
+    80:   ("HTTP Service (Unencrypted)", "low",
+           "Web server running on plain HTTP without TLS.",
+           "Redirect all HTTP traffic to HTTPS. Obtain and install a TLS certificate."),
+    110:  ("POP3 Service Exposed", "medium",
+           "POP3 may transmit credentials in plaintext.",
+           "Disable plain POP3 and use POP3S (port 995) with TLS."),
+    135:  ("MSRPC Exposed", "medium",
+           "Microsoft RPC endpoint mapper is exposed externally.",
+           "Block port 135 at the firewall for external connections."),
+    139:  ("NetBIOS Session Service Exposed", "medium",
+           "NetBIOS is exposed, potentially leaking host information.",
+           "Disable NetBIOS over TCP/IP if not required. Block at firewall."),
+    143:  ("IMAP Service Exposed", "low",
+           "IMAP may allow plaintext authentication.",
+           "Enforce IMAPS (port 993) with TLS only."),
+    161:  ("SNMP Exposed", "high",
+           "SNMP v1/v2 uses community strings (essentially plaintext passwords).",
+           "Upgrade to SNMPv3 with authentication and encryption. Restrict to management IPs."),
+    389:  ("LDAP Exposed", "medium",
+           "LDAP service is exposed. May leak directory information.",
+           "Use LDAPS (port 636) or StartTLS. Restrict to internal network."),
+    443:  ("HTTPS Service Detected", "info",
+           "HTTPS/TLS service is running.",
+           "Verify TLS configuration (certificate validity, cipher suites, protocol version)."),
+    445:  ("SMB/CIFS Exposed", "high",
+           "SMB service is exposed. High risk of exploitation (EternalBlue, ransomware).",
+           "Block port 445 at the firewall for external access. Apply all Windows patches."),
+    1433: ("MSSQL Database Exposed", "high",
+           "Microsoft SQL Server is directly exposed.",
+           "Move behind firewall. Restrict to application servers only."),
+    1521: ("Oracle DB Exposed", "high",
+           "Oracle database listener is directly exposed.",
+           "Move behind firewall. Restrict to application servers only."),
+    2375: ("Docker API Exposed (Unauthenticated)", "critical",
+           "Docker daemon is exposed without TLS authentication — full host compromise risk.",
+           "Enable TLS authentication on Docker socket or restrict to localhost only."),
+    2376: ("Docker API Exposed (TLS)", "medium",
+           "Docker TLS API is exposed. Verify certificate authentication is enforced.",
+           "Ensure mutual TLS is enforced on the Docker API."),
+    3306: ("MySQL Database Exposed", "high",
+           "MySQL is directly accessible from the network.",
+           "Move behind firewall. Bind to localhost or restrict to application server IPs."),
+    3389: ("RDP (Remote Desktop) Exposed", "high",
+           "RDP is exposed and is a common attack target (BlueKeep, credential brute-force).",
+           "Restrict RDP to VPN/jump host. Enable Network Level Authentication. Apply patches."),
+    5432: ("PostgreSQL Database Exposed", "high",
+           "PostgreSQL is directly accessible from the network.",
+           "Move behind firewall. Bind to localhost or restrict to application server IPs."),
+    5900: ("VNC Service Exposed", "high",
+           "VNC remote desktop is exposed, often with weak authentication.",
+           "Restrict to VPN. Use strong passwords or require SSH tunneling for VNC."),
+    6379: ("Redis Exposed (Unauthenticated)", "critical",
+           "Redis is accessible without authentication — data theft and RCE risk.",
+           "Bind Redis to localhost. Enable requirepass. Never expose to the internet."),
+    8080: ("HTTP Alternate Port Open", "info",
+           "HTTP service running on alternate port 8080.",
+           "Verify this is intentional. Ensure it redirects to HTTPS if a web app."),
+    8443: ("HTTPS Alternate Port Open", "info",
+           "HTTPS service running on alternate port 8443.",
+           "Verify TLS configuration is correct."),
+    9200: ("Elasticsearch Exposed", "critical",
+           "Elasticsearch API is publicly accessible — all data is readable without auth.",
+           "Enable X-Pack security. Restrict to internal network. Never expose to internet."),
+    27017: ("MongoDB Exposed", "critical",
+            "MongoDB is directly accessible without authentication.",
+            "Enable MongoDB authentication. Bind to localhost. Move behind firewall."),
+}
+
+
+def create_findings_from_scan(job_id: str, target_id: str, user_id: str, tool: str, parsed_data: dict):
+    """Auto-create findings based on scan results."""
+    findings = []
+
+    if tool == "nmap":
+        findings = _findings_from_nmap(parsed_data)
+    elif tool == "arp-scan":
+        findings = _findings_from_arp_scan(parsed_data)
+    elif tool == "nuclei":
+        findings = _findings_from_nuclei(parsed_data)
+    elif tool == "nikto":
+        findings = _findings_from_nikto(parsed_data)
+    elif tool == "shodan":
+        findings = _findings_from_shodan(parsed_data)
+    elif tool == "virustotal":
+        findings = _findings_from_virustotal(parsed_data)
+    elif tool == "testssl":
+        findings = _findings_from_testssl(parsed_data)
+
+    if not findings:
+        return
+
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            for f in findings:
+                cur.execute(
+                    """
+                    INSERT INTO findings (
+                        id, user_id, target_id, scan_job_id,
+                        title, severity, status, description, remediation,
+                        created_at, updated_at
+                    ) VALUES (
+                        gen_random_uuid(), %s, %s, %s,
+                        %s, %s, 'open', %s, %s,
+                        %s, %s
+                    )
+                    """,
+                    (
+                        user_id, target_id, job_id,
+                        f["title"], f["severity"], f.get("description"), f.get("remediation"),
+                        datetime.now(timezone.utc), datetime.now(timezone.utc),
+                    ),
+                )
+        conn.commit()
+        logger.info(f"Created {len(findings)} findings for job {job_id}")
+    except Exception as e:
+        logger.warning(f"Failed to create findings for job {job_id}: {e}")
+    finally:
+        conn.close()
+
+
+def _findings_from_nmap(parsed_data: dict) -> list:
+    findings = []
+    hosts = parsed_data.get("hosts", [])
+    for host in hosts:
+        if host.get("status") != "up":
+            continue
+        for port_info in host.get("ports", []):
+            if port_info.get("state") != "open":
+                continue
+            port_num = port_info.get("port")
+            service = port_info.get("service") or ""
+            product = port_info.get("product") or ""
+            version = port_info.get("version") or ""
+
+            if port_num in INTERESTING_PORTS:
+                title, severity, description, remediation = INTERESTING_PORTS[port_num]
+                detail_parts = []
+                if product:
+                    detail_parts.append(f"Product: {product}")
+                if version:
+                    detail_parts.append(f"Version: {version}")
+                detail = f" ({', '.join(detail_parts)})" if detail_parts else ""
+                findings.append({
+                    "title": f"{title} — port {port_num}/{port_info.get('protocol','tcp')}{detail}",
+                    "severity": severity,
+                    "description": description,
+                    "remediation": remediation,
+                })
+            elif service and service not in ("unknown", "tcpwrapped"):
+                # Interesting service on non-standard port
+                findings.append({
+                    "title": f"Open port {port_num}/{port_info.get('protocol','tcp')} — {service}",
+                    "severity": "info",
+                    "description": f"Service '{service}' detected on port {port_num}. {product} {version}".strip(),
+                    "remediation": "Verify this service is required and apply appropriate access controls.",
+                })
+    return findings
+
+
+def _findings_from_arp_scan(parsed_data: dict) -> list:
+    hosts = parsed_data.get("hosts", [])
+    if not hosts:
+        return []
+    return [{
+        "title": f"Network host discovered via ARP — {h['ip']}",
+        "severity": "info",
+        "description": f"Host {h['ip']} (MAC: {h.get('mac','unknown')}, Vendor: {h.get('vendor','unknown')}, Hostname: {h.get('hostname','unknown')}) is live on the network.",
+        "remediation": "Verify this is an authorised device on the network.",
+    } for h in hosts]
+
+
+def _findings_from_nuclei(parsed_data: dict) -> list:
+    findings = []
+    severity_map = {"critical": "critical", "high": "high", "medium": "medium", "low": "low", "info": "info"}
+    for f in parsed_data.get("findings", []):
+        findings.append({
+            "title": f.get("name") or f.get("template") or "Nuclei Finding",
+            "severity": severity_map.get(f.get("severity", "").lower(), "info"),
+            "description": f.get("description") or f"Nuclei template {f.get('template')} matched at {f.get('matched_at')}",
+            "remediation": "Refer to the CVE or template documentation for remediation steps.",
+        })
+    return findings
+
+
+def _findings_from_nikto(parsed_data: dict) -> list:
+    findings = []
+    for item in parsed_data.get("findings", []):
+        if isinstance(item, str):
+            findings.append({
+                "title": item[:120] if len(item) > 120 else item,
+                "severity": "medium",
+                "description": item,
+                "remediation": "Review web server configuration and apply appropriate hardening.",
+            })
+        elif isinstance(item, dict):
+            findings.append({
+                "title": item.get("msg") or item.get("id") or "Nikto Finding",
+                "severity": "medium",
+                "description": str(item),
+                "remediation": "Review web server configuration and apply appropriate hardening.",
+            })
+    return findings
+
+
+def _findings_from_shodan(parsed_data: dict) -> list:
+    findings = []
+    for vuln in parsed_data.get("vulns", []):
+        findings.append({
+            "title": f"Shodan CVE: {vuln}",
+            "severity": "high",
+            "description": f"Shodan detected vulnerability {vuln} on this host.",
+            "remediation": f"Apply patches for {vuln}. Check NVD for details.",
+        })
+    ports = parsed_data.get("ports", [])
+    for port in ports:
+        if port in INTERESTING_PORTS:
+            title, severity, description, remediation = INTERESTING_PORTS[port]
+            findings.append({
+                "title": f"{title} — port {port} (Shodan)",
+                "severity": severity,
+                "description": description,
+                "remediation": remediation,
+            })
+    return findings
+
+
+def _findings_from_virustotal(parsed_data: dict) -> list:
+    malicious = parsed_data.get("malicious", 0)
+    suspicious = parsed_data.get("suspicious", 0)
+    if malicious > 3:
+        return [{
+            "title": "Malicious IP/Domain — VirusTotal",
+            "severity": "critical",
+            "description": f"VirusTotal reports {malicious} engines flagged this target as malicious.",
+            "remediation": "Block this IP/domain immediately. Investigate any connections to it in logs.",
+        }]
+    elif malicious > 0 or suspicious > 3:
+        return [{
+            "title": "Suspicious IP/Domain — VirusTotal",
+            "severity": "high",
+            "description": f"VirusTotal reports {malicious} malicious and {suspicious} suspicious detections.",
+            "remediation": "Investigate further. Consider blocking if reputation cannot be established.",
+        }]
+    return []
+
+
+def _findings_from_testssl(parsed_data: dict) -> list:
+    findings = []
+    severity_map = {"CRITICAL": "critical", "HIGH": "high", "MEDIUM": "medium", "LOW": "low", "WARN": "low"}
+    for item in parsed_data.get("findings", []):
+        sev = severity_map.get(item.get("severity", "").upper(), "info")
+        findings.append({
+            "title": f"TLS Issue: {item.get('id', 'unknown')}",
+            "severity": sev,
+            "description": item.get("finding", "TLS misconfiguration detected."),
+            "remediation": "Update TLS configuration to use modern cipher suites and protocol versions.",
+        })
+    return findings
+
+
+# ─── Main Task ────────────────────────────────────────────────────────────────
 
 @app.task(bind=True, name="run_scan", max_retries=2)
 def run_scan(self, job_id: str):
@@ -133,16 +415,16 @@ def run_scan(self, job_id: str):
     try:
         raw_output, parsed_data = dispatch_tool(tool, address, flags)
         save_result(job_id, raw_output, parsed_data)
+        create_findings_from_scan(job_id, job["target_id"], job["user_id"], tool, parsed_data)
         update_job_status(job_id, "completed")
-        logger.info(f"Scan job {job_id} completed")
+        logger.info(f"Scan job {job_id} completed ({tool} on {address})")
     except Exception as exc:
         logger.exception(f"Scan job {job_id} failed: {exc}")
-        update_job_status(job_id, "failed", error_message=str(exc))
+        update_job_status(job_id, "failed", error_message=str(exc)[:500])
         raise self.retry(exc=exc, countdown=30)
 
 
 def dispatch_tool(tool: str, address: str, flags: str) -> tuple[str, dict]:
-    """Route to the correct tool handler."""
     handlers = {
         "nmap": run_nmap,
         "masscan": run_masscan,
@@ -165,7 +447,7 @@ def dispatch_tool(tool: str, address: str, flags: str) -> tuple[str, dict]:
     return handlers[tool](address, flags)
 
 
-# ─── Phase 2: Port Scanner ───────────────────────────────────────────────────
+# ─── Phase 2: Port Scanners ───────────────────────────────────────────────────
 
 def run_nmap(address: str, flags: str) -> tuple[str, dict]:
     cmd = ["nmap"] + (flags.split() if flags else ["-T4", "-F"]) + ["-oX", "-", address]
@@ -176,7 +458,6 @@ def run_nmap(address: str, flags: str) -> tuple[str, dict]:
 
 
 def parse_nmap_xml(xml_output: str) -> dict:
-    """Parse nmap XML output into structured data."""
     try:
         import xml.etree.ElementTree as ET
         root = ET.fromstring(xml_output)
@@ -228,7 +509,6 @@ def parse_nmap_xml(xml_output: str) -> dict:
                     })
             hosts.append(host_data)
 
-        # Also extract scan metadata
         scan_info = root.find("scaninfo")
         run_stats = root.find("runstats/finished")
         return {
@@ -243,7 +523,6 @@ def parse_nmap_xml(xml_output: str) -> dict:
 
 
 def run_masscan(address: str, flags: str) -> tuple[str, dict]:
-    """Masscan — fast port scanner, lab only."""
     cmd = ["masscan"] + (flags.split() if flags else ["--top-ports", "1000", "--rate", "1000"]) + [address, "-oJ", "-"]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
     raw = result.stdout or result.stderr
@@ -254,7 +533,7 @@ def run_masscan(address: str, flags: str) -> tuple[str, dict]:
         return raw, {"raw": raw[:2000]}
 
 
-# ─── Phase 3: Network Mapper ─────────────────────────────────────────────────
+# ─── Phase 3: Network Discovery ──────────────────────────────────────────────
 
 def run_arp_scan(address: str, flags: str = "") -> tuple[str, dict]:
     if address in ("localnet", "local", ""):
@@ -273,14 +552,12 @@ def run_arp_scan(address: str, flags: str = "") -> tuple[str, dict]:
             mac = parts[1].strip() if len(parts) > 1 else None
             vendor = parts[2].strip() if len(parts) > 2 else None
             if ip and re.match(r"^\d+\.\d+\.\d+\.\d+$", ip):
-                # Try to resolve hostname
                 hostname = _reverse_dns(ip)
                 hosts.append({"ip": ip, "mac": mac, "vendor": vendor, "hostname": hostname})
     return raw, {"hosts": hosts, "count": len(hosts)}
 
 
 def _reverse_dns(ip: str) -> str | None:
-    """Quick reverse DNS lookup."""
     try:
         result = subprocess.run(
             ["dig", "+short", "-x", ip],
@@ -302,7 +579,6 @@ def run_traceroute(address: str, flags: str = "") -> tuple[str, dict]:
         if match:
             hop_num = int(match.group(1))
             hop_ip = match.group(2)
-            # Extract RTT
             rtt_match = re.findall(r"(\d+\.?\d*)\s*ms", line)
             hops.append({
                 "hop": hop_num,
@@ -321,14 +597,14 @@ def run_ping(address: str, flags: str = "") -> tuple[str, dict]:
     cmd = ["ping", "-c", count, address]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
     raw = result.stdout or result.stderr
-    # Parse ping summary
     packet_match = re.search(r"(\d+) packets transmitted, (\d+) received", raw)
     rtt_match = re.search(r"rtt min/avg/max/mdev = ([\d.]+)/([\d.]+)/([\d.]+)/([\d.]+)", raw)
     return raw, {
         "host": address,
         "transmitted": int(packet_match.group(1)) if packet_match else None,
         "received": int(packet_match.group(2)) if packet_match else None,
-        "packet_loss": (1 - int(packet_match.group(2)) / int(packet_match.group(1))) * 100 if packet_match and int(packet_match.group(1)) > 0 else None,
+        "packet_loss": (1 - int(packet_match.group(2)) / int(packet_match.group(1))) * 100
+            if packet_match and int(packet_match.group(1)) > 0 else None,
         "rtt_min": float(rtt_match.group(1)) if rtt_match else None,
         "rtt_avg": float(rtt_match.group(2)) if rtt_match else None,
         "rtt_max": float(rtt_match.group(3)) if rtt_match else None,
@@ -338,7 +614,6 @@ def run_ping(address: str, flags: str = "") -> tuple[str, dict]:
 # ─── Phase 4: Web & Vulnerability Tools ──────────────────────────────────────
 
 def run_nikto(address: str, flags: str = "") -> tuple[str, dict]:
-    """Nikto web scanner."""
     target = address if address.startswith("http") else f"http://{address}"
     cmd = ["nikto", "-h", target, "-Format", "json"] + (flags.split() if flags else [])
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
@@ -347,7 +622,6 @@ def run_nikto(address: str, flags: str = "") -> tuple[str, dict]:
         data = json.loads(raw)
         return raw, {"findings": data.get("vulnerabilities", []), "raw": data}
     except Exception:
-        # Parse text output
         findings = []
         for line in raw.splitlines():
             if "+ " in line:
@@ -356,7 +630,6 @@ def run_nikto(address: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_nuclei(address: str, flags: str = "") -> tuple[str, dict]:
-    """Nuclei vulnerability scanner."""
     target = address if address.startswith("http") else f"http://{address}"
     cmd = ["nuclei", "-u", target, "-json"] + (flags.split() if flags else ["-severity", "info,low,medium,high,critical"])
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
@@ -382,7 +655,6 @@ def run_nuclei(address: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_whatweb(address: str, flags: str = "") -> tuple[str, dict]:
-    """WhatWeb technology detection."""
     target = address if address.startswith("http") else f"http://{address}"
     cmd = ["whatweb", "--log-json=-", target] + (flags.split() if flags else [])
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
@@ -407,53 +679,38 @@ def run_whatweb(address: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_openssl(address: str, flags: str = "") -> tuple[str, dict]:
-    """OpenSSL certificate info."""
     host = address.split(":")[0]
     port = address.split(":")[1] if ":" in address else "443"
     cmd = ["openssl", "s_client", "-connect", f"{host}:{port}", "-showcerts"]
-    result = subprocess.run(
-        cmd, input="Q\n", capture_output=True, text=True, timeout=30
-    )
+    result = subprocess.run(cmd, input="Q\n", capture_output=True, text=True, timeout=30)
     raw = result.stdout or result.stderr
-
-    # Extract cert info
     cert_cmd = ["openssl", "s_client", "-connect", f"{host}:{port}", "-servername", host]
-    cert_result = subprocess.run(
-        cert_cmd, input="Q\n", capture_output=True, text=True, timeout=30
-    )
+    cert_result = subprocess.run(cert_cmd, input="Q\n", capture_output=True, text=True, timeout=30)
     cert_raw = cert_result.stdout
-
-    # Parse cert details
     parsed = _parse_ssl_output(cert_raw, host)
     return raw + "\n" + cert_raw, parsed
 
 
 def _parse_ssl_output(output: str, host: str) -> dict:
     result = {"host": host}
-    # Subject
     subject_match = re.search(r"subject=(.+)", output)
     if subject_match:
         result["subject"] = subject_match.group(1).strip()
-    # Issuer
     issuer_match = re.search(r"issuer=(.+)", output)
     if issuer_match:
         result["issuer"] = issuer_match.group(1).strip()
-    # Dates (look in cert text)
     not_before = re.search(r"Not Before:\s*(.+)", output)
     not_after = re.search(r"Not After\s*:\s*(.+)", output)
     if not_before:
         result["not_before"] = not_before.group(1).strip()
     if not_after:
         result["not_after"] = not_after.group(1).strip()
-    # Protocol
     protocol_match = re.search(r"Protocol\s*:\s*(.+)", output)
     if protocol_match:
         result["protocol"] = protocol_match.group(1).strip()
-    # Cipher
     cipher_match = re.search(r"Cipher\s*:\s*(.+)", output)
     if cipher_match:
         result["cipher"] = cipher_match.group(1).strip()
-    # Verify result
     verify_match = re.search(r"Verify return code: (\d+) \((.+)\)", output)
     if verify_match:
         result["verify_code"] = int(verify_match.group(1))
@@ -463,7 +720,6 @@ def _parse_ssl_output(output: str, host: str) -> dict:
 
 
 def run_testssl(address: str, flags: str = "") -> tuple[str, dict]:
-    """testssl.sh TLS analysis."""
     target = address if ":" in address else f"{address}:443"
     cmd = ["testssl.sh", "--json", "-"] + (flags.split() if flags else []) + [target]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
@@ -484,7 +740,6 @@ def run_testssl(address: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_gobuster(address: str, flags: str = "") -> tuple[str, dict]:
-    """Gobuster directory/file brute force (lab targets only)."""
     target = address if address.startswith("http") else f"http://{address}"
     wordlist = "/usr/share/wordlists/dirb/common.txt"
     cmd = ["gobuster", "dir", "-u", target, "-w", wordlist, "-o", "-"] + (flags.split() if flags else [])
@@ -498,10 +753,9 @@ def run_gobuster(address: str, flags: str = "") -> tuple[str, dict]:
     return raw, {"found": found, "count": len(found)}
 
 
-# ─── Phase 3: DNS Tools ───────────────────────────────────────────────────────
+# ─── DNS / Recon ──────────────────────────────────────────────────────────────
 
 def run_dns(domain: str, flags: str = "") -> tuple[str, dict]:
-    """DNS lookup with dig."""
     record_type = flags.strip().upper() if flags.strip() in ("A", "MX", "TXT", "NS", "CNAME", "SOA", "AAAA", "PTR") else "A"
     cmd = ["dig", "+short", record_type, domain]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
@@ -511,7 +765,6 @@ def run_dns(domain: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_amass(domain: str, flags: str = "") -> tuple[str, dict]:
-    """Amass subdomain enumeration."""
     cmd = ["amass", "enum", "-passive", "-d", domain] + (flags.split() if flags else [])
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
     raw = result.stdout or result.stderr
@@ -520,7 +773,6 @@ def run_amass(domain: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_subfinder(domain: str, flags: str = "") -> tuple[str, dict]:
-    """Subfinder passive subdomain discovery."""
     cmd = ["subfinder", "-d", domain, "-silent"] + (flags.split() if flags else [])
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
     raw = result.stdout or result.stderr
@@ -528,36 +780,30 @@ def run_subfinder(domain: str, flags: str = "") -> tuple[str, dict]:
     return raw, {"domain": domain, "subdomains": subdomains, "count": len(subdomains)}
 
 
-# ─── Phase 6: OSINT ──────────────────────────────────────────────────────────
+# ─── OSINT ────────────────────────────────────────────────────────────────────
 
 def run_whois(address: str, flags: str = "") -> tuple[str, dict]:
-    """WHOIS lookup."""
     cmd = ["whois"] + (flags.split() if flags else []) + [address]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
     raw = result.stdout or result.stderr
-
     parsed = {}
     important_fields = [
         "Registrar", "Registrar URL", "Registrant Organization",
         "Registrant Country", "Creation Date", "Updated Date",
         "Registry Expiry Date", "Name Server", "DNSSEC",
-        "Registrant Email", "Admin Email",
     ]
     for field in important_fields:
         match = re.search(rf"^{re.escape(field)}:\s*(.+)$", raw, re.MULTILINE | re.IGNORECASE)
         if match:
             parsed[field.lower().replace(" ", "_")] = match.group(1).strip()
-
     return raw, {"target": address, "parsed": parsed}
 
 
 def run_shodan(address: str, flags: str = "") -> tuple[str, dict]:
-    """Shodan host lookup via API."""
     if not SHODAN_API_KEY:
         return "", {"error": "SHODAN_API_KEY not configured"}
     try:
-        import urllib.request
-        import urllib.parse
+        import urllib.request, urllib.parse
         url = f"https://api.shodan.io/shodan/host/{urllib.parse.quote(address)}?key={SHODAN_API_KEY}"
         with urllib.request.urlopen(url, timeout=30) as resp:
             data = json.loads(resp.read().decode())
@@ -580,24 +826,19 @@ def run_shodan(address: str, flags: str = "") -> tuple[str, dict]:
 
 
 def run_virustotal(address: str, flags: str = "") -> tuple[str, dict]:
-    """VirusTotal IP/domain reputation lookup."""
     if not VIRUSTOTAL_API_KEY:
         return "", {"error": "VIRUSTOTAL_API_KEY not configured"}
     try:
-        import urllib.request
-        import ipaddress
-        # Determine if IP or domain
+        import urllib.request, ipaddress
         try:
             ipaddress.ip_address(address)
             resource_type = "ip_addresses"
         except ValueError:
             resource_type = "domains"
-
         url = f"https://www.virustotal.com/api/v3/{resource_type}/{address}"
         req = urllib.request.Request(url, headers={"x-apikey": VIRUSTOTAL_API_KEY})
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode())
-
         raw = json.dumps(data, indent=2)
         attrs = data.get("data", {}).get("attributes", {})
         stats = attrs.get("last_analysis_stats", {})
@@ -608,7 +849,6 @@ def run_virustotal(address: str, flags: str = "") -> tuple[str, dict]:
             "harmless": stats.get("harmless", 0),
             "undetected": stats.get("undetected", 0),
             "reputation": attrs.get("reputation"),
-            "community_score": attrs.get("total_votes", {}).get("harmless", 0) - attrs.get("total_votes", {}).get("malicious", 0),
         }
     except Exception as exc:
         return "", {"error": str(exc)}
