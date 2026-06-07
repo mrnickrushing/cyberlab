@@ -9,6 +9,7 @@ import notesRouter from "./notes";
 import dashboardRouter from "./dashboard";
 import networksRouter from "./networks";
 import reportsRouter from "./reports";
+import aiRouter from "./ai";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use(notesRouter);
 router.use(dashboardRouter);
 router.use(networksRouter);
 router.use(reportsRouter);
+router.use(aiRouter);
 
 export default router;
