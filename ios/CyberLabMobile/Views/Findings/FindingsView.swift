@@ -198,6 +198,31 @@ struct FindingDetailView: View {
                         }
                         .cyberCard()
                     }
+
+                    // Ask AI
+                    NavigationLink(destination: AIAssistantView(
+                        mode: .explain,
+                        prefillContext: AIChatContext(
+                            findingTitle: finding.title,
+                            findingSeverity: finding.severity.rawValue,
+                            findingCveId: finding.cveId,
+                            findingCvssScore: finding.cvssScore.map { Double($0) },
+                            findingDescription: finding.description,
+                            findingRemediation: finding.remediation
+                        ),
+                        prefillMessage: "Explain this finding and what an attacker could do with it."
+                    )) {
+                        HStack {
+                            Image(systemName: "brain.head.profile")
+                            Text("Ask AI to Explain This Finding")
+                                .font(.system(size: 14, weight: .semibold))
+                        }
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(Color.cyberGreen)
+                        .cornerRadius(10)
+                    }
                 }
                 .padding(16)
             }
