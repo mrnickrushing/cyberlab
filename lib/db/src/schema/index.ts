@@ -6,3 +6,5 @@ export * from "./audit_logs";
 export * from "./findings";
 export * from "./networks";
 export * from "./notes";
+export * from "./devices";
+export * from "./schedules";
