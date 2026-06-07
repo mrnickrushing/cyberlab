@@ -9,6 +9,10 @@ export interface HealthStatus {
   status: string;
 }
 
+export interface RefreshTokenInput {
+  refreshToken: string;
+}
+
 export interface RegisterRequest {
   username: string;
   email: string;
@@ -362,19 +366,54 @@ export interface DashboardStats {
   labHealth: DashboardStatsLabHealth;
 }
 
-export type RefreshTokenBody = {
-  refreshToken: string;
-};
-
 export type RefreshToken200 = {
   token: string;
+};
+
+export type AcknowledgeLegalWarning200 = {
+  acknowledged: boolean;
+  acknowledgedAt: string;
 };
 
 export type ListScansParams = {
 targetId?: string;
 tool?: string;
-status?: string;
+status?: ListScansStatus;
+/**
+ * Filter scans that produced findings at or above this severity
+ */
+severity?: ListScansSeverity;
+/**
+ * ISO 8601 date — only return scans created on or after this date
+ */
+from?: string;
+/**
+ * ISO 8601 date — only return scans created on or before this date
+ */
+to?: string;
 };
+
+export type ListScansStatus = typeof ListScansStatus[keyof typeof ListScansStatus];
+
+
+export const ListScansStatus = {
+  pending: 'pending',
+  running: 'running',
+  completed: 'completed',
+  failed: 'failed',
+  cancelled: 'cancelled',
+} as const;
+
+export type ListScansSeverity = typeof ListScansSeverity[keyof typeof ListScansSeverity];
+
+
+export const ListScansSeverity = {
+  info: 'info',
+  low: 'low',
+  medium: 'medium',
+  high: 'high',
+  critical: 'critical',
+} as const;
 
 export type ListFindingsParams = {
 targetId?: string;

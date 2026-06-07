@@ -61,5 +61,5 @@ export const insertTargetSchema = createInsertSchema(targetsTable).omit({
 });
 export const selectTargetSchema = createSelectSchema(targetsTable);
 
-export type InsertTarget = z.infer<typeof insertTargetSchema>;
+export type InsertTarget = typeof targetsTable.$inferInsert;
 export type Target = typeof targetsTable.$inferSelect;

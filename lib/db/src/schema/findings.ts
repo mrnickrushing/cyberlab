@@ -80,6 +80,6 @@ export const insertFindingSchema = createInsertSchema(findingsTable).omit({
 });
 export const selectFindingSchema = createSelectSchema(findingsTable);
 
-export type InsertFinding = z.infer<typeof insertFindingSchema>;
+export type InsertFinding = typeof findingsTable.$inferInsert;
 export type Finding = typeof findingsTable.$inferSelect;
 export type FindingEvent = typeof findingEventsTable.$inferSelect;

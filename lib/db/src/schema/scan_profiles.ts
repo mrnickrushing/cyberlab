@@ -42,5 +42,5 @@ export const insertScanProfileSchema = createInsertSchema(scanProfilesTable).omi
 });
 export const selectScanProfileSchema = createSelectSchema(scanProfilesTable);
 
-export type InsertScanProfile = z.infer<typeof insertScanProfileSchema>;
+export type InsertScanProfile = typeof scanProfilesTable.$inferInsert;
 export type ScanProfile = typeof scanProfilesTable.$inferSelect;

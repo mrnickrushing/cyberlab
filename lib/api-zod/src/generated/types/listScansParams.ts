@@ -5,9 +5,23 @@
  * CyberLab API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { ListScansSeverity } from './listScansSeverity';
+import type { ListScansStatus } from './listScansStatus';
 
 export type ListScansParams = {
 targetId?: string;
 tool?: string;
-status?: string;
+status?: ListScansStatus;
+/**
+ * Filter scans that produced findings at or above this severity
+ */
+severity?: ListScansSeverity;
+/**
+ * ISO 8601 date — only return scans created on or after this date
+ */
+from?: Date;
+/**
+ * ISO 8601 date — only return scans created on or before this date
+ */
+to?: Date;
 };

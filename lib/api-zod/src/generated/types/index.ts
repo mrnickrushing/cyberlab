@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
+export * from './acknowledgeLegalWarning200';
 export * from './authResponse';
 export * from './createFindingRequest';
 export * from './createFindingRequestSeverity';
@@ -27,10 +28,12 @@ export * from './healthStatus';
 export * from './listFindingsParams';
 export * from './listNotesParams';
 export * from './listScansParams';
+export * from './listScansSeverity';
+export * from './listScansStatus';
 export * from './loginRequest';
 export * from './note';
 export * from './refreshToken200';
-export * from './refreshTokenBody';
+export * from './refreshTokenInput';
 export * from './registerRequest';
 export * from './scanJob';
 export * from './scanJobStatus';

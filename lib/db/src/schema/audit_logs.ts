@@ -42,5 +42,5 @@ export const insertAuditLogSchema = createInsertSchema(auditLogsTable).omit({
 });
 export const selectAuditLogSchema = createSelectSchema(auditLogsTable);
 
-export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
+export type InsertAuditLog = typeof auditLogsTable.$inferInsert;
 export type AuditLog = typeof auditLogsTable.$inferSelect;

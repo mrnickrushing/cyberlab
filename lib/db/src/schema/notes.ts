@@ -31,5 +31,5 @@ export const insertNoteSchema = createInsertSchema(notesTable).omit({
 });
 export const selectNoteSchema = createSelectSchema(notesTable);
 
-export type InsertNote = z.infer<typeof insertNoteSchema>;
+export type InsertNote = typeof notesTable.$inferInsert;
 export type Note = typeof notesTable.$inferSelect;

@@ -70,6 +70,17 @@ export const GetMeResponse = zod.object({
 
 
 /**
+ * The mobile app displays a legal warning on first use. The user must call this endpoint once to confirm they have read and accepted the warning. Until this endpoint is called, POST /scans returns 403 LEGAL_WARNING_REQUIRED.
+
+ * @summary Acknowledge the legal warning (required before first scan)
+ */
+export const AcknowledgeLegalWarningResponse = zod.object({
+  "acknowledged": zod.boolean(),
+  "acknowledgedAt": zod.coerce.date()
+})
+
+
+/**
  * @summary List targets
  */
 export const ListTargetsResponseItem = zod.object({
@@ -206,9 +217,12 @@ export const ArchiveTargetResponse = zod.object({
  * @summary List scan jobs
  */
 export const ListScansQueryParams = zod.object({
-  "targetId": zod.coerce.string().optional(),
+  "targetId": zod.coerce.string().uuid().optional(),
   "tool": zod.coerce.string().optional(),
-  "status": zod.coerce.string().optional()
+  "status": zod.enum(['pending', 'running', 'completed', 'failed', 'cancelled']).optional(),
+  "severity": zod.enum(['info', 'low', 'medium', 'high', 'critical']).optional().describe('Filter scans that produced findings at or above this severity'),
+  "from": zod.date().optional().describe('ISO 8601 date — only return scans created on or after this date'),
+  "to": zod.date().optional().describe('ISO 8601 date — only return scans created on or before this date')
 })
 
 export const ListScansResponseItem = zod.object({

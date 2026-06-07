@@ -22,6 +22,6 @@ export const selectUserSchema = createSelectSchema(usersTable).omit({
   passwordHash: true,
 });
 
-export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertUser = typeof usersTable.$inferInsert;
 export type User = typeof usersTable.$inferSelect;
 export type PublicUser = Omit<User, "passwordHash">;

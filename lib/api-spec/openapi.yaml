@@ -91,11 +91,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                refreshToken:
-                  type: string
-              required: [refreshToken]
+              $ref: "#/components/schemas/RefreshTokenInput"
       responses:
         "200":
           description: New token
@@ -755,6 +751,13 @@ components:
         status:
           type: string
       required: [status]
+
+    RefreshTokenInput:
+      type: object
+      properties:
+        refreshToken:
+          type: string
+      required: [refreshToken]
 
     RegisterRequest:
       type: object

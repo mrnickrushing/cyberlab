@@ -20,6 +20,7 @@ import type {
 } from '@tanstack/react-query';
 
 import type {
+  AcknowledgeLegalWarning200,
   AuthResponse,
   CreateFindingRequest,
   CreateNoteRequest,
@@ -36,7 +37,7 @@ import type {
   LoginRequest,
   Note,
   RefreshToken200,
-  RefreshTokenBody,
+  RefreshTokenInput,
   RegisterRequest,
   ScanJob,
   ScanJobWithTarget,
@@ -290,7 +291,7 @@ export const getRefreshTokenUrl = () => {
 /**
  * @summary Refresh access token
  */
-export const refreshToken = async (refreshTokenBody: RefreshTokenBody, options?: RequestInit): Promise<RefreshToken200> => {
+export const refreshToken = async (refreshTokenInput: RefreshTokenInput, options?: RequestInit): Promise<RefreshToken200> => {
 
   return customFetch<RefreshToken200>(getRefreshTokenUrl(),
   {
@@ -298,7 +299,7 @@ export const refreshToken = async (refreshTokenBody: RefreshTokenBody, options?:
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      refreshTokenBody,)
+      refreshTokenInput,)
   }
 );}
 
@@ -306,8 +307,8 @@ export const refreshToken = async (refreshTokenBody: RefreshTokenBody, options?:
 
 
 export const getRefreshTokenMutationOptions = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenBody>}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenInput>}, TContext> => {
 
 const mutationKey = ['refreshToken'];
 const {mutation: mutationOptions, request: requestOptions} = options ?
@@ -319,7 +320,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
 
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof refreshToken>>, {data: BodyType<RefreshTokenBody>}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof refreshToken>>, {data: BodyType<RefreshTokenInput>}> = (props) => {
           const {data} = props ?? {};
 
           return  refreshToken(data,requestOptions)
@@ -333,18 +334,18 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type RefreshTokenMutationResult = NonNullable<Awaited<ReturnType<typeof refreshToken>>>
-    export type RefreshTokenMutationBody = BodyType<RefreshTokenBody>
+    export type RefreshTokenMutationBody = BodyType<RefreshTokenInput>
     export type RefreshTokenMutationError = ErrorType<unknown>
 
     /**
  * @summary Refresh access token
  */
 export const useRefreshToken = <TError = ErrorType<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenBody>}, TContext>, request?: SecondParameter<typeof customFetch>}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof refreshToken>>, TError,{data: BodyType<RefreshTokenInput>}, TContext>, request?: SecondParameter<typeof customFetch>}
  ): UseMutationResult<
         Awaited<ReturnType<typeof refreshToken>>,
         TError,
-        {data: BodyType<RefreshTokenBody>},
+        {data: BodyType<RefreshTokenInput>},
         TContext
       > => {
       return useMutation(getRefreshTokenMutationOptions(options));
@@ -495,6 +496,78 @@ export const useLogout = <TError = ErrorType<unknown>,
         TContext
       > => {
       return useMutation(getLogoutMutationOptions(options));
+    }
+
+export const getAcknowledgeLegalWarningUrl = () => {
+
+
+
+
+  return `/api/auth/legal-acknowledge`
+}
+
+/**
+ * The mobile app displays a legal warning on first use. The user must call this endpoint once to confirm they have read and accepted the warning. Until this endpoint is called, POST /scans returns 403 LEGAL_WARNING_REQUIRED.
+
+ * @summary Acknowledge the legal warning (required before first scan)
+ */
+export const acknowledgeLegalWarning = async ( options?: RequestInit): Promise<AcknowledgeLegalWarning200> => {
+
+  return customFetch<AcknowledgeLegalWarning200>(getAcknowledgeLegalWarningUrl(),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+export const getAcknowledgeLegalWarningMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof acknowledgeLegalWarning>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof acknowledgeLegalWarning>>, TError,void, TContext> => {
+
+const mutationKey = ['acknowledgeLegalWarning'];
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof acknowledgeLegalWarning>>, void> = () => {
+
+
+          return  acknowledgeLegalWarning(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AcknowledgeLegalWarningMutationResult = NonNullable<Awaited<ReturnType<typeof acknowledgeLegalWarning>>>
+
+    export type AcknowledgeLegalWarningMutationError = ErrorType<void>
+
+    /**
+ * @summary Acknowledge the legal warning (required before first scan)
+ */
+export const useAcknowledgeLegalWarning = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof acknowledgeLegalWarning>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof acknowledgeLegalWarning>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getAcknowledgeLegalWarningMutationOptions(options));
     }
 
 export const getListTargetsUrl = () => {

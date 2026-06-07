@@ -70,6 +70,6 @@ export const insertScanJobSchema = createInsertSchema(scanJobsTable).omit({
 export const selectScanJobSchema = createSelectSchema(scanJobsTable);
 export const selectScanResultSchema = createSelectSchema(scanResultsTable);
 
-export type InsertScanJob = z.infer<typeof insertScanJobSchema>;
+export type InsertScanJob = typeof scanJobsTable.$inferInsert;
 export type ScanJob = typeof scanJobsTable.$inferSelect;
 export type ScanResult = typeof scanResultsTable.$inferSelect;

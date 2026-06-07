@@ -1,4 +1,4 @@
-modules = ["nodejs-24", "python-3.11"]
+modules = ["nodejs-24", "python-3.11", "postgresql-16"]
 
 [deployment]
 router = "application"
@@ -27,8 +27,16 @@ externalPort = 80
 localPort = 8081
 externalPort = 8081
 
+[[ports]]
+localPort = 23183
+externalPort = 3000
+
 [userenv]
 
 [userenv.shared]
 LAB_ONLY_MODE = "true"
 REDIS_URL = "redis://localhost:6379"
+JWT_SECRET = "5c3e019edd0529a09c6a900c7273581b0b378df750eec217d67780c51b17d11512521a4a0a6efbe423d213d1b2cbfb91a7b0ed4b0ac8b52155bb2dda31e0601d"
+
+[nix]
+channel = "stable-25_05"

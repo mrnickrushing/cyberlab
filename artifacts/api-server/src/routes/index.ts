@@ -7,6 +7,7 @@ import auditRouter from "./audit";
 import findingsRouter from "./findings";
 import notesRouter from "./notes";
 import dashboardRouter from "./dashboard";
+import networksRouter from "./networks";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(auditRouter);
 router.use(findingsRouter);
 router.use(notesRouter);
 router.use(dashboardRouter);
+router.use(networksRouter);
 
 export default router;
