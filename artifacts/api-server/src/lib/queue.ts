@@ -13,8 +13,8 @@ function getRedis(): Redis {
   if (!redisClient) {
     redisClient = new Redis(REDIS_URL, {
       maxRetriesPerRequest: 3,
-      lazyConnect: true,
-      enableOfflineQueue: false,
+      enableOfflineQueue: true,
+      retryStrategy: (times) => Math.min(times * 200, 3000),
     });
     redisClient.on("error", (err) => {
       console.error("[queue] Redis error:", err.message);
