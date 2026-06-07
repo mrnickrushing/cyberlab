@@ -18,6 +18,8 @@ workflows:
           include: true
 
     environment:
+      groups:
+        - ios_credentials
       ios_signing:
         distribution_type: ad_hoc
         bundle_identifier: com.cyberlab.mobile
@@ -72,6 +74,8 @@ workflows:
       app_store_connect: CyberLab ASC Key
 
     environment:
+      groups:
+        - ios_credentials
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.cyberlab.mobile
