@@ -47,7 +47,7 @@ class APIClient: ObservableObject {
     }
 
     var baseURL: String {
-        KeychainManager.load(.serverURL) ?? "https://api-server-production-df35.up.railway.app/api"
+        KeychainManager.load(.serverURL) ?? "https://api-server-production-6db0.up.railway.app/api"
     }
 
     func setServerURL(_ url: String) {
