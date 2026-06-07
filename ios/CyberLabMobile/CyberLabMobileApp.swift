@@ -71,4 +71,4 @@ final class DeviceTokenManager {
     }
 }
 
-struct EmptyResponse: Codable {}
+
