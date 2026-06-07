@@ -501,13 +501,13 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] iOS **OSINT tab** added as 5th tab in TargetDetailView alongside Scans, Findings, Notes, Web
 
 ### Phase 7 — AI Assistant ✅
-- [x] `POST /ai/chat` — context-aware AI endpoint using OpenAI `gpt-4o-mini`; accepts mode, message, conversation history (up to 20 turns), and structured context (finding or report data); returns reply + token counts
-- [x] `GET /ai/status` — reports whether `OPENAI_API_KEY` is configured on the server
+- [x] `POST /ai/chat` — context-aware AI endpoint using Anthropic `claude-sonnet-4-6`; accepts mode, message, conversation history (up to 20 turns), and structured context (finding or report data); returns reply + token counts
+- [x] `GET /ai/status` — reports whether `ANTHROPIC_API_KEY` is configured on the server
 - [x] **5 AI modes**: General (free Q&A), Explain Finding, Summarize Report, Remediation Advisor, Lab Study Helper — each with its own system prompt and suggested starter questions
 - [x] **Safety guardrails** baked into every system prompt: authorized lab use only, refuses to assist unauthorized scanning/exploitation, always recommends written authorization first
 - [x] iOS **AIAssistantView** — full chat UI with: animated 3-dot typing indicator, per-corner rounded bubbles, mode pill selector, context banner showing injected finding/report data, quick-start suggestion chips, clear history button, unconfigured server warning banner
 - [x] **"Ask AI" deep-links**: finding detail view → Explain mode with full CVE/CVSS/description context pre-loaded; report detail view → Summarize mode with risk score, severity breakdown, and top findings pre-loaded
-- [x] **AI tab** added to main tab bar (alongside Dashboard, Targets, Scans, Networks, Findings, Reports, Settings)
+- [x] **AI tab** added to main tab bar (8 tabs total: Dashboard, Targets, Scans, Networks, Findings, Reports, AI, Settings)
 
 ---
 
