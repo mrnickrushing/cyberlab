@@ -39,6 +39,9 @@ const createScanSchema = z.object({
     "whois",
     "shodan",
     "virustotal",
+    "abuseipdb",
+    "ipinfo",
+    "hibp",
   ]),
   profileId: z.string().uuid().optional(),
   flags: z.string().default(""),
@@ -276,7 +279,7 @@ router.get("/scan-profiles", authenticate, async (req: AuthRequest, res): Promis
 router.post("/scan-profiles", authenticate, async (req: AuthRequest, res): Promise<void> => {
   const schema = z.object({
     name: z.string().min(1).max(100),
-    tool: z.enum(["nmap", "masscan", "arp-scan", "dns", "nikto", "nuclei", "whatweb", "openssl", "testssl", "gobuster", "amass", "subfinder", "whois", "shodan", "virustotal"]),
+    tool: z.enum(["nmap", "masscan", "arp-scan", "dns", "nikto", "nuclei", "whatweb", "openssl", "testssl", "gobuster", "amass", "subfinder", "whois", "shodan", "virustotal", "abuseipdb", "ipinfo", "hibp"]),
     flags: z.string().default(""),
     description: z.string().optional(),
     isDefault: z.boolean().default(false),
