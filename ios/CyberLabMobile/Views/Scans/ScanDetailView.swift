@@ -168,7 +168,7 @@ struct NmapResultCard: View {
                         Divider().background(Color.cyberBorder)
                         ForEach(ports, id: \.port) { port in
                             HStack {
-                                Text("\(port.port)/\(port.protocol ?? "tcp")")
+                                Text("\(port.port)/\(port.`protocol` ?? "tcp")")
                                     .font(.system(size: 12, design: .monospaced))
                                     .foregroundColor(port.state == "open" ? .cyberGreen : .gray)
                                     .frame(width: 80, alignment: .leading)
@@ -353,7 +353,7 @@ struct TLSCertCard: View {
             if let issuer  = parsed.issuer    { InfoRow(label: "Issuer",    value: issuer) }
             if let nb      = parsed.notBefore { InfoRow(label: "Not Before", value: nb) }
             if let na      = parsed.notAfter  { InfoRow(label: "Not After",  value: na) }
-            if let proto   = parsed.protocol  { InfoRow(label: "Protocol",   value: proto) }
+            if let proto   = parsed.`protocol`  { InfoRow(label: "Protocol",   value: proto) }
             if let cipher  = parsed.cipher    { InfoRow(label: "Cipher",     value: cipher) }
             if let vm      = parsed.verifyMessage {
                 HStack(alignment: .top) {
@@ -409,7 +409,7 @@ struct DNSResultCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Label("DNS \(parsed.type ?? "Records")", systemImage: "globe")
+                Label("DNS \(parsed.`type` ?? "Records")", systemImage: "globe")
                     .font(.system(size: 13, weight: .semibold)).foregroundColor(.white.opacity(0.7))
                 Spacer()
                 Text("\(parsed.records?.count ?? 0) record(s)")

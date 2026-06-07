@@ -62,7 +62,7 @@ struct ParsedData: Codable {
     // DNS
     let records: [String]?
     let domain: String?
-    let type: String?
+    let `type`: String?
     // Subdomains (amass, subfinder)
     let subdomains: [String]?
     let count: Int?
@@ -80,7 +80,7 @@ struct ParsedData: Codable {
     let issuer: String?
     let notBefore: String?
     let notAfter: String?
-    let protocol: String?
+    let `protocol`: String?
     let cipher: String?
     let verifyCode: Int?
     let verifyMessage: String?
