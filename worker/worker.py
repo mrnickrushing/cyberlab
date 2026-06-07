@@ -117,7 +117,7 @@ def get_job(job_id: str) -> dict:
             cur.execute(
                 """
                 SELECT sj.id, sj.tool, sj.flags, sj.target_id,
-                       t.address, t.type, sj.user_id
+                       t.address, t.type, sj.user_id, sj.meta
                 FROM scan_jobs sj
                 JOIN targets t ON t.id = sj.target_id
                 WHERE sj.id = %s
@@ -135,7 +135,49 @@ def get_job(job_id: str) -> dict:
                 "address": row[4],
                 "target_type": row[5],
                 "user_id": row[6],
+                "meta": row[7] or {},
             }
+    finally:
+        conn.close()
+
+
+def populate_network_hosts(network_map_id: str, hosts: list):
+    """Refresh network_hosts for a map after arp-scan completes."""
+    if not hosts:
+        return
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            # Clear previous snapshot for this map
+            cur.execute("DELETE FROM network_hosts WHERE network_map_id = %s", (network_map_id,))
+            now = datetime.now(timezone.utc)
+            for host in hosts:
+                cur.execute(
+                    """
+                    INSERT INTO network_hosts
+                        (id, network_map_id, ip_address, mac_address, hostname, vendor,
+                         open_ports, is_trusted, is_gateway, first_seen, last_seen)
+                    VALUES (gen_random_uuid(), %s, %s, %s, %s, %s, %s, false, false, %s, %s)
+                    """,
+                    (
+                        network_map_id,
+                        host.get("ip"),
+                        host.get("mac"),
+                        host.get("hostname"),
+                        host.get("vendor"),
+                        Json([]),
+                        now,
+                        now,
+                    ),
+                )
+            cur.execute(
+                "UPDATE network_maps SET scanned_at = %s WHERE id = %s",
+                (now, network_map_id),
+            )
+        conn.commit()
+        logger.info(f"Populated {len(hosts)} hosts into network map {network_map_id}")
+    except Exception as exc:
+        logger.warning(f"Failed to populate network hosts: {exc}")
     finally:
         conn.close()
 
@@ -441,6 +483,11 @@ def run_scan(self, job_id: str):
         raw_output, parsed_data = dispatch_tool(tool, address, flags)
         save_result(job_id, raw_output, parsed_data)
         create_findings_from_scan(job_id, job["target_id"], job["user_id"], tool, parsed_data)
+        # Phase 3: auto-populate network_hosts after arp-scan
+        if tool == "arp-scan":
+            network_map_id = job["meta"].get("networkMapId")
+            if network_map_id:
+                populate_network_hosts(network_map_id, parsed_data.get("hosts", []))
         update_job_status(job_id, "completed")
         logger.info(f"Scan job {job_id} completed ({tool} on {address})")
     except Exception as exc:
