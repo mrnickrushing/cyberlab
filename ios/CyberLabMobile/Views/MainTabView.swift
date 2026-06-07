@@ -6,45 +6,31 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             DashboardView()
-                .tabItem {
-                    Label("Dashboard", systemImage: "gauge.with.dots.needle.bottom.50percent")
-                }
+                .tabItem { Label("Dashboard", systemImage: "gauge.with.dots.needle.bottom.50percent") }
                 .tag(0)
 
             TargetsView()
-                .tabItem {
-                    Label("Targets", systemImage: "target")
-                }
+                .tabItem { Label("Targets", systemImage: "target") }
                 .tag(1)
 
             ScansView()
-                .tabItem {
-                    Label("Scans", systemImage: "scanner")
-                }
+                .tabItem { Label("Scans", systemImage: "scanner") }
                 .tag(2)
 
             NetworksView()
-                .tabItem {
-                    Label("Networks", systemImage: "network")
-                }
+                .tabItem { Label("Networks", systemImage: "network") }
                 .tag(3)
 
             FindingsView()
-                .tabItem {
-                    Label("Findings", systemImage: "exclamationmark.triangle")
-                }
+                .tabItem { Label("Findings", systemImage: "exclamationmark.triangle") }
                 .tag(4)
 
-            NotesView()
-                .tabItem {
-                    Label("Notes", systemImage: "note.text")
-                }
+            ReportsView()
+                .tabItem { Label("Reports", systemImage: "doc.text.magnifyingglass") }
                 .tag(5)
 
             SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
+                .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(6)
         }
         .tint(.cyberGreen)
