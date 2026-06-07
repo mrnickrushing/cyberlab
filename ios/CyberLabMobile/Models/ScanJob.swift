@@ -57,36 +57,120 @@ struct ScanResult: Codable {
 }
 
 struct ParsedData: Codable {
+    // Nmap / arp-scan hosts
     let hosts: [NmapHost]?
-    let findings: [AnyCodable]?
+    // DNS
     let records: [String]?
+    let domain: String?
+    let type: String?
+    // Subdomains (amass, subfinder)
+    let subdomains: [String]?
+    let count: Int?
+    // WhatWeb
+    let technologies: [WebTechnology]?
+    let target: String?
+    let httpStatus: Int?
+    // Nikto / Nuclei / testssl findings
+    let findings: [WebFinding]?
+    // Gobuster
+    let found: [GobusterEntry]?
+    // OpenSSL cert
+    let host: String?
+    let subject: String?
+    let issuer: String?
+    let notBefore: String?
+    let notAfter: String?
+    let protocol: String?
+    let cipher: String?
+    let verifyCode: Int?
+    let verifyMessage: String?
+    let valid: Bool?
 }
 
-// Type-erased Codable for dynamic JSON
+// ─── Nmap ─────────────────────────────────────────────────────────────────────
+
+struct NmapHost: Codable {
+    let address: String?
+    let status: String?
+    let hostname: String?
+    let os: String?
+    let ports: [NmapPort]?
+}
+
+struct NmapPort: Codable {
+    let port: Int
+    let `protocol`: String?
+    let state: String?
+    let service: String?
+    let product: String?
+    let version: String?
+}
+
+// ─── WhatWeb ──────────────────────────────────────────────────────────────────
+
+struct WebTechnology: Codable {
+    let name: String
+    let version: String?
+    let detail: String?
+}
+
+// ─── Web Findings (Nikto / Nuclei / testssl) ──────────────────────────────────
+
+struct WebFinding: Codable {
+    // Nuclei
+    let template: String?
+    let name: String?
+    let severity: String?
+    let description: String?
+    let matchedAt: String?
+    let tags: [String]?
+    // Nikto (string form stored in name/description)
+    // testssl
+    let id: String?
+    let finding: String?
+    // Shodan-style
+    let msg: String?
+
+    var displayTitle: String {
+        name ?? template ?? id ?? msg ?? "Finding"
+    }
+    var displayDescription: String {
+        description ?? finding ?? ""
+    }
+    var severityEnum: FindingSeverity {
+        switch severity?.lowercased() {
+        case "critical": return .critical
+        case "high": return .high
+        case "medium", "warn", "warning": return .medium
+        case "low": return .low
+        default: return .info
+        }
+    }
+}
+
+// ─── Gobuster ─────────────────────────────────────────────────────────────────
+
+struct GobusterEntry: Codable {
+    let path: String
+    let status: Int
+}
+
+// ─── Legacy AnyCodable (kept for backwards compatibility) ─────────────────────
+
 struct AnyCodable: Codable {
     let value: Any
 
-    init(_ value: Any) {
-        self.value = value
-    }
+    init(_ value: Any) { self.value = value }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
-        if let string = try? container.decode(String.self) {
-            value = string
-        } else if let int = try? container.decode(Int.self) {
-            value = int
-        } else if let double = try? container.decode(Double.self) {
-            value = double
-        } else if let bool = try? container.decode(Bool.self) {
-            value = bool
-        } else if let dict = try? container.decode([String: AnyCodable].self) {
-            value = dict.mapValues { $0.value }
-        } else if let arr = try? container.decode([AnyCodable].self) {
-            value = arr.map { $0.value }
-        } else {
-            value = NSNull()
-        }
+        if let string = try? container.decode(String.self) { value = string }
+        else if let int = try? container.decode(Int.self) { value = int }
+        else if let double = try? container.decode(Double.self) { value = double }
+        else if let bool = try? container.decode(Bool.self) { value = bool }
+        else if let dict = try? container.decode([String: AnyCodable].self) { value = dict.mapValues { $0.value } }
+        else if let arr = try? container.decode([AnyCodable].self) { value = arr.map { $0.value } }
+        else { value = NSNull() }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -99,21 +183,4 @@ struct AnyCodable: Codable {
         default: try container.encodeNil()
         }
     }
-}
-
-struct NmapHost: Codable {
-    let address: String?
-    let status: String?
-    let hostname: String?
-    let os: String?
-    let ports: [NmapPort]?
-}
-
-struct NmapPort: Codable {
-    let port: Int
-    let protocol: String?
-    let state: String?
-    let service: String?
-    let product: String?
-    let version: String?
 }
