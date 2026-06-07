@@ -509,6 +509,53 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] **"Ask AI" deep-links**: finding detail view → Explain mode with full CVE/CVSS/description context pre-loaded; report detail view → Summarize mode with risk score, severity breakdown, and top findings pre-loaded
 - [x] **AI tab** added to main tab bar (8 tabs total: Dashboard, Targets, Scans, Networks, Findings, Reports, AI, Settings)
 
+### Phase 8 — Push Notifications + Scheduled Scans 🔄
+- [ ] `devices` table — stores APNs device tokens per user (unique per user+token)
+- [ ] `schedules` table — cron-based scan schedules (target, tool, flags, cron expression, enabled flag, last/next run timestamps)
+- [ ] `GET/POST /schedules` + `PATCH/DELETE /schedules/:id` — full CRUD with cron preset validation
+- [ ] `GET /schedules/presets` — returns valid tool list and cron presets for the iOS picker
+- [ ] `POST /devices/register` + `DELETE /devices/unregister` — APNs token lifecycle management
+- [ ] `POST /notify/internal` — internal endpoint (shared secret auth) called by worker to fire APNs pushes after scan completion
+- [ ] APNs push service in API server using `@parse/node-apn` — sends to all user devices; gracefully disabled when `APNS_KEY_ID`/`APNS_TEAM_ID`/`APNS_PRIVATE_KEY` not set
+- [ ] Worker schedule poller — background thread polls `schedules` table every 60s, enqueues due jobs via Celery, updates `last_run_at` + `next_run_at` using `croniter`
+- [ ] Worker notification dispatch — after scan completion/failure, POSTs to API `/notify/internal` with job metadata and critical finding count
+- [ ] iOS APNs registration — `AppDelegate` requests permission, receives device token, registers with API via `DeviceTokenManager`
+- [ ] iOS **SchedulesView** — list with enabled toggle (swipe to delete), create sheet with target/tool/frequency pickers, next-run countdown
+- [ ] iOS **"Scheduled Scans"** accessible from Settings tab
+
+### Phase 9 — Scan Diff + CISA KEV Intelligence
+- [ ] Scan result diff engine — compare any two scans of same target/tool: NEW ports/findings, GONE services, CHANGED versions
+- [ ] `GET /scans/:id/diff/:compareId` — returns structured diff JSON
+- [ ] iOS **ScanDiffView** — side-by-side diff with color-coded NEW/GONE/CHANGED/SAME rows
+- [ ] CISA Known Exploited Vulnerabilities (KEV) catalog — daily sync job fetches catalog from CISA and stores in DB
+- [ ] Worker cross-references all CVE findings against KEV catalog on creation + enrichment
+- [ ] iOS **KEV badge** — red "Actively Exploited" chip on any finding whose CVE is in the CISA KEV catalog
+- [ ] `kev_entries` table — cveId, vendorProject, product, vulnerabilityName, dateAdded, requiredAction
+
+### Phase 10 — Dashboard Redesign + UX Polish
+- [ ] Dashboard **risk trend sparkline** — 30-day score history chart per target using Swift Charts
+- [ ] Dashboard **activity feed** — chronological list of recent scans, new findings, status changes with relative timestamps
+- [ ] Dashboard **critical findings banner** — red alert card when unacknowledged critical/high findings exist
+- [ ] **Empty states** — every blank list (targets, scans, findings, networks, schedules) gets an icon + message + CTA button
+- [ ] **Haptic feedback** — distinct patterns for scan launch, finding status change, errors, and success
+- [ ] **Onboarding flow** — 3-step first-launch sequence: set server URL → create first target → run first scan
+- [ ] **Swipe actions** — swipe to mark finding fixed/accepted, swipe to archive target, swipe to re-run scan
+- [ ] **Consistent severity colors** — Critical `#FF3B30`, High `#FF9500`, Medium `#FFCC00`, Low `#34C759`, Info `#8E8E93` enforced app-wide
+- [ ] **Target list risk rings** — animated gauge rings on target list (same as reports tab) for at-a-glance health
+
+### Phase 11 — Offline Cache + CVSS Calculator
+- [ ] SwiftData local cache layer — targets, findings, scans, notes cached on device; stale-while-revalidate pattern
+- [ ] Offline indicator banner — shows when API is unreachable, serves cached data
+- [ ] Cache invalidation — triggered on pull-to-refresh and after mutations
+- [ ] iOS **CVSS v3.1 Calculator** — interactive sliders for all 8 base score metrics (AV, AC, PR, UI, S, C, I, A); live score + severity label; "Apply to Finding" button
+- [ ] CVSS calculator accessible from finding detail view and create-finding sheet
+
+### Phase 12 — Widgets + Shortcuts
+- [ ] iOS **WidgetKit extension** — small widget: risk score + critical count; medium widget: top 3 findings + last scan time; lock screen widget: open critical count
+- [ ] Widgets refresh on scan completion push notification
+- [ ] **iOS Shortcuts integration** — "Run Scan" action (target + tool picker), "Get Risk Score" action, "List Open Findings" action
+- [ ] Shortcuts work from the Shortcuts app, home screen automations, and Siri voice commands
+
 ---
 
 ## Legal & Ethical Use
