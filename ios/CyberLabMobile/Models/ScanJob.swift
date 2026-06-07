@@ -85,6 +85,50 @@ struct ParsedData: Codable {
     let verifyCode: Int?
     let verifyMessage: String?
     let valid: Bool?
+    // Shodan
+    let ip: String?
+    let asn: String?
+    let ports: [Int]?
+    let hostnames: [String]?
+    let vulns: [String]?
+    let os: String?
+    let org: String?
+    let isp: String?
+    let country: String?
+    let city: String?
+    let lastUpdate: String?
+    // VirusTotal
+    let malicious: Int?
+    let suspicious: Int?
+    let harmless: Int?
+    let undetected: Int?
+    let reputation: Int?
+    // AbuseIPDB
+    let isPublic: Bool?
+    let isTor: Bool?
+    let abuseConfidenceScore: Int?
+    let countryCode: String?
+    let usageType: String?
+    let totalReports: Int?
+    let numDistinctUsers: Int?
+    let lastReportedAt: String?
+    // IPinfo
+    let region: String?
+    let loc: String?
+    let timezone: String?
+    let postal: String?
+    // HIBP
+    let breachCount: Int?
+    let breaches: [String]?
+    // WHOIS (nested parsed dict keys)
+    let registrar: String?
+    let registrantOrganization: String?
+    let registrantCountry: String?
+    let creationDate: String?
+    let registryExpiryDate: String?
+    let nameServer: String?
+    // Error passthrough
+    let error: String?
 }
 
 // ─── Nmap ─────────────────────────────────────────────────────────────────────
