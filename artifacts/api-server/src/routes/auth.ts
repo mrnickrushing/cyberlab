@@ -13,7 +13,7 @@ import {
 import { authenticate, type AuthRequest } from "../middleware/authenticate";
 import { logAudit } from "../lib/audit";
 import { consumeAuthAttempt } from "../lib/rate-limiter";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const router: IRouter = Router();
 

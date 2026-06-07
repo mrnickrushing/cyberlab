@@ -64,7 +64,7 @@ catalogs:
       specifier: ^7.3.2
       version: 7.3.3
     zod:
-      specifier: ^3.25.76
+      specifier: 3.25.76
       version: 3.25.76
 
 overrides:
@@ -199,6 +199,9 @@ importers:
       rate-limiter-flexible:
         specifier: ^11.1.1
         version: 11.1.1
+      zod:
+        specifier: 'catalog:'
+        version: 3.25.76
     devDependencies:
       '@types/bcryptjs':
         specifier: ^3.0.0

@@ -3,20 +3,34 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: CyberLab API specification
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: targets
+    description: Target management
+  - name: scans
+    description: Scan jobs and profiles
+  - name: findings
+    description: Vulnerability findings
+  - name: notes
+    description: Lab notes
+  - name: audit
+    description: Audit trail
+  - name: dashboard
+    description: Dashboard stats
+
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,13 +38,1118 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/register:
+    post:
+      operationId: register
+      tags: [auth]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterRequest"
+      responses:
+        "201":
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "409":
+          description: Username taken
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Login and get JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: Invalid credentials
+
+  /auth/refresh:
+    post:
+      operationId: refreshToken
+      tags: [auth]
+      summary: Refresh access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+              required: [refreshToken]
+      responses:
+        "200":
+          description: New token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                required: [token]
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      summary: Logout
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Logged out
+
+  /targets:
+    get:
+      operationId: listTargets
+      tags: [targets]
+      summary: List targets
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of targets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Target"
+    post:
+      operationId: createTarget
+      tags: [targets]
+      summary: Create a target
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTargetRequest"
+      responses:
+        "201":
+          description: Target created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+
+  /targets/{id}:
+    get:
+      operationId: getTarget
+      tags: [targets]
+      summary: Get a target
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Target
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+        "404":
+          description: Not found
+    patch:
+      operationId: updateTarget
+      tags: [targets]
+      summary: Update a target
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTargetRequest"
+      responses:
+        "200":
+          description: Updated target
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+    delete:
+      operationId: deleteTarget
+      tags: [targets]
+      summary: Delete a target
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /targets/{id}/archive:
+    post:
+      operationId: archiveTarget
+      tags: [targets]
+      summary: Archive a target
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Archived target
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Target"
+
+  /scans:
+    get:
+      operationId: listScans
+      tags: [scans]
+      summary: List scan jobs
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: targetId
+          in: query
+          schema:
+            type: string
+        - name: tool
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of scan jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScanJobWithTarget"
+    post:
+      operationId: createScan
+      tags: [scans]
+      summary: Create a scan job
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateScanRequest"
+      responses:
+        "201":
+          description: Scan job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanJob"
+
+  /scans/{id}:
+    get:
+      operationId: getScan
+      tags: [scans]
+      summary: Get a scan job
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scan job
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanJob"
+    delete:
+      operationId: cancelScan
+      tags: [scans]
+      summary: Cancel a scan job
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Cancelled
+
+  /scans/{id}/results:
+    get:
+      operationId: getScanResults
+      tags: [scans]
+      summary: Get scan results
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Scan result
+
+  /scan-profiles:
+    get:
+      operationId: listScanProfiles
+      tags: [scans]
+      summary: List scan profiles
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Scan profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ScanProfile"
+    post:
+      operationId: createScanProfile
+      tags: [scans]
+      summary: Create a scan profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateScanProfileRequest"
+      responses:
+        "201":
+          description: Profile created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ScanProfile"
+
+  /scan-profiles/{id}:
+    delete:
+      operationId: deleteScanProfile
+      tags: [scans]
+      summary: Delete a scan profile
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /findings:
+    get:
+      operationId: listFindings
+      tags: [findings]
+      summary: List findings
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: targetId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: severity
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Findings list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Finding"
+    post:
+      operationId: createFinding
+      tags: [findings]
+      summary: Create a finding
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFindingRequest"
+      responses:
+        "201":
+          description: Finding created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Finding"
+
+  /findings/{id}:
+    get:
+      operationId: getFinding
+      tags: [findings]
+      summary: Get a finding
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Finding
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Finding"
+    patch:
+      operationId: updateFinding
+      tags: [findings]
+      summary: Update finding status
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateFindingRequest"
+      responses:
+        "200":
+          description: Updated finding
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Finding"
+    delete:
+      operationId: deleteFinding
+      tags: [findings]
+      summary: Delete a finding
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /findings/{id}/timeline:
+    get:
+      operationId: getFindingTimeline
+      tags: [findings]
+      summary: Get finding status timeline
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Finding events
+
+  /notes:
+    get:
+      operationId: listNotes
+      tags: [notes]
+      summary: List lab notes
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: targetId
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+    post:
+      operationId: createNote
+      tags: [notes]
+      summary: Create a lab note
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNoteRequest"
+      responses:
+        "201":
+          description: Note created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+
+  /notes/{id}:
+    get:
+      operationId: getNote
+      tags: [notes]
+      summary: Get a note
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+    patch:
+      operationId: updateNote
+      tags: [notes]
+      summary: Update a note
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateNoteRequest"
+      responses:
+        "200":
+          description: Updated note
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+    delete:
+      operationId: deleteNote
+      tags: [notes]
+      summary: Delete a note
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted
+
+  /audit:
+    get:
+      operationId: getAuditLog
+      tags: [audit]
+      summary: Get audit trail
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: targetId
+          in: query
+          schema:
+            type: string
+        - name: action
+          in: query
+          schema:
+            type: string
+        - name: from
+          in: query
+          schema:
+            type: string
+        - name: to
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Audit log entries
+
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [dashboard]
+      summary: Get dashboard stats
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     HealthStatus:
       type: object
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
 
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      required: [username, email, password]
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required: [username, password]
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, username, email, createdAt]
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        refreshToken:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+      required: [token, refreshToken, user]
+
+    Target:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [ip, domain, subnet, webapp]
+        address:
+          type: string
+        owner:
+          type: string
+          nullable: true
+        authorizationStatus:
+          type: string
+          enum: [authorized, unauthorized, pending]
+        riskLevel:
+          type: string
+          enum: [critical, high, medium, low, info]
+        tags:
+          type: array
+          items:
+            type: string
+        scopeNotes:
+          type: string
+          nullable: true
+        allowedIpRanges:
+          type: array
+          items:
+            type: string
+        isArchived:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, userId, name, type, address, authorizationStatus, riskLevel, tags, allowedIpRanges, isArchived, createdAt, updatedAt]
+
+    CreateTargetRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [ip, domain, subnet, webapp]
+        address:
+          type: string
+        owner:
+          type: string
+        authorizationStatus:
+          type: string
+          enum: [authorized, unauthorized, pending]
+        riskLevel:
+          type: string
+          enum: [critical, high, medium, low, info]
+        tags:
+          type: array
+          items:
+            type: string
+        scopeNotes:
+          type: string
+        allowedIpRanges:
+          type: array
+          items:
+            type: string
+      required: [name, type, address]
+
+    UpdateTargetRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+          enum: [ip, domain, subnet, webapp]
+        address:
+          type: string
+        owner:
+          type: string
+        authorizationStatus:
+          type: string
+          enum: [authorized, unauthorized, pending]
+        riskLevel:
+          type: string
+          enum: [critical, high, medium, low, info]
+        tags:
+          type: array
+          items:
+            type: string
+        scopeNotes:
+          type: string
+        allowedIpRanges:
+          type: array
+          items:
+            type: string
+
+    ScanJob:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        targetId:
+          type: string
+        profileId:
+          type: string
+          nullable: true
+        tool:
+          type: string
+        flags:
+          type: string
+        status:
+          type: string
+          enum: [pending, running, completed, failed, cancelled]
+        progress:
+          type: integer
+        workerJobId:
+          type: string
+          nullable: true
+        startedAt:
+          type: string
+          format: date-time
+          nullable: true
+        completedAt:
+          type: string
+          format: date-time
+          nullable: true
+        errorMessage:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, userId, targetId, tool, flags, status, progress, createdAt]
+
+    ScanJobWithTarget:
+      allOf:
+        - $ref: "#/components/schemas/ScanJob"
+        - type: object
+          properties:
+            targetName:
+              type: string
+              nullable: true
+            targetAddress:
+              type: string
+              nullable: true
+
+    CreateScanRequest:
+      type: object
+      properties:
+        targetId:
+          type: string
+        tool:
+          type: string
+        profileId:
+          type: string
+        flags:
+          type: string
+      required: [targetId, tool]
+
+    ScanProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+          nullable: true
+        name:
+          type: string
+        tool:
+          type: string
+        flags:
+          type: string
+        description:
+          type: string
+          nullable: true
+        isDefault:
+          type: boolean
+        isSystem:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, name, tool, flags, isDefault, isSystem, createdAt]
+
+    CreateScanProfileRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        tool:
+          type: string
+        flags:
+          type: string
+        description:
+          type: string
+        isDefault:
+          type: boolean
+      required: [name, tool]
+
+    Finding:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        targetId:
+          type: string
+        scanJobId:
+          type: string
+          nullable: true
+        title:
+          type: string
+        cveId:
+          type: string
+          nullable: true
+        severity:
+          type: string
+          enum: [critical, high, medium, low, info]
+        status:
+          type: string
+          enum: [open, fixed, accepted_risk, false_positive]
+        cvssScore:
+          type: number
+          nullable: true
+        owaspCategory:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        remediation:
+          type: string
+          nullable: true
+        references:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+          nullable: true
+        resolvedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, userId, targetId, title, severity, status, references, createdAt, updatedAt]
+
+    CreateFindingRequest:
+      type: object
+      properties:
+        targetId:
+          type: string
+        scanJobId:
+          type: string
+        title:
+          type: string
+        cveId:
+          type: string
+        severity:
+          type: string
+          enum: [critical, high, medium, low, info]
+        cvssScore:
+          type: number
+        owaspCategory:
+          type: string
+        description:
+          type: string
+        remediation:
+          type: string
+        references:
+          type: array
+          items:
+            type: string
+        notes:
+          type: string
+      required: [targetId, title]
+
+    UpdateFindingRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [open, fixed, accepted_risk, false_positive]
+        notes:
+          type: string
+        remediation:
+          type: string
+        severity:
+          type: string
+          enum: [critical, high, medium, low, info]
+        note:
+          type: string
+
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        targetId:
+          type: string
+        title:
+          type: string
+          nullable: true
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        attachmentUrls:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, userId, targetId, body, tags, attachmentUrls, createdAt, updatedAt]
+
+    CreateNoteRequest:
+      type: object
+      properties:
+        targetId:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        attachmentUrls:
+          type: array
+          items:
+            type: string
+      required: [targetId, body]
+
+    UpdateNoteRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        body:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        attachmentUrls:
+          type: array
+          items:
+            type: string
+
+    DashboardStats:
+      type: object
+      properties:
+        securityScore:
+          type: integer
+        targetCount:
+          type: integer
+        activeScans:
+          type: integer
+        openFindings:
+          type: integer
+        findingsBySeverity:
+          type: object
+        recentScans:
+          type: array
+          items:
+            $ref: "#/components/schemas/ScanJobWithTarget"
+        labHealth:
+          type: object
+          properties:
+            apiReachable:
+              type: boolean
+            workerQueueDepth:
+              type: integer
+          required: [apiReachable, workerQueueDepth]
+      required: [securityScore, targetCount, activeScans, openFindings, findingsBySeverity, recentScans, labHealth]
