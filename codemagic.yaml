@@ -17,6 +17,9 @@ workflows:
         - pattern: main
           include: true
 
+    integrations:
+      app_store_connect: CyberLab ASC Key
+
     environment:
       groups:
         - ios_credentials
