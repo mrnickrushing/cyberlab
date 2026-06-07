@@ -1,12 +1,15 @@
 [phases.setup]
-nixPkgs = ["nodejs_22", "nodePackages.pnpm"]
+nixPkgs = ["nodejs_22"]
 
 [phases.install]
-cmds = ["pnpm install --frozen-lockfile"]
+cmds = [
+  "npm install -g pnpm@10",
+  "export PATH=$(npm bin -g):$PATH && pnpm install --frozen-lockfile"
+]
 
 [phases.build]
 cmds = [
-  "pnpm --filter @workspace/api-server run build"
+  "export PATH=$(npm bin -g):$PATH && pnpm --filter @workspace/api-server run build"
 ]
 
 [start]
