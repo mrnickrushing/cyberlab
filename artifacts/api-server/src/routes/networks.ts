@@ -3,9 +3,12 @@ import { db } from "@workspace/db";
 import {
   networkMapsTable,
   networkHostsTable,
+  scanJobsTable,
+  targetsTable,
 } from "@workspace/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { authenticate, type AuthRequest } from "../middleware/authenticate";
+import { enqueueScanJob } from "../lib/queue";
 import { z } from "zod";
 
 const router: IRouter = Router();
@@ -150,6 +153,65 @@ router.patch("/networks/:mapId/hosts/:hostId", authenticate, async (req: AuthReq
     return;
   }
   res.json(updated);
+});
+
+// POST /networks/:id/discover — auto-create a subnet target + enqueue arp-scan
+router.post("/networks/:id/discover", authenticate, async (req: AuthRequest, res): Promise<void> => {
+  const maps = await db
+    .select()
+    .from(networkMapsTable)
+    .where(and(eq(networkMapsTable.id, req.params.id), eq(networkMapsTable.userId, req.user!.sub)))
+    .limit(1);
+  if (!maps.length) {
+    res.status(404).json({ error: "Network map not found" });
+    return;
+  }
+  const map = maps[0];
+
+  let targetId = map.targetId ?? null;
+
+  if (!targetId) {
+    const [target] = await db
+      .insert(targetsTable)
+      .values({
+        userId: req.user!.sub,
+        name: `${map.name} – ${map.subnet}`,
+        type: "subnet",
+        address: map.subnet,
+        authorizationStatus: "authorized",
+        riskLevel: "info",
+        isArchived: false,
+        tags: [],
+      })
+      .returning({ id: targetsTable.id });
+    targetId = target.id;
+    await db
+      .update(networkMapsTable)
+      .set({ targetId })
+      .where(eq(networkMapsTable.id, map.id));
+  }
+
+  const [job] = await db
+    .insert(scanJobsTable)
+    .values({
+      userId: req.user!.sub,
+      targetId,
+      tool: "arp-scan",
+      flags: "",
+      status: "pending",
+      meta: { networkMapId: map.id },
+    })
+    .returning();
+
+  const celeryTaskId = await enqueueScanJob(job.id);
+  if (celeryTaskId) {
+    await db
+      .update(scanJobsTable)
+      .set({ workerJobId: celeryTaskId })
+      .where(eq(scanJobsTable.id, job.id));
+  }
+
+  res.status(201).json({ scanJobId: job.id });
 });
 
 export default router;
