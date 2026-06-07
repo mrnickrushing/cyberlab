@@ -30,6 +30,6 @@ externalPort = 8081
 [userenv]
 
 [userenv.shared]
-JWT_SECRET = "64c5d4f62a18a9163ca7663e4cd18771dedeaa4c56c34f0b40d5a51e861cc825d3aa0e2afefae9a01aa462042151aa718b11226d7934c79cd19197ce1bfb9e35"
+JWT_SECRET = "aa0f8818717f68d02b073bd34f37591f59dd7d15ff1eb28dfc69f3de474db261a2a20871400276dd0f3cc170896fc2fb95e055086d0640ab5c5410f87ebe9db4"
 LAB_ONLY_MODE = "true"
 REDIS_URL = "redis://localhost:6379"

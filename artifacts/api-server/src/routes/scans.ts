@@ -6,13 +6,17 @@ import {
   scanProfilesTable,
   targetsTable,
 } from "@workspace/db/schema";
-import { eq, and, desc, or } from "drizzle-orm";
+import { eq, and, desc, or, gte, lte } from "drizzle-orm";
 import { authenticate, type AuthRequest } from "../middleware/authenticate";
 import { logAudit } from "../lib/audit";
 import { consumeScanAttempt } from "../lib/rate-limiter";
+import { enqueueScanJob } from "../lib/queue";
+import { isPrivateIp } from "../lib/ip-utils";
 import { z } from "zod";
 
 const router: IRouter = Router();
+
+const LAB_ONLY_MODE = process.env.LAB_ONLY_MODE === "true";
 
 const createScanSchema = z.object({
   targetId: z.string().uuid(),
@@ -38,23 +42,14 @@ const createScanSchema = z.object({
 });
 
 router.get("/scans", authenticate, async (req: AuthRequest, res): Promise<void> => {
-  const { targetId, tool, status } = req.query;
-
-  let query = db
-    .select({
-      job: scanJobsTable,
-      targetAddress: targetsTable.address,
-      targetName: targetsTable.name,
-    })
-    .from(scanJobsTable)
-    .leftJoin(targetsTable, eq(scanJobsTable.targetId, targetsTable.id))
-    .where(eq(scanJobsTable.userId, req.user!.sub))
-    .$dynamic();
+  const { targetId, tool, status, severity, from, to } = req.query;
 
   const conditions = [eq(scanJobsTable.userId, req.user!.sub)];
   if (targetId) conditions.push(eq(scanJobsTable.targetId, targetId as string));
   if (tool) conditions.push(eq(scanJobsTable.tool, tool as any));
   if (status) conditions.push(eq(scanJobsTable.status, status as any));
+  if (from) conditions.push(gte(scanJobsTable.createdAt, new Date(from as string)));
+  if (to) conditions.push(lte(scanJobsTable.createdAt, new Date(to as string)));
 
   const jobs = await db
     .select({
@@ -79,25 +74,61 @@ router.post("/scans", authenticate, async (req: AuthRequest, res): Promise<void>
   }
   const { targetId, tool, profileId, flags } = parsed.data;
 
-  const target = await db
+  // Load target and verify ownership
+  const targets = await db
     .select()
     .from(targetsTable)
     .where(and(eq(targetsTable.id, targetId), eq(targetsTable.userId, req.user!.sub)))
     .limit(1);
 
-  if (!target.length) {
+  if (!targets.length) {
     res.status(404).json({ error: "Target not found" });
     return;
   }
 
-  if (target[0].authorizationStatus !== "authorized") {
-    res.status(403).json({ error: "Target must be authorized before scanning" });
+  const target = targets[0];
+
+  if (target.isArchived) {
+    res.status(400).json({ error: "Target is archived and cannot be scanned" });
     return;
   }
 
+  // Authorization gate: target must be explicitly authorized
+  if (target.authorizationStatus !== "authorized") {
+    res.status(403).json({
+      error: "Target must be authorized before scanning. Update the target's authorization status.",
+    });
+    return;
+  }
+
+  // Lab-only mode: block public IP targets
+  if (LAB_ONLY_MODE && !isPrivateIp(target.address)) {
+    res.status(403).json({
+      error: "Lab-only mode is enabled. Only private/local IP addresses and hostnames can be scanned.",
+    });
+    return;
+  }
+
+  // Allowed IP ranges check: if the target has allowedIpRanges defined, the address must match
+  if (target.allowedIpRanges.length > 0) {
+    const inRange = target.allowedIpRanges.some((range) => {
+      // Simple prefix match: e.g. "192.168.1." or exact IP
+      return target.address.startsWith(range.replace(/\*$/, "").replace(/\/.*$/, "")) ||
+        target.address === range;
+    });
+    if (!inRange) {
+      res.status(403).json({
+        error: "Target address is outside the allowed IP ranges defined for this target.",
+      });
+      return;
+    }
+  }
+
+  // Rate limit: per user + target
   const allowed = await consumeScanAttempt(req.user!.sub, targetId, res);
   if (!allowed) return;
 
+  // Create the job record
   const [job] = await db
     .insert(scanJobsTable)
     .values({
@@ -110,12 +141,21 @@ router.post("/scans", authenticate, async (req: AuthRequest, res): Promise<void>
     })
     .returning();
 
+  // Enqueue to Redis/Celery worker
+  const celeryTaskId = await enqueueScanJob(job.id);
+  if (celeryTaskId) {
+    await db
+      .update(scanJobsTable)
+      .set({ workerJobId: celeryTaskId, updatedAt: new Date() })
+      .where(eq(scanJobsTable.id, job.id));
+  }
+
   await logAudit(
     { userId: req.user!.sub, targetId, action: "scan_requested", tool },
     req,
   );
 
-  res.status(201).json(job);
+  res.status(201).json({ ...job, workerJobId: celeryTaskId });
 });
 
 router.get("/scans/:id", authenticate, async (req: AuthRequest, res): Promise<void> => {
@@ -172,13 +212,13 @@ router.delete("/scans/:id", authenticate, async (req: AuthRequest, res): Promise
   }
 
   if (jobs[0].status === "running") {
-    res.status(400).json({ error: "Cannot delete a running scan. Cancel it first." });
+    res.status(400).json({ error: "Cannot cancel a running scan. Wait for it to complete." });
     return;
   }
 
   await db
     .update(scanJobsTable)
-    .set({ status: "cancelled" })
+    .set({ status: "cancelled", updatedAt: new Date() })
     .where(eq(scanJobsTable.id, req.params.id));
 
   res.status(204).send();

@@ -8,7 +8,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod/v4";
+import { z } from "zod";
 import { usersTable } from "./users";
 import { targetsTable } from "./targets";
 import { scanProfilesTable, scanToolEnum } from "./scan_profiles";
@@ -42,6 +42,9 @@ export const scanJobsTable = pgTable("scan_jobs", {
   errorMessage: text("error_message"),
   meta: jsonb("meta").default({}),
   createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
 });
