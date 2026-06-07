@@ -22,11 +22,11 @@ workflows:
         - ios_credentials
       ios_signing:
         distribution_type: ad_hoc
-        bundle_identifier: com.cyberlab.mobile
+        bundle_identifier: com.cyberlabmobile.app
       vars:
         XCODE_PROJECT: ios/CyberLabMobile.xcodeproj
         XCODE_SCHEME: CyberLabMobile
-        BUNDLE_ID: com.cyberlab.mobile
+        BUNDLE_ID: com.cyberlabmobile.app
         # Set in Codemagic UI → App → Environment variables:
         #   DEVELOPMENT_TEAM — your Apple Developer Team ID (e.g. A1B2C3D4E5)
       xcode: latest
@@ -78,11 +78,11 @@ workflows:
         - ios_credentials
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.cyberlab.mobile
+        bundle_identifier: com.cyberlabmobile.app
       vars:
         XCODE_PROJECT: ios/CyberLabMobile.xcodeproj
         XCODE_SCHEME: CyberLabMobile
-        BUNDLE_ID: com.cyberlab.mobile
+        BUNDLE_ID: com.cyberlabmobile.app
         # Set in Codemagic UI → App → Environment variables:
         #   DEVELOPMENT_TEAM — Apple Developer Team ID
       xcode: latest
