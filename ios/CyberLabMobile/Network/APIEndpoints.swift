@@ -144,6 +144,26 @@ enum Endpoints {
         APIEndpoint(path: "/ai/chat", method: .POST, body: body)
     }
 
+    // Devices (APNs registration)
+    static func registerDevice(_ req: RegisterDeviceRequest) -> APIEndpoint {
+        APIEndpoint(path: "/devices/register", method: .POST, body: req)
+    }
+    static func unregisterDevice(token: String) -> APIEndpoint {
+        APIEndpoint(path: "/devices/unregister", method: .DELETE, body: ["deviceToken": token])
+    }
+
+    // Schedules
+    static var schedules: APIEndpoint { APIEndpoint(path: "/schedules") }
+    static func createSchedule(_ req: CreateScheduleRequest) -> APIEndpoint {
+        APIEndpoint(path: "/schedules", method: .POST, body: req)
+    }
+    static func updateSchedule(_ id: String, _ req: UpdateScheduleRequest) -> APIEndpoint {
+        APIEndpoint(path: "/schedules/\(id)", method: .PATCH, body: req)
+    }
+    static func deleteSchedule(_ id: String) -> APIEndpoint {
+        APIEndpoint(path: "/schedules/\(id)", method: .DELETE)
+    }
+
     // Audit
     static func audit(page: Int = 1, limit: Int = 50) -> APIEndpoint {
         APIEndpoint(path: "/audit", queryItems: [
