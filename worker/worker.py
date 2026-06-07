@@ -61,8 +61,59 @@ app.conf.update(
 )
 
 
+import urllib.request as _urllib_request
+
 def get_db():
     return psycopg2.connect(DATABASE_URL)
+
+
+_CVE_RE = re.compile(r"CVE-\d{4}-\d{4,7}", re.IGNORECASE)
+
+
+def enrich_findings_with_nvd(job_id: str):
+    """Fetch CVSS score + description from NVD for any CVE-bearing findings."""
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT id, title, description FROM findings WHERE scan_job_id = %s AND cve_id IS NULL",
+                (job_id,),
+            )
+            rows = cur.fetchall()
+        for finding_id, title, desc in rows:
+            match = _CVE_RE.search(title or "") or _CVE_RE.search(desc or "")
+            if not match:
+                continue
+            cve_id = match.group(0).upper()
+            try:
+                url = f"https://services.nvd.nist.gov/rest/json/cves/2.0?cveId={cve_id}"
+                req = _urllib_request.Request(url, headers={"User-Agent": "CyberLab/1.0"})
+                with _urllib_request.urlopen(req, timeout=10) as resp:
+                    data = json.loads(resp.read())
+                vuln = data.get("vulnerabilities", [{}])[0].get("cve", {})
+                metrics = vuln.get("metrics", {})
+                cvss_score = None
+                for key in ("cvssMetricV31", "cvssMetricV30", "cvssMetricV2"):
+                    items = metrics.get(key, [])
+                    if items:
+                        cvss_score = items[0].get("cvssData", {}).get("baseScore")
+                        break
+                nvd_desc = (vuln.get("descriptions") or [{}])[0].get("value", "")
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """UPDATE findings SET cve_id = %s, cvss_score = %s,
+                           description = CASE WHEN %s <> '' THEN %s ELSE description END,
+                           updated_at = %s WHERE id = %s""",
+                        (cve_id, cvss_score, nvd_desc, nvd_desc, datetime.now(timezone.utc), finding_id),
+                    )
+                conn.commit()
+                logger.info(f"NVD enriched {cve_id} → CVSS {cvss_score}")
+            except Exception as exc:
+                logger.debug(f"NVD lookup failed for {cve_id}: {exc}")
+    except Exception as exc:
+        logger.warning(f"NVD enrichment skipped: {exc}")
+    finally:
+        conn.close()
 
 
 def update_job_status(job_id: str, status: str, error_message: str = None, worker_job_id: str = None):
@@ -483,6 +534,9 @@ def run_scan(self, job_id: str):
         raw_output, parsed_data = dispatch_tool(tool, address, flags)
         save_result(job_id, raw_output, parsed_data)
         create_findings_from_scan(job_id, job["target_id"], job["user_id"], tool, parsed_data)
+        # Phase 4: NVD CVE enrichment for web tool findings
+        if tool in ("nikto", "nuclei", "shodan"):
+            enrich_findings_with_nvd(job_id)
         # Phase 3: auto-populate network_hosts after arp-scan
         if tool == "arp-scan":
             network_map_id = job["meta"].get("networkMapId")
