@@ -469,11 +469,16 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] iOS **Topology view** — SwiftUI Canvas hub-and-spoke; gateway centred, hosts in ring, colour-coded by trust
 - [x] iOS **Diff view** — select any two maps and compare: NEW / GONE / CHANGED / SAME with per-host delta
 
-### Phase 4 — Web & Vulnerability Tools
-- [ ] HTTP header scanner
-- [ ] TLS scanner (testssl.sh)
-- [ ] WhatWeb + Nikto + Nuclei workers
-- [ ] CVE enrichment from NVD
+### Phase 4 — Web & Vulnerability Tools ✅
+- [x] WhatWeb technology stack detection — tech grid with name, version, detail chips
+- [x] Nikto web vulnerability scan — collapsible finding rows with severity badges
+- [x] Nuclei template-based scanner — matched-at URL, tags, expandable descriptions
+- [x] TLS audit via testssl.sh — cipher/protocol issues with severity classification
+- [x] OpenSSL cert viewer — subject, issuer, expiry, protocol, cipher, verify status
+- [x] Gobuster directory discovery — path + HTTP status code list
+- [x] NVD CVE enrichment — after nikto/nuclei/shodan scans, worker fetches CVSS score + NVD description and updates findings automatically
+- [x] Rich `ScanDetailView` — dispatches to tool-specific result card (nmap hosts, tech stack, finding lists, TLS cert, directories, DNS, subdomains)
+- [x] `WebAssessmentView` — per-target "Web" tab with 6 tool cards, inline progress + results, one-tap launch
 
 ### Phase 5 — Reports
 - [ ] PDF report generation
