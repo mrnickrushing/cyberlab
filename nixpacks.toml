@@ -1,15 +1,16 @@
 [phases.setup]
-nixPkgs = ["nodejs_22"]
+nixPkgs = ["nodejs_22", "corepack"]
 
 [phases.install]
 cmds = [
-  "npm install -g pnpm@10",
-  "export PATH=$(npm bin -g):$PATH && pnpm install --frozen-lockfile"
+  "corepack enable",
+  "corepack prepare pnpm@10.0.0 --activate",
+  "pnpm install --frozen-lockfile"
 ]
 
 [phases.build]
 cmds = [
-  "export PATH=$(npm bin -g):$PATH && pnpm --filter @workspace/api-server run build"
+  "pnpm --filter @workspace/api-server run build"
 ]
 
 [start]
