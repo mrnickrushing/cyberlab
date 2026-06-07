@@ -134,6 +134,34 @@ paths:
         "200":
           description: Logged out
 
+  /auth/legal-acknowledge:
+    post:
+      operationId: acknowledgeLegalWarning
+      tags: [auth]
+      summary: Acknowledge the legal warning (required before first scan)
+      description: >
+        The mobile app displays a legal warning on first use. The user must call
+        this endpoint once to confirm they have read and accepted the warning.
+        Until this endpoint is called, POST /scans returns 403 LEGAL_WARNING_REQUIRED.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Acknowledged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  acknowledged:
+                    type: boolean
+                  acknowledgedAt:
+                    type: string
+                    format: date-time
+                required: [acknowledged, acknowledgedAt]
+        "401":
+          description: Unauthorized
+
   /targets:
     get:
       operationId: listTargets
@@ -266,6 +294,7 @@ paths:
           in: query
           schema:
             type: string
+            format: uuid
         - name: tool
           in: query
           schema:
@@ -274,6 +303,25 @@ paths:
           in: query
           schema:
             type: string
+            enum: [pending, running, completed, failed, cancelled]
+        - name: severity
+          in: query
+          description: Filter scans that produced findings at or above this severity
+          schema:
+            type: string
+            enum: [info, low, medium, high, critical]
+        - name: from
+          in: query
+          description: ISO 8601 date — only return scans created on or after this date
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          description: ISO 8601 date — only return scans created on or before this date
+          schema:
+            type: string
+            format: date-time
       responses:
         "200":
           description: List of scan jobs
