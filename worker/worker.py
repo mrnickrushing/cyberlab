@@ -13,11 +13,36 @@ from celery import Celery
 import psycopg2
 from psycopg2.extras import Json
 
+import threading
+import http.server
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
 DATABASE_URL = os.environ.get("DATABASE_URL", "")
+
+
+def _start_health_server():
+    """Minimal HTTP server so Railway's healthcheck passes."""
+    port = int(os.environ.get("PORT", 8080))
+
+    class _Handler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b'{"status":"ok","service":"cyberlab-worker"}')
+
+        def log_message(self, *args):
+            pass  # silence access logs
+
+    server = http.server.HTTPServer(("0.0.0.0", port), _Handler)
+    logger.info(f"Health server listening on :{port}")
+    server.serve_forever()
+
+
+threading.Thread(target=_start_health_server, daemon=True).start()
 
 SHODAN_API_KEY = os.environ.get("SHODAN_API_KEY", "")
 VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY", "")
