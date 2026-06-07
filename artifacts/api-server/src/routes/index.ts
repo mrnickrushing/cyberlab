@@ -10,6 +10,8 @@ import dashboardRouter from "./dashboard";
 import networksRouter from "./networks";
 import reportsRouter from "./reports";
 import aiRouter from "./ai";
+import devicesRouter from "./devices";
+import schedulesRouter from "./schedules";
 
 const router: IRouter = Router();
 
@@ -24,5 +26,7 @@ router.use(dashboardRouter);
 router.use(networksRouter);
 router.use(reportsRouter);
 router.use(aiRouter);
+router.use(devicesRouter);
+router.use(schedulesRouter);
 
 export default router;
