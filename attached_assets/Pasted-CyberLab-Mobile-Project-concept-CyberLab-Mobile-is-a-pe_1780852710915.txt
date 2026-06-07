@@ -1,0 +1,576 @@
+CyberLab Mobile
+
+Project concept
+
+CyberLab Mobile is a personal mobile cybersecurity lab controller for iOS. The iPhone app does not run dangerous tools directly on the device. Instead, it connects securely to a private Kali Linux or Ubuntu server where approved tools run inside Docker containers.
+
+The app is built for personal labs, home networks, owned assets, and authorized testing only.
+
+Main goal
+
+Build a professional iOS app that lets me manage targets, launch scans, view results, map networks, track vulnerabilities, generate reports, and document security work from a mobile device.
+
+Architecture
+
+iOS app
+SwiftUI mobile interface
+
+Backend API
+FastAPI, Node.js, or Go
+
+Cyber engine
+Docker based scanner workers
+
+Database
+PostgreSQL or SQLite for MVP
+
+Server
+Kali Linux, Ubuntu VPS, or home lab machine
+
+Authentication
+JWT login, API keys, Face ID unlock on iOS
+
+Core modules
+
+1. Dashboard
+
+Features:
+
+1. Security score summary
+2. Active scans
+3. Recent findings
+4. Critical alerts
+5. Saved targets
+6. Open ports summary
+7. Vulnerability count
+8. Last scan status
+9. Lab health status
+10. Quick actions
+
+2. Target manager
+
+Features:
+
+1. Add IP address targets
+2. Add domain targets
+3. Add subnet targets
+4. Add web app targets
+5. Add notes per target
+6. Add owner field
+7. Add authorization status
+8. Add target tags
+9. Add scan scope
+10. Add risk level
+11. Archive targets
+12. Delete targets
+13. View target history
+
+3. Authorization controls
+
+Features:
+
+1. Required authorization checkbox before scans
+2. Scope notes
+3. Allowed IP ranges
+4. Block public target scans by default
+5. Rate limits
+6. Scan logs
+7. User activity logs
+8. Legal warning screen
+9. Lab only mode
+10. Exportable audit trail
+
+4. Network mapper
+
+Features:
+
+1. Discover live hosts
+2. Scan local subnet
+3. Show device list
+4. Show IP address
+5. Show MAC address when available
+6. Show hostname
+7. Show vendor
+8. Show open ports
+9. Show detected services
+10. Draw network topology
+11. Group devices by subnet
+12. Mark unknown devices
+13. Mark trusted devices
+14. Save network maps
+15. Compare network changes over time
+
+Tools:
+
+1. Nmap
+2. arp scan
+3. ping
+4. traceroute
+
+5. Port scanner
+
+Features:
+
+1. Quick scan
+2. Full TCP scan
+3. UDP scan
+4. Custom port scan
+5. Service detection
+6. Version detection
+7. Banner grabbing
+8. Scan timing options
+9. Scan progress tracking
+10. Save scan profiles
+11. Compare scan results
+12. Show newly opened ports
+13. Show closed ports
+14. Show filtered ports
+
+Tools:
+
+1. Nmap
+2. Masscan for lab only use
+3. Netcat for banner checks
+
+6. DNS tools
+
+Features:
+
+1. DNS lookup
+2. Reverse DNS lookup
+3. MX record lookup
+4. TXT record lookup
+5. NS record lookup
+6. CNAME lookup
+7. Zone transfer test
+8. Subdomain discovery
+9. Domain history notes
+10. Export DNS results
+
+Tools:
+
+1. dig
+2. nslookup
+3. Amass
+4. Subfinder
+
+7. Web assessment
+
+Features:
+
+1. HTTP header analysis
+2. Security header check
+3. TLS check
+4. Cookie security check
+5. Redirect chain viewer
+6. Technology detection
+7. Directory discovery for lab targets
+8. Basic web vulnerability scan
+9. OWASP category tagging
+10. Web report summary
+
+Tools:
+
+1. OWASP ZAP
+2. Nikto
+3. WhatWeb
+4. Nuclei
+5. Gobuster for authorized lab targets only
+
+8. SSL and TLS analyzer
+
+Features:
+
+1. Certificate viewer
+2. Expiration check
+3. Issuer check
+4. SAN list
+5. TLS version check
+6. Cipher summary
+7. Weak configuration warning
+8. Export certificate report
+
+Tools:
+
+1. OpenSSL
+2. testssl.sh
+
+9. Vulnerability intelligence
+
+Features:
+
+1. CVE search
+2. CVSS score display
+3. Severity labels
+4. Affected software notes
+5. Remediation notes
+6. Reference links
+7. Save CVEs to target
+8. Mark finding as fixed
+9. Mark finding as accepted risk
+10. Finding timeline
+
+Sources:
+
+1. NVD
+2. CISA KEV catalog
+3. Exploit DB links as references only
+4. Vendor advisories
+
+10. OSINT tools
+
+Features:
+
+1. WHOIS lookup
+2. ASN lookup
+3. IP geolocation
+4. Domain reputation
+5. Email breach lookup through approved APIs
+6. Public metadata summary
+7. Shodan lookup
+8. VirusTotal lookup
+9. Saved OSINT notes
+
+APIs:
+
+1. Shodan
+2. VirusTotal
+3. Have I Been Pwned
+4. AbuseIPDB
+5. IPinfo
+
+11. Wireless analyzer
+
+iOS limits this heavily, so keep it realistic.
+
+Features:
+
+1. Show connected WiFi name when allowed
+2. Show local IP
+3. Show gateway
+4. Show DNS servers when available
+5. Run backend based network discovery
+6. Save trusted networks
+7. Detect unknown devices on home lab network
+8. WiFi checklist
+
+Not included:
+
+1. Monitor mode
+2. Packet injection
+3. Aircrack style attacks
+4. Raw packet capture from iPhone
+
+12. Reports
+
+Features:
+
+1. PDF report generation
+2. Executive summary
+3. Technical findings
+4. Open ports table
+5. Vulnerability table
+6. Screenshots section
+7. Remediation section
+8. Risk score
+9. Scan date
+10. Target scope
+11. Export to Files app
+12. Share report
+13. Save report history
+
+13. AI assistant
+
+Features:
+
+1. Explain scan findings
+2. Summarize vulnerabilities
+3. Suggest remediation steps
+4. Turn scan output into plain language
+5. Generate report summaries
+6. Create study notes
+7. Explain CEH concepts
+8. Help write lab documentation
+
+Safety rule:
+
+The AI assistant should not generate exploit steps against real public systems.
+
+14. Lab notes
+
+Features:
+
+1. Notes per target
+2. Evidence notes
+3. Finding notes
+4. Screenshot attachments
+5. Markdown support
+6. Search notes
+7. Tag notes
+8. Export notes
+
+15. Scan history
+
+Features:
+
+1. View all scans
+2. Filter by target
+3. Filter by tool
+4. Filter by severity
+5. Filter by date
+6. View raw output
+7. View parsed output
+8. Rerun scan
+9. Compare two scans
+10. Delete old scans
+
+16. Notifications
+
+Features:
+
+1. Scan completed
+2. Scan failed
+3. Critical finding found
+4. Certificate expiring
+5. New device detected
+6. Scheduled scan completed
+
+17. Settings
+
+Features:
+
+1. API server URL
+2. API key management
+3. Face ID unlock
+4. Theme settings
+5. Tool settings
+6. Scan rate limits
+7. Default scan profile
+8. Export database
+9. Clear local cache
+10. Legal notice
+
+CEH style tool coverage
+
+Reconnaissance:
+
+1. WHOIS
+2. DNS lookup
+3. Subdomain discovery
+4. Shodan lookup
+5. theHarvester
+6. Amass
+7. Subfinder
+
+Scanning:
+
+1. Nmap
+2. Masscan for private lab only
+3. traceroute
+4. ping
+5. arp scan
+
+Enumeration:
+
+1. SMB enumeration for lab machines
+2. SNMP checks for lab machines
+3. HTTP enumeration
+4. DNS enumeration
+5. Service banners
+
+Vulnerability analysis:
+
+1. Nuclei
+2. Nikto
+3. OWASP ZAP
+4. testssl.sh
+5. NVD lookup
+6. CISA KEV lookup
+
+Web tools:
+
+1. WhatWeb
+2. Wappalyzer style detection
+3. Gobuster for lab targets only
+4. Header analyzer
+5. Cookie analyzer
+
+Reporting:
+
+1. Finding summaries
+2. Risk ratings
+3. PDF exports
+4. Remediation steps
+5. Scan evidence
+
+MVP build order
+
+Phase 1: Foundation
+
+1. Create SwiftUI iOS app
+2. Create backend API
+3. Add login
+4. Add Face ID unlock
+5. Add target manager
+6. Add database
+7. Add scan job model
+8. Add Docker worker setup
+
+Phase 2: First real scanner
+
+1. Add Nmap scanner
+2. Add scan profile screen
+3. Add live scan status
+4. Parse open ports
+5. Save scan results
+6. Show service details
+7. Add scan history
+
+Phase 3: Network mapper
+
+1. Add live host discovery
+2. Add device list
+3. Add topology view
+4. Add trusted device labels
+5. Add unknown device alerts
+6. Add network change tracking
+
+Phase 4: Web and vulnerability tools
+
+1. Add HTTP header scanner
+2. Add TLS scanner
+3. Add WhatWeb
+4. Add Nikto
+5. Add Nuclei
+6. Add CVE enrichment
+
+Phase 5: Reports
+
+1. Add finding model
+2. Add risk score
+3. Add PDF reports
+4. Add export
+5. Add share sheet
+6. Add remediation text
+
+Phase 6: OSINT and APIs
+
+1. Add WHOIS
+2. Add Shodan
+3. Add VirusTotal
+4. Add AbuseIPDB
+5. Add Have I Been Pwned
+6. Add IPinfo
+
+Phase 7: AI assistant
+
+1. Add finding explanations
+2. Add report summaries
+3. Add remediation suggestions
+4. Add lab study helper
+5. Add safety limits
+
+Tech stack
+
+iOS:
+
+1. Swift
+2. SwiftUI
+3. SwiftData or Core Data
+4. Charts
+5. LocalAuthentication for Face ID
+6. URLSession
+7. PDFKit
+8. WebKit for report preview
+
+Backend:
+
+1. FastAPI recommended
+2. Python
+3. PostgreSQL
+4. Redis queue
+5. Docker
+6. Celery or RQ workers
+7. JWT authentication
+8. HTTPS only
+
+Scanner containers:
+
+1. Nmap
+2. Nuclei
+3. Nikto
+4. OWASP ZAP
+5. Amass
+6. Subfinder
+7. WhatWeb
+8. testssl.sh
+9. theHarvester
+
+Database tables
+
+1. users
+2. targets
+3. scan_jobs
+4. scan_results
+5. findings
+6. services
+7. ports
+8. vulnerabilities
+9. reports
+10. notes
+11. api_keys
+12. audit_logs
+13. scan_profiles
+14. network_devices
+15. notifications
+
+Screens
+
+1. Login
+2. Face ID unlock
+3. Dashboard
+4. Targets
+5. Add target
+6. Target detail
+7. New scan
+8. Scan progress
+9. Scan result
+10. Network map
+11. Device detail
+12. Port detail
+13. Service detail
+14. Vulnerabilities
+15. Finding detail
+16. Web assessment
+17. DNS tools
+18. OSINT tools
+19. Reports
+20. Report preview
+21. Notes
+22. Settings
+23. Legal notice
+
+Portfolio README sections
+
+1. Project overview
+2. Screenshots
+3. Demo video
+4. Architecture diagram
+5. Features
+6. Tech stack
+7. Security model
+8. Tool list
+9. Setup guide
+10. API documentation
+11. Roadmap
+12. Legal and ethical use notice
+
+Important repo disclaimer
+
+Use this in the README:
+
+CyberLab Mobile is built for personal cybersecurity labs, owned networks, and authorized security testing only. The project is intended for education, defensive assessment, asset inventory, vulnerability management, and reporting. Users are responsible for ensuring they have permission before scanning any system.
+
+Best portfolio name
+
+CyberLab Mobile: Remote Cybersecurity Lab Controller
