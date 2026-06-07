@@ -138,6 +138,12 @@ enum Endpoints {
     static var reports: APIEndpoint { APIEndpoint(path: "/reports") }
     static func report(_ targetId: String) -> APIEndpoint { APIEndpoint(path: "/reports/\(targetId)") }
 
+    // AI
+    static var aiStatus: APIEndpoint { APIEndpoint(path: "/ai/status") }
+    static func aiChat(_ body: AIChatRequest) -> APIEndpoint {
+        APIEndpoint(path: "/ai/chat", method: .POST, body: body)
+    }
+
     // Audit
     static func audit(page: Int = 1, limit: Int = 50) -> APIEndpoint {
         APIEndpoint(path: "/audit", queryItems: [
