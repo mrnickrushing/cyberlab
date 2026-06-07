@@ -1,9 +1,7 @@
 [build]
-builder = "nixpacks"
-buildCommand = "corepack enable && corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile && pnpm --filter @workspace/api-server run build"
+builder = "DOCKERFILE"
 
 [deploy]
-startCommand = "node --enable-source-maps ./artifacts/api-server/dist/index.mjs"
 healthcheckPath = "/healthz"
 healthcheckTimeout = 60
 restartPolicyType = "on_failure"
