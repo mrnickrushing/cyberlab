@@ -115,6 +115,25 @@ enum Endpoints {
         APIEndpoint(path: "/notes/\(id)", method: .DELETE)
     }
 
+    // Networks
+    static var networks: APIEndpoint { APIEndpoint(path: "/networks") }
+    static func createNetwork(_ req: CreateNetworkMapRequest) -> APIEndpoint {
+        APIEndpoint(path: "/networks", method: .POST, body: req)
+    }
+    static func network(_ id: String) -> APIEndpoint { APIEndpoint(path: "/networks/\(id)") }
+    static func deleteNetwork(_ id: String) -> APIEndpoint {
+        APIEndpoint(path: "/networks/\(id)", method: .DELETE)
+    }
+    static func networkHosts(_ id: String) -> APIEndpoint {
+        APIEndpoint(path: "/networks/\(id)/hosts")
+    }
+    static func updateNetworkHost(_ mapId: String, _ hostId: String, _ req: UpdateNetworkHostRequest) -> APIEndpoint {
+        APIEndpoint(path: "/networks/\(mapId)/hosts/\(hostId)", method: .PATCH, body: req)
+    }
+    static func discoverNetwork(_ id: String) -> APIEndpoint {
+        APIEndpoint(path: "/networks/\(id)/discover", method: .POST)
+    }
+
     // Audit
     static func audit(page: Int = 1, limit: Int = 50) -> APIEndpoint {
         APIEndpoint(path: "/audit", queryItems: [
