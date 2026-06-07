@@ -442,27 +442,32 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 
 ## Roadmap
 
-### Phase 1 — Foundation ✅ (in progress)
+### Phase 1 — Foundation ✅
 - [x] Monorepo structure (pnpm workspaces)
 - [x] PostgreSQL schema (users, targets, scan jobs, findings, notes, audit logs)
 - [x] JWT auth with bcrypt, refresh tokens, rate limiting
 - [x] Audit logging middleware
 - [x] OpenAPI spec + codegen pipeline
-- [ ] iOS SwiftUI skeleton + Face ID unlock
-- [ ] Target manager UI
+- [x] iOS SwiftUI app — Face ID unlock, target manager, scan history, findings, notes, dashboard
+- [x] API live on Railway with PostgreSQL + 7 scan profiles seeded
 
-### Phase 2 — First Real Scanner
-- [ ] Nmap Docker worker
-- [ ] Scan profile screen
-- [ ] Live scan progress (SSE or polling)
-- [ ] Port parsing and storage
-- [ ] Scan history UI
+### Phase 2 — First Real Scanner ✅
+- [x] Python Celery worker deployed on Railway as isolated service
+- [x] All scan tools coded: nmap, masscan, arp-scan, nikto, nuclei, WhatWeb, testssl, gobuster, amass, subfinder, dig/DNS, whois, Shodan, VirusTotal
+- [x] XML nmap parsing → structured host/port data
+- [x] Auto-findings engine — generates severity-rated findings after every scan
+- [x] Redis job queue pipeline (api-server → Redis → worker) verified end-to-end
+- [x] iOS scan profile screen, live polling, scan history UI, scan detail with raw output
 
-### Phase 3 — Network Mapper
-- [ ] Live host discovery
-- [ ] Device list with trust labels
-- [ ] Topology visualization
-- [ ] Network change diff
+### Phase 3 — Network Mapper ✅
+- [x] `POST /networks` — create named subnet maps; `GET`, `DELETE` routes
+- [x] `POST /networks/:id/discover` — auto-creates subnet target + enqueues arp-scan
+- [x] Worker auto-populates `network_hosts` after arp-scan completes (with reverse DNS)
+- [x] `PATCH /networks/:id/hosts/:hostId` — toggle trusted / mark gateway
+- [x] iOS **Networks** tab — list of saved maps with subnet, host count, last-scanned time
+- [x] iOS **Device list** — IP, MAC, hostname, vendor, trusted/gateway badges, context menu
+- [x] iOS **Topology view** — SwiftUI Canvas hub-and-spoke; gateway centred, hosts in ring, colour-coded by trust
+- [x] iOS **Diff view** — select any two maps and compare: NEW / GONE / CHANGED / SAME with per-host delta
 
 ### Phase 4 — Web & Vulnerability Tools
 - [ ] HTTP header scanner
