@@ -29,9 +29,13 @@ struct MainTabView: View {
                 .tabItem { Label("Reports", systemImage: "doc.text.magnifyingglass") }
                 .tag(5)
 
+            AIAssistantView()
+                .tabItem { Label("AI", systemImage: "brain.head.profile") }
+                .tag(6)
+
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(6)
+                .tag(7)
         }
         .tint(.cyberGreen)
     }
