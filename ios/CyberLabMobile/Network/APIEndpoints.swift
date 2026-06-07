@@ -134,6 +134,10 @@ enum Endpoints {
         APIEndpoint(path: "/networks/\(id)/discover", method: .POST)
     }
 
+    // Reports
+    static var reports: APIEndpoint { APIEndpoint(path: "/reports") }
+    static func report(_ targetId: String) -> APIEndpoint { APIEndpoint(path: "/reports/\(targetId)") }
+
     // Audit
     static func audit(page: Int = 1, limit: Int = 50) -> APIEndpoint {
         APIEndpoint(path: "/audit", queryItems: [
