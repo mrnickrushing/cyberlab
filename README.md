@@ -489,9 +489,16 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] iOS **PDF export** — full report rendered via `UIGraphicsPDFRenderer` with multi-page pagination, target header, risk gauge, finding rows with severity dots, remediation section, legal footer
 - [x] Share sheet — native iOS share sheet for AirDrop, Files, Mail, etc.
 
-### Phase 6 — OSINT & APIs
-- [ ] WHOIS, Shodan, VirusTotal
-- [ ] AbuseIPDB, Have I Been Pwned, IPinfo
+### Phase 6 — OSINT & APIs ✅
+- [x] **WHOIS** — domain registrar, org, country, creation/expiry, name servers
+- [x] **Shodan** — exposed ports, banners, CVEs, ASN, org, geolocation, OS; findings auto-created per CVE
+- [x] **VirusTotal** — malicious/suspicious/harmless engine counts, reputation score, findings for flagged targets
+- [x] **AbuseIPDB** — abuse confidence score, TOR exit node detection, report count, ISP, usage type; findings at medium/high threshold
+- [x] **IPinfo** — IP geolocation (lat/lon), ASN/org, city/region/country, hostname, timezone (no key required)
+- [x] **Have I Been Pwned** — domain breach history, breach names list, breach count; findings for breached domains
+- [x] Auto-findings for AbuseIPDB (≥25% → medium, ≥75% → high, TOR → medium) and HIBP (≥1 breach → medium/high)
+- [x] iOS **OSINTView** — per-target OSINT tab with 6 tool cards (WHOIS, Shodan, VirusTotal, AbuseIPDB, IPinfo, HIBP), one-tap launch, inline result rendering with tool-specific layouts
+- [x] iOS **OSINT tab** added as 5th tab in TargetDetailView alongside Scans, Findings, Notes, Web
 
 ### Phase 7 — AI Assistant
 - [ ] Finding explanations
