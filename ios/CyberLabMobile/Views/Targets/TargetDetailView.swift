@@ -48,6 +48,7 @@ struct TargetDetailView: View {
                     Text("Scans").tag(0)
                     Text("Findings").tag(1)
                     Text("Notes").tag(2)
+                    Text("Web").tag(3)
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal)
@@ -56,7 +57,7 @@ struct TargetDetailView: View {
 
                 // Tab content
                 Group {
-                    if isLoading {
+                    if isLoading && selectedTab != 3 {
                         Spacer()
                         ProgressView().tint(.cyberGreen)
                         Spacer()
@@ -65,6 +66,7 @@ struct TargetDetailView: View {
                         case 0: ScanListTab(scans: scans)
                         case 1: FindingListTab(findings: findings)
                         case 2: NoteListTab(notes: notes, targetId: target.id)
+                        case 3: WebAssessmentView(target: target)
                         default: EmptyView()
                         }
                     }
