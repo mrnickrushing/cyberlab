@@ -480,11 +480,14 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] Rich `ScanDetailView` — dispatches to tool-specific result card (nmap hosts, tech stack, finding lists, TLS cert, directories, DNS, subdomains)
 - [x] `WebAssessmentView` — per-target "Web" tab with 6 tool cards, inline progress + results, one-tap launch
 
-### Phase 5 — Reports
-- [ ] PDF report generation
-- [ ] Risk score calculation
-- [ ] Export and share sheet
-- [ ] Remediation text templates
+### Phase 5 — Reports ✅
+- [x] `GET /reports` — list all targets with risk score, severity breakdown, scan count
+- [x] `GET /reports/:targetId` — full report JSON: target, risk score, open findings sorted by severity, scan history, deduplicated remediation steps
+- [x] Risk score algorithm: starts at 100, deducts Critical −25 · High −15 · Medium −10 · Low −5 · Info −1 per open finding, clamped 0–100
+- [x] iOS **Reports tab** — target list with animated risk gauge rings, severity chip breakdown, risk label badge
+- [x] iOS **ReportDetailView** — executive summary grid, animated risk score dial, findings list (CVE + CVSS inline), remediation steps, scan history
+- [x] iOS **PDF export** — full report rendered via `UIGraphicsPDFRenderer` with multi-page pagination, target header, risk gauge, finding rows with severity dots, remediation section, legal footer
+- [x] Share sheet — native iOS share sheet for AirDrop, Files, Mail, etc.
 
 ### Phase 6 — OSINT & APIs
 - [ ] WHOIS, Shodan, VirusTotal
