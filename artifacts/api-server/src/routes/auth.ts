@@ -13,7 +13,7 @@ import {
 import { authenticate, type AuthRequest } from "../middleware/authenticate";
 import { logAudit } from "../lib/audit";
 import { consumeAuthAttempt } from "../lib/rate-limiter";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 const router: IRouter = Router();
 
@@ -51,7 +51,12 @@ router.post("/auth/register", async (req, res): Promise<void> => {
   const [user] = await db
     .insert(usersTable)
     .values({ username, email, passwordHash })
-    .returning({ id: usersTable.id, username: usersTable.username, email: usersTable.email });
+    .returning({
+      id: usersTable.id,
+      username: usersTable.username,
+      email: usersTable.email,
+      createdAt: usersTable.createdAt,
+    });
 
   await logAudit({ userId: user.id, action: "login", details: "User registered" }, req);
 
@@ -121,6 +126,7 @@ router.get("/auth/me", authenticate, async (req: AuthRequest, res): Promise<void
       id: usersTable.id,
       username: usersTable.username,
       email: usersTable.email,
+      legalWarningAcknowledgedAt: usersTable.legalWarningAcknowledgedAt,
       createdAt: usersTable.createdAt,
     })
     .from(usersTable)
@@ -139,4 +145,28 @@ router.post("/auth/logout", authenticate, async (req: AuthRequest, res): Promise
   res.json({ message: "Logged out" });
 });
 
+/**
+ * POST /auth/legal-acknowledge
+ * The user must call this endpoint (once) to acknowledge the legal warning
+ * before any scan can be created. The mobile app shows the warning on first
+ * use and calls this route when the user accepts.
+ */
+router.post("/auth/legal-acknowledge", authenticate, async (req: AuthRequest, res): Promise<void> => {
+  await db
+    .update(usersTable)
+    .set({ legalWarningAcknowledgedAt: new Date(), updatedAt: new Date() })
+    .where(eq(usersTable.id, req.user!.sub));
+
+  await logAudit(
+    { userId: req.user!.sub, action: "legal_acknowledged", details: "User acknowledged legal warning" },
+    req,
+  );
+
+  res.json({ acknowledged: true, acknowledgedAt: new Date().toISOString() });
+});
+
+/**
+ * GET /auth/me returns legalWarningAcknowledgedAt so the mobile app knows
+ * whether to show the warning screen.
+ */
 export default router;

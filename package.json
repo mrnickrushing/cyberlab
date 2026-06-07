@@ -12,5 +12,9 @@
   "devDependencies": {
     "prettier": "^3.8.3",
     "typescript": "~5.9.3"
+  },
+  "dependencies": {
+    "cidr-regex": "^6.0.0",
+    "ip-cidr": "^4.0.2"
   }
 }
