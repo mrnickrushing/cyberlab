@@ -46,6 +46,9 @@ threading.Thread(target=_start_health_server, daemon=True).start()
 
 SHODAN_API_KEY = os.environ.get("SHODAN_API_KEY", "")
 VIRUSTOTAL_API_KEY = os.environ.get("VIRUSTOTAL_API_KEY", "")
+ABUSEIPDB_API_KEY = os.environ.get("ABUSEIPDB_API_KEY", "")
+IPINFO_TOKEN = os.environ.get("IPINFO_TOKEN", "")
+HIBP_API_KEY = os.environ.get("HIBP_API_KEY", "")
 
 app = Celery("cyberlab", broker=REDIS_URL, backend=REDIS_URL)
 
@@ -337,6 +340,10 @@ def create_findings_from_scan(job_id: str, target_id: str, user_id: str, tool: s
         findings = _findings_from_shodan(parsed_data)
     elif tool == "virustotal":
         findings = _findings_from_virustotal(parsed_data)
+    elif tool == "abuseipdb":
+        findings = _findings_from_abuseipdb(parsed_data)
+    elif tool == "hibp":
+        findings = _findings_from_hibp(parsed_data)
     elif tool == "testssl":
         findings = _findings_from_testssl(parsed_data)
 
@@ -535,7 +542,7 @@ def run_scan(self, job_id: str):
         save_result(job_id, raw_output, parsed_data)
         create_findings_from_scan(job_id, job["target_id"], job["user_id"], tool, parsed_data)
         # Phase 4: NVD CVE enrichment for web tool findings
-        if tool in ("nikto", "nuclei", "shodan"):
+        if tool in ("nikto", "nuclei", "shodan", "abuseipdb"):
             enrich_findings_with_nvd(job_id)
         # Phase 3: auto-populate network_hosts after arp-scan
         if tool == "arp-scan":
@@ -567,6 +574,9 @@ def dispatch_tool(tool: str, address: str, flags: str) -> tuple[str, dict]:
         "whois": run_whois,
         "shodan": run_shodan,
         "virustotal": run_virustotal,
+        "abuseipdb": run_abuseipdb,
+        "ipinfo": run_ipinfo,
+        "hibp": run_hibp,
     }
     if tool not in handlers:
         raise ValueError(f"Tool '{tool}' is not implemented")
@@ -906,6 +916,51 @@ def run_subfinder(domain: str, flags: str = "") -> tuple[str, dict]:
     return raw, {"domain": domain, "subdomains": subdomains, "count": len(subdomains)}
 
 
+# ─── OSINT findings generators ───────────────────────────────────────────────
+
+def _findings_from_abuseipdb(parsed_data: dict) -> list:
+    findings = []
+    score = parsed_data.get("abuseConfidenceScore", 0)
+    is_tor = parsed_data.get("isTor", False)
+    total_reports = parsed_data.get("totalReports", 0)
+    if score >= 75:
+        findings.append({
+            "title": f"High-Abuse IP — AbuseIPDB confidence {score}%",
+            "severity": "high",
+            "description": f"AbuseIPDB reports {total_reports} abuse reports with {score}% confidence score. Country: {parsed_data.get('countryCode','?')}, ISP: {parsed_data.get('isp','?')}.",
+            "remediation": "Block this IP at the firewall. Investigate any connections from this address in your logs.",
+        })
+    elif score >= 25:
+        findings.append({
+            "title": f"Suspicious IP — AbuseIPDB confidence {score}%",
+            "severity": "medium",
+            "description": f"AbuseIPDB reports {total_reports} abuse reports with {score}% confidence score.",
+            "remediation": "Monitor traffic from this IP. Consider rate-limiting or geo-blocking.",
+        })
+    if is_tor:
+        findings.append({
+            "title": "TOR Exit Node Detected — AbuseIPDB",
+            "severity": "medium",
+            "description": "This IP is a known TOR exit node. Traffic originating from TOR may indicate anonymised malicious activity.",
+            "remediation": "Block TOR exit node ranges if your application does not require anonymous access.",
+        })
+    return findings
+
+
+def _findings_from_hibp(parsed_data: dict) -> list:
+    findings = []
+    breaches = parsed_data.get("breaches", [])
+    count = parsed_data.get("breachCount", len(breaches))
+    if count > 0:
+        findings.append({
+            "title": f"Domain found in {count} data breach(es) — HIBP",
+            "severity": "high" if count >= 5 else "medium",
+            "description": f"Have I Been Pwned reports this domain appears in {count} breach(es): {', '.join(breaches[:10])}.",
+            "remediation": "Force password resets for all users. Enable breach monitoring. Review and rotate API credentials and service accounts.",
+        })
+    return findings
+
+
 # ─── OSINT ────────────────────────────────────────────────────────────────────
 
 def run_whois(address: str, flags: str = "") -> tuple[str, dict]:
@@ -976,5 +1031,90 @@ def run_virustotal(address: str, flags: str = "") -> tuple[str, dict]:
             "undetected": stats.get("undetected", 0),
             "reputation": attrs.get("reputation"),
         }
+    except Exception as exc:
+        return "", {"error": str(exc)}
+
+
+def run_abuseipdb(address: str, flags: str = "") -> tuple[str, dict]:
+    if not ABUSEIPDB_API_KEY:
+        return "", {"error": "ABUSEIPDB_API_KEY not configured"}
+    try:
+        import urllib.parse as _up
+        params = _up.urlencode({"ipAddress": address, "maxAgeInDays": "90"})
+        url = f"https://api.abuseipdb.com/api/v2/check?{params}"
+        req = _urllib_request.Request(
+            url,
+            headers={"Key": ABUSEIPDB_API_KEY, "Accept": "application/json"},
+        )
+        with _urllib_request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())
+        d = data.get("data", {})
+        return json.dumps(data, indent=2), {
+            "ip": d.get("ipAddress"),
+            "isPublic": d.get("isPublic"),
+            "isTor": d.get("isTor", False),
+            "abuseConfidenceScore": d.get("abuseConfidenceScore", 0),
+            "countryCode": d.get("countryCode"),
+            "usageType": d.get("usageType"),
+            "isp": d.get("isp"),
+            "domain": d.get("domain"),
+            "totalReports": d.get("totalReports", 0),
+            "numDistinctUsers": d.get("numDistinctUsers", 0),
+            "lastReportedAt": d.get("lastReportedAt"),
+        }
+    except Exception as exc:
+        return "", {"error": str(exc)}
+
+
+def run_ipinfo(address: str, flags: str = "") -> tuple[str, dict]:
+    try:
+        import urllib.parse as _up
+        token_param = f"?token={IPINFO_TOKEN}" if IPINFO_TOKEN else ""
+        url = f"https://ipinfo.io/{_up.quote(address)}/json{token_param}"
+        req = _urllib_request.Request(url, headers={"Accept": "application/json", "User-Agent": "CyberLab/1.0"})
+        with _urllib_request.urlopen(req, timeout=15) as resp:
+            data = json.loads(resp.read().decode())
+        return json.dumps(data, indent=2), {
+            "ip": data.get("ip"),
+            "hostname": data.get("hostname"),
+            "city": data.get("city"),
+            "region": data.get("region"),
+            "country": data.get("country"),
+            "loc": data.get("loc"),
+            "org": data.get("org"),
+            "timezone": data.get("timezone"),
+            "postal": data.get("postal"),
+        }
+    except Exception as exc:
+        return "", {"error": str(exc)}
+
+
+def run_hibp(address: str, flags: str = "") -> tuple[str, dict]:
+    if not HIBP_API_KEY:
+        return "", {"error": "HIBP_API_KEY not configured"}
+    try:
+        import urllib.parse as _up
+        domain = address.replace("https://", "").replace("http://", "").split("/")[0]
+        url = f"https://haveibeenpwned.com/api/v3/breacheddomain/{_up.quote(domain)}"
+        req = _urllib_request.Request(
+            url,
+            headers={"hibp-api-key": HIBP_API_KEY, "User-Agent": "CyberLab/1.0"},
+        )
+        try:
+            with _urllib_request.urlopen(req, timeout=15) as resp:
+                data = json.loads(resp.read().decode())
+            all_breaches: list[str] = []
+            for _, breach_list in data.items():
+                all_breaches.extend(breach_list)
+            unique = list(set(all_breaches))
+            return json.dumps(data, indent=2), {
+                "domain": domain,
+                "breachCount": len(unique),
+                "breaches": unique[:50],
+            }
+        except Exception as e:
+            if "404" in str(e):
+                return "", {"domain": domain, "breachCount": 0, "breaches": []}
+            raise
     except Exception as exc:
         return "", {"error": str(exc)}
