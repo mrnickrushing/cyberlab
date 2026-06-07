@@ -8,6 +8,7 @@ import findingsRouter from "./findings";
 import notesRouter from "./notes";
 import dashboardRouter from "./dashboard";
 import networksRouter from "./networks";
+import reportsRouter from "./reports";
 
 const router: IRouter = Router();
 
@@ -20,5 +21,6 @@ router.use(findingsRouter);
 router.use(notesRouter);
 router.use(dashboardRouter);
 router.use(networksRouter);
+router.use(reportsRouter);
 
 export default router;
