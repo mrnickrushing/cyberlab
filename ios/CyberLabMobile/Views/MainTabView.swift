@@ -57,21 +57,6 @@ struct MainTabView: View {
                 OfflineBanner()
             }
         }
-        .overlay(alignment: .bottomTrailing) {
-            Button {
-                showCommandPalette = true
-            } label: {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.black)
-                    .frame(width: 52, height: 52)
-                    .background(Color.cyberGreen)
-                    .clipShape(Circle())
-                    .neonGlow(.cyberGreen, radius: 8)
-            }
-            .padding(.trailing, 20)
-            .padding(.bottom, 64)
-        }
         .sheet(isPresented: $showCommandPalette) {
             CommandPaletteView()
         }
