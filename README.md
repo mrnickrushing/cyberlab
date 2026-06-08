@@ -578,6 +578,11 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] **"Operator rank" progression** — light gamification: XP/rank based on findings triaged, scans run, labs maintained
 - [x] **Per-section biometric lock** — Face ID gate before revealing OSINT results or exporting reports, beyond the existing app-level unlock
 
+### Phase 17 ✅ — Kali Terminal
+- [x] **Embedded relay terminal** — full mobile-optimized xterm.js web UI from `terminal.vitallity.org` embedded via `WKWebView`
+- [x] **Connection detection** — injected JavaScript + `WKScriptMessageHandler` monitors the relay WebSocket status and reports `connected`/`disconnected` to Swift
+- [x] **Waiting screen** — full-screen black/green monospace overlay with blinking cursor and pulsing indicator while awaiting the Kali connection, animated out on connect and back on reconnect
+
 ---
 
 ## Legal & Ethical Use

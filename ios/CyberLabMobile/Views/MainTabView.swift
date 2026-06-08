@@ -42,6 +42,10 @@ struct MainTabView: View {
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(8)
+
+            KaliTerminalWrapperView()
+                .tabItem { Label("Terminal", systemImage: "terminal") }
+                .tag(9)
         }
         .tint(.cyberGreen)
         .overlay(alignment: .top) {

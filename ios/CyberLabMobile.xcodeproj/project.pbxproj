@@ -84,6 +84,9 @@
 		CC2100000000000000000009 /* NetworkHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000018 /* NetworkHubView.swift */; };
 		CC2100000000000000000020 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000020 /* SystemConfiguration.framework */; };
 		CC2100000000000000000021 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000021 /* NetworkExtension.framework */; };
+		CC4100000000000000000001 /* KaliTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4000000000000000000001 /* KaliTerminalView.swift */; };
+		CC4100000000000000000002 /* KaliTerminalWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4000000000000000000002 /* KaliTerminalWrapperView.swift */; };
+		CC4100000000000000000003 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC4000000000000000000003 /* WebKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -168,6 +171,9 @@
 		CC2000000000000000000018 /* NetworkHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHubView.swift; sourceTree = "<group>"; };
 		CC2000000000000000000020 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		CC2000000000000000000021 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		CC4000000000000000000001 /* KaliTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliTerminalView.swift; sourceTree = "<group>"; };
+		CC4000000000000000000002 /* KaliTerminalWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliTerminalWrapperView.swift; sourceTree = "<group>"; };
+		CC4000000000000000000003 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +184,7 @@
 				BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */,
 				CC2100000000000000000020 /* SystemConfiguration.framework in Frameworks */,
 				CC2100000000000000000021 /* NetworkExtension.framework in Frameworks */,
+				CC4100000000000000000003 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +302,7 @@
 				BB0000000000000000000504 /* Schedules */,
 				BB0000000000000000000505 /* WebAssessment */,
 				CC2200000000000000000001 /* Network */,
+				CC4200000000000000000001 /* Terminal */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -385,6 +393,7 @@
 				BB000000000000000000011D /* LocalAuthentication.framework */,
 				CC2000000000000000000020 /* SystemConfiguration.framework */,
 				CC2000000000000000000021 /* NetworkExtension.framework */,
+				CC4000000000000000000003 /* WebKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -477,6 +486,15 @@
 				CC2000000000000000000017 /* NetworkStatusView.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		CC4200000000000000000001 /* Terminal */ = {
+			isa = PBXGroup;
+			children = (
+				CC4000000000000000000001 /* KaliTerminalView.swift */,
+				CC4000000000000000000002 /* KaliTerminalWrapperView.swift */,
+			);
+			path = Terminal;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -666,6 +684,8 @@
 				CC2100000000000000000007 /* PortCheckerView.swift in Sources */,
 				CC2100000000000000000008 /* NetworkStatusView.swift in Sources */,
 				CC2100000000000000000009 /* NetworkHubView.swift in Sources */,
+				CC4100000000000000000001 /* KaliTerminalView.swift in Sources */,
+				CC4100000000000000000002 /* KaliTerminalWrapperView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
