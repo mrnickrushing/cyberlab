@@ -40,11 +40,16 @@ struct FindingsView: View {
                     } else if let error {
                         ErrorView(message: error) { Task { await loadFindings() } }
                     } else if filtered.isEmpty {
-                        VStack(spacing: 12) {
+                        VStack {
                             Spacer()
-                            Image(systemName: "checkmark.shield")
-                                .font(.system(size: 40)).foregroundColor(.cyberGreen.opacity(0.3))
-                            Text("No findings").foregroundColor(.white.opacity(0.4))
+                            EmptyStateCard(
+                                icon: "checkmark.shield",
+                                title: findings.isEmpty ? "No Findings" : "No Matches",
+                                subtitle: findings.isEmpty
+                                    ? "Run scans to discover vulnerabilities"
+                                    : "Try clearing your filters"
+                            )
+                            .padding(16)
                             Spacer()
                         }
                     } else {
@@ -54,6 +59,31 @@ struct FindingsView: View {
                                     FindingRow(finding: finding)
                                 }
                                 .listRowBackground(Color.cyberSurface)
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    Button {
+                                        HapticFeedback.statusChange()
+                                        Task { await updateFindingStatus(finding, status: .fixed) }
+                                    } label: {
+                                        Label("Mark Fixed", systemImage: "checkmark.circle.fill")
+                                    }
+                                    .tint(.cyberGreen)
+                                }
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    Button {
+                                        HapticFeedback.statusChange()
+                                        Task { await updateFindingStatus(finding, status: .acceptedRisk) }
+                                    } label: {
+                                        Label("Accept Risk", systemImage: "hand.raised.fill")
+                                    }
+                                    .tint(.orange)
+                                    Button {
+                                        HapticFeedback.statusChange()
+                                        Task { await updateFindingStatus(finding, status: .falsePositive) }
+                                    } label: {
+                                        Label("False Positive", systemImage: "xmark.circle")
+                                    }
+                                    .tint(.gray)
+                                }
                             }
                         }
                         .listStyle(.plain)
@@ -80,8 +110,21 @@ struct FindingsView: View {
             findings = try await client.request(Endpoints.findings())
         } catch {
             self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+            HapticFeedback.error()
         }
         isLoading = false
+    }
+
+    private func updateFindingStatus(_ finding: Finding, status: FindingStatus) async {
+        let req = UpdateFindingRequest(status: status, severity: nil, remediation: nil)
+        if let updated: Finding = try? await client.request(Endpoints.updateFinding(finding.id, req)) {
+            if let idx = findings.firstIndex(where: { $0.id == updated.id }) {
+                findings[idx] = updated
+            }
+            HapticFeedback.success()
+        } else {
+            HapticFeedback.error()
+        }
     }
 }
 
@@ -263,7 +306,12 @@ struct FindingDetailView: View {
     private func updateStatus() async {
         isUpdating = true
         defer { isUpdating = false }
+        HapticFeedback.statusChange()
         let req = UpdateFindingRequest(status: selectedStatus, severity: nil, remediation: nil)
-        _ = try? await client.request(Endpoints.updateFinding(finding.id, req)) as Finding
+        if let _: Finding = try? await client.request(Endpoints.updateFinding(finding.id, req)) {
+            HapticFeedback.success()
+        } else {
+            HapticFeedback.error()
+        }
     }
 }

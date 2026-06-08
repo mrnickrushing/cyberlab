@@ -22,11 +22,22 @@ struct LoginView: View {
             ScrollView {
                 VStack(spacing: 32) {
                     // Header
-                    VStack(spacing: 8) {
-                        Image(systemName: "terminal.fill")
-                            .font(.system(size: 48))
-                            .foregroundColor(.cyberGreen)
-                            .neonGlow(.cyberGreen, radius: 12)
+                    VStack(spacing: 16) {
+                        // App icon — real asset, not SF Symbol
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                                .fill(Color.black)
+                                .frame(width: 110, height: 110)
+                                .shadow(color: .cyberGreen.opacity(0.5), radius: 20)
+                                .shadow(color: .cyberCyan.opacity(0.25), radius: 40)
+                            Image("AppIconImage")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                        }
+                        .neonGlow(.cyberGreen, radius: 10)
+
                         Text("CyberLab")
                             .font(.system(size: 32, weight: .bold, design: .monospaced))
                             .foregroundColor(.white)

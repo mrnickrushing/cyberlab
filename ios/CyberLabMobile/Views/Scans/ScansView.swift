@@ -46,15 +46,16 @@ struct ScansView: View {
                     } else if let error {
                         ErrorView(message: error) { Task { await loadScans() } }
                     } else if filtered.isEmpty {
-                        VStack(spacing: 12) {
-                            Spacer()
-                            Image(systemName: "scanner")
-                                .font(.system(size: 40))
-                                .foregroundColor(.cyberGreen.opacity(0.3))
-                            Text("No scans")
-                                .foregroundColor(.white.opacity(0.4))
-                            Spacer()
-                        }
+                        Spacer()
+                        EmptyStateCard(
+                            icon: "scanner",
+                            title: scans.isEmpty ? "No Scans Yet" : "No Matching Scans",
+                            subtitle: scans.isEmpty
+                                ? "Launch a scan from a target to get started"
+                                : "Try a different status filter"
+                        )
+                        .padding(16)
+                        Spacer()
                     } else {
                         List {
                             ForEach(filtered) { scan in

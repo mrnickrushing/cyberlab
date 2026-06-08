@@ -27,13 +27,16 @@ struct TargetsView: View {
                     } else if let error {
                         ErrorView(message: error) { Task { await loadTargets() } }
                     } else if filtered.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "target")
-                                .font(.system(size: 40))
-                                .foregroundColor(.cyberGreen.opacity(0.4))
-                            Text(targets.isEmpty ? "No targets yet" : "No results")
-                                .foregroundColor(.white.opacity(0.4))
-                        }
+                        EmptyStateCard(
+                            icon: "target",
+                            title: targets.isEmpty ? "No Targets Yet" : "No Results",
+                            subtitle: targets.isEmpty
+                                ? "Add your first target to start scanning"
+                                : "Try adjusting your search",
+                            action: targets.isEmpty ? { showAddTarget = true } : nil,
+                            actionLabel: "Add Target"
+                        )
+                        .padding(16)
                     } else {
                         List {
                             ForEach(filtered) { target in
@@ -116,14 +119,9 @@ struct TargetRow: View {
     let target: Target
     var body: some View {
         HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.cyberBackground)
-                    .frame(width: 40, height: 40)
-                Image(systemName: target.type.systemImage)
-                    .font(.system(size: 16))
-                    .foregroundColor(.cyberGreen)
-            }
+            // Risk ring gauge
+            RiskRing(riskLevel: target.riskLevel, type: target.type)
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(target.name)
                     .font(.system(size: 14, weight: .semibold))
@@ -131,6 +129,7 @@ struct TargetRow: View {
                 Text(target.address)
                     .font(.system(size: 12, design: .monospaced))
                     .foregroundColor(.white.opacity(0.5))
+                    .lineLimit(1)
             }
             Spacer()
             VStack(alignment: .trailing, spacing: 4) {
@@ -139,5 +138,53 @@ struct TargetRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+// ─── Risk Ring ─────────────────────────────────────────────────────────────────────
+// Animated gauge ring on target list rows for at-a-glance risk health.
+
+struct RiskRing: View {
+    let riskLevel: RiskLevel
+    let type: TargetType
+    @State private var animated = false
+
+    var fillFraction: CGFloat {
+        switch riskLevel {
+        case .critical: return 0.95
+        case .high:     return 0.75
+        case .medium:   return 0.55
+        case .low:      return 0.30
+        case .info:     return 0.10
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            // Track
+            Circle()
+                .stroke(Color.cyberBorder, lineWidth: 3)
+                .frame(width: 42, height: 42)
+            // Fill arc — animates in on appear
+            Circle()
+                .trim(from: 0, to: animated ? fillFraction : 0)
+                .stroke(
+                    riskLevel.color,
+                    style: StrokeStyle(lineWidth: 3, lineCap: .round)
+                )
+                .frame(width: 42, height: 42)
+                .rotationEffect(.degrees(-90))
+                .neonGlow(riskLevel.color, radius: riskLevel == .critical ? 4 : 0)
+            // Center icon
+            Image(systemName: type.systemImage)
+                .font(.system(size: 13))
+                .foregroundColor(riskLevel.color)
+        }
+        .onAppear {
+            withAnimation(.easeOut(duration: 0.8).delay(0.1)) {
+                animated = true
+            }
+        }
+        .onDisappear { animated = false }
     }
 }

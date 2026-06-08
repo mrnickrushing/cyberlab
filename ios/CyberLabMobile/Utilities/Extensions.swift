@@ -314,6 +314,27 @@ extension View {
     }
 }
 
+// MARK: - Haptic Feedback
+
+struct HapticFeedback {
+    static func impact(_ style: UIImpactFeedbackGenerator.FeedbackStyle = .medium) {
+        UIImpactFeedbackGenerator(style: style).impactOccurred()
+    }
+    static func success() {
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+    static func error() {
+        UINotificationFeedbackGenerator().notificationOccurred(.error)
+    }
+    static func warning() {
+        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+    }
+    /// Heavy tap — scan launch, destructive action.
+    static func scanLaunch() { impact(.heavy) }
+    /// Soft — status change, toggle.
+    static func statusChange() { impact(.light) }
+}
+
 // MARK: - Badge View
 
 struct SeverityBadge: View {

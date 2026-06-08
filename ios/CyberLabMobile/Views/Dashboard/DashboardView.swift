@@ -7,7 +7,10 @@ struct DashboardView: View {
     @State private var isLoading = true
     @State private var error: String?
     @State private var showNewScan = false
+    @State private var criticalDismissed = false
     private let client = APIClient.shared
+
+    var criticalCount: Int { (stats?.findingsBySeverity.critical ?? 0) + (stats?.findingsBySeverity.high ?? 0) }
 
     var body: some View {
         NavigationStack {
@@ -20,6 +23,14 @@ struct DashboardView: View {
                 } else if let stats {
                     ScrollView {
                         VStack(spacing: 16) {
+
+                            // Critical findings banner
+                            if criticalCount > 0 && !criticalDismissed {
+                                CriticalFindingsBanner(count: criticalCount) {
+                                    withAnimation { criticalDismissed = true }
+                                }
+                            }
+
                             // Security Score
                             SecurityScoreCard(score: stats.securityScore)
 
@@ -36,20 +47,15 @@ struct DashboardView: View {
                             // Lab Health
                             LabHealthCard(health: stats.labHealth)
 
-                            // Recent Scans
+                            // Activity Feed
                             if !stats.recentScans.isEmpty {
-                                VStack(alignment: .leading, spacing: 10) {
-                                    Text("Recent Scans")
-                                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                                        .foregroundColor(.white.opacity(0.6))
-                                    ForEach(stats.recentScans) { scan in
-                                        NavigationLink(destination: ScanDetailView(scanId: scan.id)) {
-                                            RecentScanRow(scan: scan)
-                                        }
-                                        .buttonStyle(.plain)
-                                    }
-                                }
-                                .cyberCard()
+                                ActivityFeedCard(scans: stats.recentScans)
+                            } else {
+                                EmptyStateCard(
+                                    icon: "clock.arrow.circlepath",
+                                    title: "No Recent Activity",
+                                    subtitle: "Launch a scan to see activity here"
+                                )
                             }
                         }
                         .padding(16)
@@ -57,18 +63,30 @@ struct DashboardView: View {
                 }
             }
             .navigationTitle("Dashboard")
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button { showNewScan = true } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .foregroundColor(.cyberGreen)
+                ToolbarItem(placement: .navigationBarLeading) {
+                    // Icon in nav bar
+                    HStack(spacing: 8) {
+                        Image("AppIconImage")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 28, height: 28)
+                            .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                            .neonGlow(.cyberGreen, radius: 4)
+                        Text("CyberLab")
+                            .font(.system(size: 15, weight: .bold, design: .monospaced))
+                            .foregroundColor(.white)
                     }
                 }
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button { Task { await loadData() } } label: {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(.cyberGreen)
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack(spacing: 12) {
+                        Button { Task { await loadData() } } label: {
+                            Image(systemName: "arrow.clockwise").foregroundColor(.cyberGreen)
+                        }
+                        Button { showNewScan = true } label: {
+                            Image(systemName: "plus.circle.fill").foregroundColor(.cyberGreen)
+                        }
                     }
                 }
             }
@@ -82,12 +100,192 @@ struct DashboardView: View {
     private func loadData() async {
         isLoading = true
         error = nil
+        criticalDismissed = false
         do {
             stats = try await client.request(Endpoints.dashboard)
         } catch {
             self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
         }
         isLoading = false
+    }
+}
+
+// ─── Critical Findings Banner ─────────────────────────────────────────────────
+
+struct CriticalFindingsBanner: View {
+    let count: Int
+    let onDismiss: () -> Void
+    @State private var glowing = false
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 20))
+                .foregroundColor(.severityCritical)
+                .neonGlow(.severityCritical, radius: glowing ? 8 : 3)
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                        glowing = true
+                    }
+                }
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(count) CRITICAL/HIGH \(count == 1 ? "FINDING" : "FINDINGS")")
+                    .font(.system(size: 13, weight: .black, design: .monospaced))
+                    .foregroundColor(.severityCritical)
+                    .glitchEffect()
+                Text("Immediate action required")
+                    .font(.system(size: 11))
+                    .foregroundColor(.white.opacity(0.65))
+            }
+
+            Spacer()
+
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.white.opacity(0.5))
+            }
+        }
+        .padding(14)
+        .background(
+            LinearGradient(
+                colors: [Color.severityCritical.opacity(0.18), Color.cyberSurface],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        )
+        .cornerRadius(10)
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.severityCritical.opacity(0.5), lineWidth: 1))
+        .hudFrame(color: .severityCritical.opacity(0.6), length: 10)
+    }
+}
+
+// ─── Activity Feed ────────────────────────────────────────────────────────────
+
+struct ActivityFeedCard: View {
+    let scans: [ScanJobWithTarget]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("Activity", systemImage: "clock.arrow.circlepath")
+                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.6))
+                Spacer()
+                Text("\(scans.count) events")
+                    .font(.system(size: 10, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.3))
+            }
+
+            ForEach(scans) { scan in
+                NavigationLink(destination: ScanDetailView(scanId: scan.id)) {
+                    ActivityRow(scan: scan)
+                }
+                .buttonStyle(.plain)
+
+                if scan.id != scans.last?.id {
+                    Divider().background(Color.cyberBorder)
+                }
+            }
+        }
+        .cyberCard()
+    }
+}
+
+struct ActivityRow: View {
+    let scan: ScanJobWithTarget
+
+    var eventIcon: String {
+        switch scan.status {
+        case .running:   return "bolt.fill"
+        case .completed: return "checkmark.circle.fill"
+        case .failed:    return "xmark.circle.fill"
+        case .cancelled: return "slash.circle.fill"
+        case .pending:   return "clock.fill"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            // Timeline dot
+            ZStack {
+                Circle()
+                    .fill(scan.status.color.opacity(0.15))
+                    .frame(width: 32, height: 32)
+                Image(systemName: eventIcon)
+                    .font(.system(size: 13))
+                    .foregroundColor(scan.status.color)
+                    .neonGlow(scan.status.color, radius: scan.status.isActive ? 5 : 0)
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text("[\(scan.tool.uppercased())]")
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundColor(.cyberGreen)
+                    if scan.status.isActive {
+                        ProgressView().scaleEffect(0.5).tint(.cyberGreen)
+                    }
+                }
+                Text(scan.targetName ?? scan.targetAddress ?? "Unknown")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundColor(.white)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            VStack(alignment: .trailing, spacing: 4) {
+                StatusBadge(text: scan.status.label, color: scan.status.color)
+                Text(scan.createdAt.formattedDate)
+                    .font(.system(size: 10, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.35))
+            }
+        }
+    }
+}
+
+// ─── Empty State Card ─────────────────────────────────────────────────────────
+
+struct EmptyStateCard: View {
+    let icon: String
+    let title: String
+    let subtitle: String
+    var action: (() -> Void)? = nil
+    var actionLabel: String = "Get Started"
+
+    var body: some View {
+        VStack(spacing: 14) {
+            Image(systemName: icon)
+                .font(.system(size: 36))
+                .foregroundColor(.cyberGreen.opacity(0.35))
+                .neonGlow(.cyberGreen, radius: 4)
+            Text(title)
+                .font(.system(size: 14, weight: .semibold, design: .monospaced))
+                .foregroundColor(.white.opacity(0.5))
+            Text(subtitle)
+                .font(.system(size: 12))
+                .foregroundColor(.white.opacity(0.3))
+                .multilineTextAlignment(.center)
+            if let action {
+                Button(action: action) {
+                    Text(actionLabel)
+                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                        .foregroundColor(.black)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 8)
+                        .background(Color.cyberGreen)
+                        .cornerRadius(8)
+                        .neonGlow(.cyberGreen, radius: 5)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(32)
+        .background(Color.cyberSurface)
+        .cornerRadius(10)
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cyberBorder, lineWidth: 1))
     }
 }
 
@@ -349,6 +547,7 @@ struct NewScanSheet: View {
         isLoading = true
         error = ""
         defer { isLoading = false }
+        HapticFeedback.scanLaunch()
         do {
             let req = CreateScanRequest(
                 targetId: selectedTargetId,
@@ -357,11 +556,14 @@ struct NewScanSheet: View {
                 profileId: selectedProfileId.isEmpty ? nil : selectedProfileId
             )
             let _: ScanJob = try await client.request(Endpoints.createScan(req))
+            HapticFeedback.success()
             onCreated()
             dismiss()
         } catch let e as APIError {
+            HapticFeedback.error()
             error = e.errorDescription ?? "Failed to launch scan"
         } catch {
+            HapticFeedback.error()
             self.error = error.localizedDescription
         }
     }
