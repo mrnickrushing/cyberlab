@@ -106,7 +106,7 @@ workflows:
 
       - name: Build App Store IPA
         script: |
-          xcode-project use-profiles
+          xcode-project use-profiles --targets CyberLabMobile
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME" \
