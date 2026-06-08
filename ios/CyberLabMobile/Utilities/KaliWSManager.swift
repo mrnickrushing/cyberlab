@@ -17,7 +17,7 @@ class KaliWSManager: ObservableObject {
     private var task: URLSessionWebSocketTask?
     private var reconnectTask: Task<Void, Never>?
     private var pingTask: Task<Void, Never>?
-    private let url = URL(string: "wss://terminal.vitallity.org")!
+    private let url = URL(string: "wss://terminal.vitallity.org/ws")!
     private var isConnected: Bool { state == .connected }
 
     private init() {}
@@ -134,7 +134,8 @@ class KaliWSManager: ObservableObject {
         guard let data = text.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let type = json["type"] as? String else { return }
-        if type == "output", let out = json["data"] as? String {
+        if type == "output",
+           let out = (json["output"] as? String) ?? (json["data"] as? String) {
             outputBuffer += out.strippingANSI()
             if outputBuffer.count > 50_000 {
                 outputBuffer = String(outputBuffer.suffix(40_000))
