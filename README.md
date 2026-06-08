@@ -578,6 +578,22 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] **"Operator rank" progression** — light gamification: XP/rank based on findings triaged, scans run, labs maintained
 - [x] **Per-section biometric lock** — Face ID gate before revealing OSINT results or exporting reports, beyond the existing app-level unlock
 
+### Phase 15 — WiFi & Network Intelligence ✅
+- [x] **WiFi Scanner** — inspect the connected network (SSID, BSSID, signal, security heuristic)
+- [x] **Subnet Sweep** — discover live hosts across the local /24
+- [x] **Port Checker** — TCP-connect scan against a target host with presets
+- [x] **VPN Detector** — VPN, proxy, and Tor routing detection (Network Status)
+
+### Phase 16 — Recon & Intelligence Tools ✅
+- [x] **Cert Transparency** — enumerate subdomains from CT logs via crt.sh
+- [x] **HTTP Headers Inspector** — grade a site's security response headers (A–F)
+- [x] **Pentest Checklists** — OWASP Top 10, network, and mobile assessment tracking with persistence and export
+- [x] **Passive DNS** — current DNS records and historical host/IP mappings (HackerTarget)
+- [x] **Reverse IP** — find all domains sharing an IP address
+- [x] **WHOIS** — domain registration data with parsed highlights
+- [x] **CVE Search** — keyword search against the NIST National Vulnerability Database
+- [x] **SSH Terminal** — connection-command builder and simulated session (iOS sandbox-aware)
+
 ### Phase 17 ✅ — Kali Terminal
 - [x] **Embedded relay terminal** — full mobile-optimized xterm.js web UI from `terminal.vitallity.org` embedded via `WKWebView`
 - [x] **Connection detection** — injected JavaScript + `WKScriptMessageHandler` monitors the relay WebSocket status and reports `connected`/`disconnected` to Swift

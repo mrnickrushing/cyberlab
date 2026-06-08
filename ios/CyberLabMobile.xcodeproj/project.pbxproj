@@ -87,6 +87,23 @@
 		CC4100000000000000000001 /* KaliTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4000000000000000000001 /* KaliTerminalView.swift */; };
 		CC4100000000000000000002 /* KaliTerminalWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC4000000000000000000002 /* KaliTerminalWrapperView.swift */; };
 		CC4100000000000000000003 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC4000000000000000000003 /* WebKit.framework */; };
+		CC3100000000000000000001 /* CertTransparencyScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000001 /* CertTransparencyScanner.swift */; };
+		CC3100000000000000000002 /* HTTPHeadersInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000002 /* HTTPHeadersInspector.swift */; };
+		CC3100000000000000000003 /* PassiveDNSScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000003 /* PassiveDNSScanner.swift */; };
+		CC3100000000000000000004 /* ReverseIPScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000004 /* ReverseIPScanner.swift */; };
+		CC3100000000000000000005 /* WHOISLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000005 /* WHOISLookup.swift */; };
+		CC3100000000000000000006 /* CVESearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000006 /* CVESearch.swift */; };
+		CC3100000000000000000007 /* SSHTerminalManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000007 /* SSHTerminalManager.swift */; };
+		CC3100000000000000000008 /* PentestChecklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000008 /* PentestChecklist.swift */; };
+		CC3100000000000000000009 /* CertTransparencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000009 /* CertTransparencyView.swift */; };
+		CC310000000000000000000A /* HTTPHeadersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000A /* HTTPHeadersView.swift */; };
+		CC310000000000000000000B /* PassiveDNSView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000B /* PassiveDNSView.swift */; };
+		CC310000000000000000000C /* ReverseIPView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000C /* ReverseIPView.swift */; };
+		CC310000000000000000000D /* WHOISView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000D /* WHOISView.swift */; };
+		CC310000000000000000000E /* CVESearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000E /* CVESearchView.swift */; };
+		CC310000000000000000000F /* ReconHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000F /* ReconHubView.swift */; };
+		CC3100000000000000000010 /* PentestChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000010 /* PentestChecklistView.swift */; };
+		CC3100000000000000000011 /* SSHTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000011 /* SSHTerminalView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -174,6 +191,23 @@
 		CC4000000000000000000001 /* KaliTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliTerminalView.swift; sourceTree = "<group>"; };
 		CC4000000000000000000002 /* KaliTerminalWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliTerminalWrapperView.swift; sourceTree = "<group>"; };
 		CC4000000000000000000003 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		CC3000000000000000000001 /* CertTransparencyScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertTransparencyScanner.swift; sourceTree = "<group>"; };
+		CC3000000000000000000002 /* HTTPHeadersInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPHeadersInspector.swift; sourceTree = "<group>"; };
+		CC3000000000000000000003 /* PassiveDNSScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassiveDNSScanner.swift; sourceTree = "<group>"; };
+		CC3000000000000000000004 /* ReverseIPScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseIPScanner.swift; sourceTree = "<group>"; };
+		CC3000000000000000000005 /* WHOISLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHOISLookup.swift; sourceTree = "<group>"; };
+		CC3000000000000000000006 /* CVESearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVESearch.swift; sourceTree = "<group>"; };
+		CC3000000000000000000007 /* SSHTerminalManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTerminalManager.swift; sourceTree = "<group>"; };
+		CC3000000000000000000008 /* PentestChecklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PentestChecklist.swift; sourceTree = "<group>"; };
+		CC3000000000000000000009 /* CertTransparencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertTransparencyView.swift; sourceTree = "<group>"; };
+		CC300000000000000000000A /* HTTPHeadersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPHeadersView.swift; sourceTree = "<group>"; };
+		CC300000000000000000000B /* PassiveDNSView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassiveDNSView.swift; sourceTree = "<group>"; };
+		CC300000000000000000000C /* ReverseIPView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReverseIPView.swift; sourceTree = "<group>"; };
+		CC300000000000000000000D /* WHOISView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WHOISView.swift; sourceTree = "<group>"; };
+		CC300000000000000000000E /* CVESearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVESearchView.swift; sourceTree = "<group>"; };
+		CC300000000000000000000F /* ReconHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconHubView.swift; sourceTree = "<group>"; };
+		CC3000000000000000000010 /* PentestChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PentestChecklistView.swift; sourceTree = "<group>"; };
+		CC3000000000000000000011 /* SSHTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTerminalView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,6 +292,7 @@
 				BB000000000000000000030C /* Schedule.swift */,
 				BB0000000000000000000506 /* ScanDiff.swift */,
 				CC1000000000000000000001 /* OperatorRank.swift */,
+				CC3000000000000000000008 /* PentestChecklist.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -303,6 +338,8 @@
 				BB0000000000000000000505 /* WebAssessment */,
 				CC2200000000000000000001 /* Network */,
 				CC4200000000000000000001 /* Terminal */,
+				CC3200000000000000000001 /* Recon */,
+				CC3200000000000000000002 /* Tools */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -383,6 +420,13 @@
 				CC2000000000000000000011 /* SubnetScanner.swift */,
 				CC2000000000000000000012 /* PortScanner.swift */,
 				CC2000000000000000000013 /* VPNDetector.swift */,
+				CC3000000000000000000001 /* CertTransparencyScanner.swift */,
+				CC3000000000000000000002 /* HTTPHeadersInspector.swift */,
+				CC3000000000000000000003 /* PassiveDNSScanner.swift */,
+				CC3000000000000000000004 /* ReverseIPScanner.swift */,
+				CC3000000000000000000005 /* WHOISLookup.swift */,
+				CC3000000000000000000006 /* CVESearch.swift */,
+				CC3000000000000000000007 /* SSHTerminalManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -495,6 +539,29 @@
 				CC4000000000000000000002 /* KaliTerminalWrapperView.swift */,
 			);
 			path = Terminal;
+			sourceTree = "<group>";
+		};
+		CC3200000000000000000001 /* Recon */ = {
+			isa = PBXGroup;
+			children = (
+				CC300000000000000000000F /* ReconHubView.swift */,
+				CC3000000000000000000009 /* CertTransparencyView.swift */,
+				CC300000000000000000000A /* HTTPHeadersView.swift */,
+				CC300000000000000000000B /* PassiveDNSView.swift */,
+				CC300000000000000000000C /* ReverseIPView.swift */,
+				CC300000000000000000000D /* WHOISView.swift */,
+				CC300000000000000000000E /* CVESearchView.swift */,
+			);
+			path = Recon;
+			sourceTree = "<group>";
+		};
+		CC3200000000000000000002 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				CC3000000000000000000010 /* PentestChecklistView.swift */,
+				CC3000000000000000000011 /* SSHTerminalView.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -686,6 +753,23 @@
 				CC2100000000000000000009 /* NetworkHubView.swift in Sources */,
 				CC4100000000000000000001 /* KaliTerminalView.swift in Sources */,
 				CC4100000000000000000002 /* KaliTerminalWrapperView.swift in Sources */,
+				CC3100000000000000000001 /* CertTransparencyScanner.swift in Sources */,
+				CC3100000000000000000002 /* HTTPHeadersInspector.swift in Sources */,
+				CC3100000000000000000003 /* PassiveDNSScanner.swift in Sources */,
+				CC3100000000000000000004 /* ReverseIPScanner.swift in Sources */,
+				CC3100000000000000000005 /* WHOISLookup.swift in Sources */,
+				CC3100000000000000000006 /* CVESearch.swift in Sources */,
+				CC3100000000000000000007 /* SSHTerminalManager.swift in Sources */,
+				CC3100000000000000000008 /* PentestChecklist.swift in Sources */,
+				CC3100000000000000000009 /* CertTransparencyView.swift in Sources */,
+				CC310000000000000000000A /* HTTPHeadersView.swift in Sources */,
+				CC310000000000000000000B /* PassiveDNSView.swift in Sources */,
+				CC310000000000000000000C /* ReverseIPView.swift in Sources */,
+				CC310000000000000000000D /* WHOISView.swift in Sources */,
+				CC310000000000000000000E /* CVESearchView.swift in Sources */,
+				CC310000000000000000000F /* ReconHubView.swift in Sources */,
+				CC3100000000000000000010 /* PentestChecklistView.swift in Sources */,
+				CC3100000000000000000011 /* SSHTerminalView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

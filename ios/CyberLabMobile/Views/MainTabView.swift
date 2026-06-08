@@ -39,13 +39,17 @@ struct MainTabView: View {
                 .tabItem { Label("AI", systemImage: "brain.head.profile") }
                 .tag(7)
 
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
+            ReconHubView()
+                .tabItem { Label("Recon", systemImage: "magnifyingglass.circle") }
                 .tag(8)
 
             KaliTerminalWrapperView()
                 .tabItem { Label("Terminal", systemImage: "terminal") }
                 .tag(9)
+
+            SettingsView()
+                .tabItem { Label("Settings", systemImage: "gearshape") }
+                .tag(10)
         }
         .tint(.cyberGreen)
         .overlay(alignment: .top) {
