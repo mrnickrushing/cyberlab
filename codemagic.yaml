@@ -108,7 +108,11 @@ workflows:
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME" \
-            --config Release
+            --config Release || {
+            echo "=== XCODEBUILD LOG ==="
+            cat /tmp/xcodebuild_logs/*.log 2>/dev/null | grep -E 'error:|warning:|note:|❌|✅|failed|FAILED' | tail -100
+            exit 1
+          }
 
     artifacts:
       - build/ios/ipa/*.ipa
