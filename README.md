@@ -535,48 +535,48 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] iOS **SchedulesView** — list with enabled toggle (swipe to delete), create sheet with target/tool/frequency pickers, next-run countdown
 - [x] iOS **"Scheduled Scans"** accessible from Settings tab
 
-### Phase 10 — Scan Diff + CISA KEV Intelligence
-- [ ] Scan result diff engine — compare any two scans of same target/tool: NEW ports/findings, GONE services, CHANGED versions
-- [ ] `GET /scans/:id/diff/:compareId` — returns structured diff JSON
-- [ ] iOS **ScanDiffView** — side-by-side diff with color-coded NEW/GONE/CHANGED/SAME rows
-- [ ] CISA Known Exploited Vulnerabilities (KEV) catalog — daily sync job fetches catalog from CISA and stores in DB
-- [ ] Worker cross-references all CVE findings against KEV catalog on creation + enrichment
-- [ ] iOS **KEV badge** — red "Actively Exploited" chip on any finding whose CVE is in the CISA KEV catalog
-- [ ] `kev_entries` table — cveId, vendorProject, product, vulnerabilityName, dateAdded, requiredAction
+### Phase 10 — Scan Diff + CISA KEV Intelligence ✅
+- [x] Scan result diff engine — compare any two scans of same target/tool: NEW ports/findings, GONE services, CHANGED versions
+- [x] `GET /scans/:id/diff/:compareId` — returns structured diff JSON
+- [x] iOS **ScanDiffView** — side-by-side diff with color-coded NEW/GONE/CHANGED/SAME rows
+- [x] CISA Known Exploited Vulnerabilities (KEV) catalog — daily sync job fetches catalog from CISA and stores in DB
+- [x] Worker cross-references all CVE findings against KEV catalog on creation + enrichment
+- [x] iOS **KEV badge** — red "Actively Exploited" chip on any finding whose CVE is in the CISA KEV catalog
+- [x] `kev_entries` table — cveId, vendorProject, product, vulnerabilityName, dateAdded, requiredAction
 
-### Phase 11 — Dashboard Redesign + UX Polish
-- [ ] Dashboard **risk trend sparkline** — 30-day score history chart per target using Swift Charts
-- [ ] Dashboard **activity feed** — chronological list of recent scans, new findings, status changes with relative timestamps
-- [ ] Dashboard **critical findings banner** — red alert card when unacknowledged critical/high findings exist
-- [ ] **Empty states** — every blank list (targets, scans, findings, networks, schedules) gets an icon + message + CTA button
-- [ ] **Haptic feedback** — distinct patterns for scan launch, finding status change, errors, and success
-- [ ] **Onboarding flow** — 3-step first-launch sequence: set server URL → create first target → run first scan
-- [ ] **Swipe actions** — swipe to mark finding fixed/accepted, swipe to archive target, swipe to re-run scan
-- [ ] **Consistent severity colors** — Critical `#FF3B30`, High `#FF9500`, Medium `#FFCC00`, Low `#34C759`, Info `#8E8E93` enforced app-wide
-- [ ] **Target list risk rings** — animated gauge rings on target list (same as reports tab) for at-a-glance health
+### Phase 11 — Dashboard Redesign + UX Polish ✅
+- [x] Dashboard **risk trend sparkline** — 30-day score history chart per target using Swift Charts
+- [x] Dashboard **activity feed** — chronological list of recent scans, new findings, status changes with relative timestamps
+- [x] Dashboard **critical findings banner** — red alert card when unacknowledged critical/high findings exist
+- [x] **Empty states** — every blank list (targets, scans, findings, networks, schedules) gets an icon + message + CTA button
+- [x] **Haptic feedback** — distinct patterns for scan launch, finding status change, errors, and success
+- [x] **Onboarding flow** — 3-step first-launch sequence: set server URL → create first target → run first scan
+- [x] **Swipe actions** — swipe to mark finding fixed/accepted, swipe to archive target, swipe to re-run scan
+- [x] **Consistent severity colors** — Critical `#FF3B30`, High `#FF9500`, Medium `#FFCC00`, Low `#34C759`, Info `#8E8E93` enforced app-wide
+- [x] **Target list risk rings** — animated gauge rings on target list (same as reports tab) for at-a-glance health
 
-### Phase 12 — Offline Cache + CVSS Calculator
-- [ ] SwiftData local cache layer — targets, findings, scans, notes cached on device; stale-while-revalidate pattern
-- [ ] Offline indicator banner — shows when API is unreachable, serves cached data
-- [ ] Cache invalidation — triggered on pull-to-refresh and after mutations
-- [ ] iOS **CVSS v3.1 Calculator** — interactive sliders for all 8 base score metrics (AV, AC, PR, UI, S, C, I, A); live score + severity label; "Apply to Finding" button
-- [ ] CVSS calculator accessible from finding detail view and create-finding sheet
+### Phase 12 — Offline Cache + CVSS Calculator ✅
+- [x] SwiftData local cache layer — targets, findings, scans, notes cached on device; stale-while-revalidate pattern
+- [x] Offline indicator banner — shows when API is unreachable, serves cached data
+- [x] Cache invalidation — triggered on pull-to-refresh and after mutations
+- [x] iOS **CVSS v3.1 Calculator** — interactive sliders for all 8 base score metrics (AV, AC, PR, UI, S, C, I, A); live score + severity label; "Apply to Finding" button
+- [x] CVSS calculator accessible from finding detail view and create-finding sheet
 
-### Phase 13 — Widgets + Shortcuts
-- [ ] iOS **WidgetKit extension** — small widget: risk score + critical count; medium widget: top 3 findings + last scan time; lock screen widget: open critical count
-- [ ] Widgets refresh on scan completion push notification
-- [ ] **iOS Shortcuts integration** — "Run Scan" action (target + tool picker), "Get Risk Score" action, "List Open Findings" action
-- [ ] Shortcuts work from the Shortcuts app, home screen automations, and Siri voice commands
+### Phase 13 — Widgets + Shortcuts ✅
+- [x] iOS **WidgetKit extension** — small widget: risk score + critical count; medium widget: top 3 findings + last scan time; lock screen widget: open critical count
+- [x] Widgets refresh on scan completion push notification
+- [x] **iOS Shortcuts integration** — "Run Scan" action (target + tool picker), "Get Risk Score" action, "List Open Findings" action
+- [x] Shortcuts work from the Shortcuts app, home screen automations, and Siri voice commands
 
-### Phase 14 — Extended Platform Features
-- [ ] **Live Activities / Dynamic Island** — show scan progress, current tool, and elapsed time on the lock screen / Dynamic Island via ActivityKit
-- [ ] **Live streaming terminal view** — `tail -f`-style line-by-line console for in-progress scans instead of waiting for job completion
-- [ ] **Command palette / global search** — `⌘K`-style overlay to jump to any target, finding, or scan by fuzzy-matching name
-- [ ] **"Intel card" sharing** — generate a styled, shareable image card for a finding or report (severity badge, CVE, risk score) for quick sharing outside the PDF report flow
-- [ ] **Apple Watch companion** — glanceable security score, critical-finding count, and complications
-- [ ] **Sound design toggle** — optional terminal-beep/glitch SFX on scan start/finish/critical finding, togglable in Settings
-- [ ] **"Operator rank" progression** — light gamification: XP/rank based on findings triaged, scans run, labs maintained
-- [ ] **Per-section biometric lock** — Face ID gate before revealing OSINT results or exporting reports, beyond the existing app-level unlock
+### Phase 14 — Extended Platform Features ✅
+- [x] **Live Activities / Dynamic Island (stubbed)** — ActivityKit infrastructure in place with `#available(iOS 16.2)` gating; wired into scan launch/complete. Full Dynamic Island UI requires an ActivityKit extension target.
+- [x] **Live streaming terminal view** — `tail -f`-style line-by-line console for in-progress scans instead of waiting for job completion
+- [x] **Command palette / global search** — `⌘K`-style overlay to jump to any target, finding, or scan by fuzzy-matching name
+- [x] **"Intel card" sharing** — generate a styled, shareable image card for a finding or report (severity badge, CVE, risk score) for quick sharing outside the PDF report flow
+- [ ] **Apple Watch companion** — glanceable security score, critical-finding count, and complications *(skipped — requires WatchOS target + provisioning)*
+- [x] **Sound design toggle** — optional terminal-beep/glitch SFX on scan start/finish/critical finding, togglable in Settings
+- [x] **"Operator rank" progression** — light gamification: XP/rank based on findings triaged, scans run, labs maintained
+- [x] **Per-section biometric lock** — Face ID gate before revealing OSINT results or exporting reports, beyond the existing app-level unlock
 
 ---
 
