@@ -1,14 +1,19 @@
 import SwiftUI
 
 struct TargetDetailView: View {
-    let target: Target
+    @State private var target: Target
     @State private var selectedTab = 0
     @State private var showNewScan = false
+    @State private var showEditTarget = false
     @State private var scans: [ScanJobWithTarget] = []
     @State private var findings: [Finding] = []
     @State private var notes: [Note] = []
     @State private var isLoading = true
     private let client = APIClient.shared
+
+    init(target: Target) {
+        _target = State(initialValue: target)
+    }
 
     var body: some View {
         ZStack {
@@ -79,6 +84,11 @@ struct TargetDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
+                Button { showEditTarget = true } label: {
+                    Image(systemName: "pencil.circle").foregroundColor(.cyberGreen)
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
                 Button { showNewScan = true } label: {
                     Image(systemName: "plus.circle.fill").foregroundColor(.cyberGreen)
                 }
@@ -87,6 +97,9 @@ struct TargetDetailView: View {
         }
         .sheet(isPresented: $showNewScan) {
             NewScanSheet(onCreated: { Task { await loadData() } })
+        }
+        .sheet(isPresented: $showEditTarget) {
+            EditTargetView(target: target) { updated in target = updated }
         }
         .task { await loadData() }
     }
