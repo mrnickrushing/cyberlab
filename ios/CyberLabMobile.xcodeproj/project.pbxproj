@@ -105,6 +105,7 @@
 		BB000000000000000000030E /* WebAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAssessmentView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000506 /* ScanDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDiff.swift; sourceTree = "<group>"; };
 		BB0000000000000000000507 /* ScanDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDiffView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000508 /* EditTargetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTargetView.swift; sourceTree = "<group>"; };
 		BB000000000000000000011B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB000000000000000000011C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB000000000000000000011D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
