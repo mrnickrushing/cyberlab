@@ -60,7 +60,7 @@ struct AIAssistantView: View {
                         }
                         .foregroundColor(mode == m ? .black : .white.opacity(0.6))
                         .padding(.horizontal, 12).padding(.vertical, 7)
-                        .background(mode == m ? Color.cyberGreen : Color.cyberSurface)
+                        .background(mode == m ? Color.cyberMagenta : Color.cyberSurface)
                         .cornerRadius(20)
                     }
                 }
@@ -124,7 +124,8 @@ struct AIAssistantView: View {
         VStack(spacing: 16) {
             Image(systemName: "brain.head.profile")
                 .font(.system(size: 48))
-                .foregroundColor(.cyberGreen.opacity(0.6))
+                .foregroundColor(.cyberMagenta.opacity(0.7))
+                .neonGlow(.cyberMagenta, radius: 10)
             Text("CyberLab AI")
                 .font(.system(size: 20, weight: .bold))
                 .foregroundColor(.white)
@@ -136,7 +137,7 @@ struct AIAssistantView: View {
                 ForEach(suggestionsFor(mode), id: \.self) { suggestion in
                     Button { inputText = suggestion } label: {
                         HStack {
-                            Image(systemName: "chevron.right.circle").font(.system(size: 13)).foregroundColor(.cyberGreen)
+                            Image(systemName: "chevron.right.circle").font(.system(size: 13)).foregroundColor(.cyberMagenta)
                             Text(suggestion).font(.system(size: 13)).foregroundColor(.white.opacity(0.8))
                             Spacer()
                         }
@@ -174,7 +175,7 @@ struct AIAssistantView: View {
             } label: {
                 Image(systemName: isLoading ? "stop.circle.fill" : "arrow.up.circle.fill")
                     .font(.system(size: 32))
-                    .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? .white.opacity(0.2) : .cyberGreen)
+                    .foregroundColor(inputText.trimmingCharacters(in: .whitespaces).isEmpty ? .white.opacity(0.2) : .cyberMagenta)
             }
             .disabled(inputText.trimmingCharacters(in: .whitespaces).isEmpty || isLoading)
         }
@@ -256,7 +257,7 @@ struct ChatBubble: View {
             if !isUser {
                 Image(systemName: "brain.head.profile")
                     .font(.system(size: 14))
-                    .foregroundColor(.cyberGreen)
+                    .foregroundColor(.cyberMagenta)
                     .frame(width: 28, height: 28)
                     .background(Color.cyberSurface)
                     .clipShape(Circle())
@@ -267,6 +268,12 @@ struct ChatBubble: View {
                     .foregroundColor(isUser ? .black : .white)
                     .padding(.horizontal, 14).padding(.vertical, 10)
                     .background(isUser ? Color.cyberGreen : Color.cyberSurface)
+                    .overlay {
+                        if !isUser {
+                            RoundedCorner(radius: 16, corners: [.topLeft, .topRight, .bottomRight])
+                                .stroke(Color.cyberMagenta.opacity(0.25), lineWidth: 1)
+                        }
+                    }
                     .cornerRadius(16, corners: isUser
                         ? [.topLeft, .topRight, .bottomLeft]
                         : [.topLeft, .topRight, .bottomRight])
@@ -294,12 +301,12 @@ struct TypingIndicator: View {
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
             Image(systemName: "brain.head.profile")
-                .font(.system(size: 14)).foregroundColor(.cyberGreen)
+                .font(.system(size: 14)).foregroundColor(.cyberMagenta)
                 .frame(width: 28, height: 28).background(Color.cyberSurface).clipShape(Circle())
             HStack(spacing: 5) {
                 ForEach(0..<3) { i in
                     Circle()
-                        .fill(Color.cyberGreen.opacity(phase == i ? 1 : 0.3))
+                        .fill(Color.cyberMagenta.opacity(phase == i ? 1 : 0.3))
                         .frame(width: 7, height: 7)
                         .scaleEffect(phase == i ? 1.2 : 1)
                         .animation(.easeInOut(duration: 0.3), value: phase)
@@ -344,7 +351,7 @@ struct ContextBanner: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Image(systemName: mode.icon).font(.system(size: 13)).foregroundColor(.cyberGreen)
+            Image(systemName: mode.icon).font(.system(size: 13)).foregroundColor(.cyberMagenta)
             Text(contextLabel)
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.white)
@@ -355,8 +362,8 @@ struct ContextBanner: View {
             }
         }
         .padding(.horizontal, 16).padding(.vertical, 8)
-        .background(Color.cyberGreen.opacity(0.12))
-        .overlay(Rectangle().frame(height: 1).foregroundColor(.cyberGreen.opacity(0.3)), alignment: .bottom)
+        .background(Color.cyberMagenta.opacity(0.12))
+        .overlay(Rectangle().frame(height: 1).foregroundColor(.cyberMagenta.opacity(0.3)), alignment: .bottom)
     }
 }
 

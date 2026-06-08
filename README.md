@@ -509,7 +509,19 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [x] **"Ask AI" deep-links**: finding detail view → Explain mode with full CVE/CVSS/description context pre-loaded; report detail view → Summarize mode with risk score, severity breakdown, and top findings pre-loaded
 - [x] **AI tab** added to main tab bar (8 tabs total: Dashboard, Targets, Scans, Networks, Findings, Reports, AI, Settings)
 
-### Phase 8 — Push Notifications + Scheduled Scans 🔄
+### Phase 8 — Cyberpunk Visual Overhaul 🔄
+- [ ] **Duotone neon accents** — add `cyberMagenta` and `cyberCyan` to the palette alongside `cyberGreen` for a cyan/magenta cyberpunk contrast pair (AI elements, secondary CTAs, alerts)
+- [ ] **Neon glow effects** — `.neonGlow()` view modifier (layered shadows) applied to primary buttons, active scan indicators, focused cards, and critical severity badges
+- [ ] **HUD corner-bracket frames** — targeting-reticle style corner brackets (`HUDCornerBrackets` shape + `.hudFrame()` modifier) on key cards like the security score and risk gauges
+- [ ] **Scanline / grid overlay texture** — subtle animated scanline (`.scanlines()`) and sweeping scan-beam effects on hero screens (login, dashboard), togglable in Settings
+- [ ] **Glitch-text effect** — brief RGB-split jitter animation (`.glitchEffect()`) for critical severity badges, alerts, and the login title
+- [ ] **Custom display typeface** — angular futuristic display font for nav titles and big numbers (security score, risk dial), paired with the existing monospaced data font
+- [ ] **Animated pulse borders/glows** — `.pulsingGlow()` on "live" elements (running scans, active schedules, live indicators) replacing the current static `cyberBorder` stroke
+- [ ] **Terminal-style boot animation** — typed-out "INITIALIZING…" terminal sequence on app launch and major loading states, replacing the plain `ProgressView`
+- [ ] **Severity-color consistency pass** — unify `FindingSeverity` and `RiskLevel` color mappings on one shared palette (Critical `#FF3B30`, High `#FF9500`, Medium `#FFCC00`, Low `#34C759`, Info `#8E8E93`)
+- [ ] **"Night City" alt-theme toggle** — optional secondary palette (deep purple/magenta base) selectable from Settings for users who want a more vivid look
+
+### Phase 9 — Push Notifications + Scheduled Scans 🔄
 - [ ] `devices` table — stores APNs device tokens per user (unique per user+token)
 - [ ] `schedules` table — cron-based scan schedules (target, tool, flags, cron expression, enabled flag, last/next run timestamps)
 - [ ] `GET/POST /schedules` + `PATCH/DELETE /schedules/:id` — full CRUD with cron preset validation
@@ -523,7 +535,7 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [ ] iOS **SchedulesView** — list with enabled toggle (swipe to delete), create sheet with target/tool/frequency pickers, next-run countdown
 - [ ] iOS **"Scheduled Scans"** accessible from Settings tab
 
-### Phase 9 — Scan Diff + CISA KEV Intelligence
+### Phase 10 — Scan Diff + CISA KEV Intelligence
 - [ ] Scan result diff engine — compare any two scans of same target/tool: NEW ports/findings, GONE services, CHANGED versions
 - [ ] `GET /scans/:id/diff/:compareId` — returns structured diff JSON
 - [ ] iOS **ScanDiffView** — side-by-side diff with color-coded NEW/GONE/CHANGED/SAME rows
@@ -532,7 +544,7 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [ ] iOS **KEV badge** — red "Actively Exploited" chip on any finding whose CVE is in the CISA KEV catalog
 - [ ] `kev_entries` table — cveId, vendorProject, product, vulnerabilityName, dateAdded, requiredAction
 
-### Phase 10 — Dashboard Redesign + UX Polish
+### Phase 11 — Dashboard Redesign + UX Polish
 - [ ] Dashboard **risk trend sparkline** — 30-day score history chart per target using Swift Charts
 - [ ] Dashboard **activity feed** — chronological list of recent scans, new findings, status changes with relative timestamps
 - [ ] Dashboard **critical findings banner** — red alert card when unacknowledged critical/high findings exist
@@ -543,18 +555,28 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [ ] **Consistent severity colors** — Critical `#FF3B30`, High `#FF9500`, Medium `#FFCC00`, Low `#34C759`, Info `#8E8E93` enforced app-wide
 - [ ] **Target list risk rings** — animated gauge rings on target list (same as reports tab) for at-a-glance health
 
-### Phase 11 — Offline Cache + CVSS Calculator
+### Phase 12 — Offline Cache + CVSS Calculator
 - [ ] SwiftData local cache layer — targets, findings, scans, notes cached on device; stale-while-revalidate pattern
 - [ ] Offline indicator banner — shows when API is unreachable, serves cached data
 - [ ] Cache invalidation — triggered on pull-to-refresh and after mutations
 - [ ] iOS **CVSS v3.1 Calculator** — interactive sliders for all 8 base score metrics (AV, AC, PR, UI, S, C, I, A); live score + severity label; "Apply to Finding" button
 - [ ] CVSS calculator accessible from finding detail view and create-finding sheet
 
-### Phase 12 — Widgets + Shortcuts
+### Phase 13 — Widgets + Shortcuts
 - [ ] iOS **WidgetKit extension** — small widget: risk score + critical count; medium widget: top 3 findings + last scan time; lock screen widget: open critical count
 - [ ] Widgets refresh on scan completion push notification
 - [ ] **iOS Shortcuts integration** — "Run Scan" action (target + tool picker), "Get Risk Score" action, "List Open Findings" action
 - [ ] Shortcuts work from the Shortcuts app, home screen automations, and Siri voice commands
+
+### Phase 14 — Extended Platform Features
+- [ ] **Live Activities / Dynamic Island** — show scan progress, current tool, and elapsed time on the lock screen / Dynamic Island via ActivityKit
+- [ ] **Live streaming terminal view** — `tail -f`-style line-by-line console for in-progress scans instead of waiting for job completion
+- [ ] **Command palette / global search** — `⌘K`-style overlay to jump to any target, finding, or scan by fuzzy-matching name
+- [ ] **"Intel card" sharing** — generate a styled, shareable image card for a finding or report (severity badge, CVE, risk score) for quick sharing outside the PDF report flow
+- [ ] **Apple Watch companion** — glanceable security score, critical-finding count, and complications
+- [ ] **Sound design toggle** — optional terminal-beep/glitch SFX on scan start/finish/critical finding, togglable in Settings
+- [ ] **"Operator rank" progression** — light gamification: XP/rank based on findings triaged, scans run, labs maintained
+- [ ] **Per-section biometric lock** — Face ID gate before revealing OSINT results or exporting reports, beyond the existing app-level unlock
 
 ---
 

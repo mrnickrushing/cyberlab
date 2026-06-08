@@ -2,10 +2,13 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthManager
+    @State private var bootComplete = false
 
     var body: some View {
         Group {
-            if authManager.isAuthenticated {
+            if !bootComplete {
+                BootSequenceView { withAnimation(.easeInOut(duration: 0.4)) { bootComplete = true } }
+            } else if authManager.isAuthenticated {
                 if !authManager.legalAcknowledged {
                     LegalWarningView()
                 } else {
