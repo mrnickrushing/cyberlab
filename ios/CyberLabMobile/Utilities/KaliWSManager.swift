@@ -5,26 +5,42 @@ import Combine
 class KaliWSManager: ObservableObject {
     static let shared = KaliWSManager()
 
-    @Published var isConnected = false
+    enum ConnectionState {
+        case disconnected
+        case connecting
+        case connected      // relay up, Kali may or may not be present
+    }
+
+    @Published var state: ConnectionState = .disconnected
     @Published var outputBuffer = ""
 
     private var task: URLSessionWebSocketTask?
-    private var reconnectDelay: TimeInterval = 1
-    private var shouldReconnect = true
+    private var reconnectTask: Task<Void, Never>?
     private let url = URL(string: "wss://terminal.vitallity.org")!
+    private var isConnected: Bool { state == .connected }
 
     private init() {}
 
     func connect() {
-        shouldReconnect = true
+        guard state == .disconnected else { return }
+        state = .connecting
         openSocket()
     }
 
     func disconnect() {
-        shouldReconnect = false
+        reconnectTask?.cancel()
+        reconnectTask = nil
         task?.cancel(with: .goingAway, reason: nil)
         task = nil
-        isConnected = false
+        state = .disconnected
+    }
+
+    func reconnect() {
+        disconnect()
+        Task {
+            try? await Task.sleep(nanoseconds: 500_000_000)
+            connect()
+        }
     }
 
     private func openSocket() {
@@ -34,35 +50,32 @@ class KaliWSManager: ObservableObject {
         ws.resume()
 
         // Register as phone client
-        let reg = try? JSONSerialization.data(withJSONObject: ["type": "register", "clientType": "phone"])
-        if let reg {
-            ws.send(.data(reg)) { _ in }
+        if let data = try? JSONSerialization.data(withJSONObject: ["type": "register", "clientType": "phone"]) {
+            ws.send(.data(data)) { _ in }
         }
 
-        isConnected = true
-        reconnectDelay = 1
+        state = .connected
         receive(ws)
     }
 
     private func receive(_ ws: URLSessionWebSocketTask) {
         ws.receive { [weak self] result in
             Task { @MainActor [weak self] in
-                guard let self else { return }
+                guard let self, self.task === ws else { return }
                 switch result {
                 case .success(let msg):
                     switch msg {
-                    case .string(let text):
-                        self.handleMessage(text)
+                    case .string(let text): self.handleMessage(text)
                     case .data(let data):
-                        if let text = String(data: data, encoding: .utf8) {
-                            self.handleMessage(text)
-                        }
+                        if let text = String(data: data, encoding: .utf8) { self.handleMessage(text) }
                     @unknown default: break
                     }
                     self.receive(ws)
                 case .failure:
-                    self.isConnected = false
-                    self.scheduleReconnect()
+                    // Socket closed — relay dropped us (Kali not connected or timeout)
+                    // Don't auto-reconnect in a loop — wait for user to tap Reconnect
+                    self.state = .disconnected
+                    self.task = nil
                 }
             }
         }
@@ -74,38 +87,26 @@ class KaliWSManager: ObservableObject {
               let type = json["type"] as? String else { return }
         if type == "output", let out = json["data"] as? String {
             outputBuffer += out.strippingANSI()
-            // Cap buffer at ~50k chars
             if outputBuffer.count > 50_000 {
                 outputBuffer = String(outputBuffer.suffix(40_000))
             }
         }
     }
 
-    private func scheduleReconnect() {
-        guard shouldReconnect else { return }
-        let delay = reconnectDelay
-        reconnectDelay = min(reconnectDelay * 2, 30)
-        Task {
-            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-            await MainActor.run {
-                if self.shouldReconnect { self.openSocket() }
-            }
-        }
-    }
-
     func sendCommand(_ cmd: String) {
+        guard isConnected else { return }
         let payload = ["type": "command", "data": cmd + "\n"]
-        guard let data = try? JSONSerialization.data(withJSONObject: payload) else { return }
-        task?.send(.data(data)) { _ in }
+        if let data = try? JSONSerialization.data(withJSONObject: payload) {
+            task?.send(.data(data)) { _ in }
+        }
     }
 
     func sendCtrlC() {
         let payload = ["type": "key", "data": "\u{03}"]
-        guard let data = try? JSONSerialization.data(withJSONObject: payload) else { return }
-        task?.send(.data(data)) { _ in }
+        if let data = try? JSONSerialization.data(withJSONObject: payload) {
+            task?.send(.data(data)) { _ in }
+        }
     }
 
-    func clearBuffer() {
-        outputBuffer = ""
-    }
+    func clearBuffer() { outputBuffer = "" }
 }

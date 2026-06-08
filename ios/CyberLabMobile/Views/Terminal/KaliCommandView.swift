@@ -12,18 +12,27 @@ struct KaliCommandView: View {
             // Status bar
             HStack(spacing: 8) {
                 Circle()
-                    .fill(ws.isConnected ? Color.green : Color.red)
+                    .fill(statusColor)
                     .frame(width: 8, height: 8)
-                Text(ws.isConnected ? "RELAY CONNECTED" : "DISCONNECTED")
+                Text(statusLabel)
                     .font(.system(size: 11, weight: .bold, design: .monospaced))
-                    .foregroundColor(ws.isConnected ? .green : .red)
+                    .foregroundColor(statusColor)
                 Spacer()
-                Button("CTRL+C") { ws.sendCtrlC() }
-                    .font(.system(size: 11, weight: .bold, design: .monospaced))
-                    .foregroundColor(.orange)
-                    .padding(.horizontal, 8).padding(.vertical, 3)
-                    .background(Color.orange.opacity(0.15))
-                    .clipShape(Capsule())
+                if ws.state == .disconnected {
+                    Button("RECONNECT") { ws.connect() }
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundColor(.cyan)
+                        .padding(.horizontal, 8).padding(.vertical, 3)
+                        .background(Color.cyan.opacity(0.15))
+                        .clipShape(Capsule())
+                } else {
+                    Button("CTRL+C") { ws.sendCtrlC() }
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundColor(.orange)
+                        .padding(.horizontal, 8).padding(.vertical, 3)
+                        .background(Color.orange.opacity(0.15))
+                        .clipShape(Capsule())
+                }
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
             .background(Color(white: 0.08))
@@ -144,9 +153,25 @@ struct KaliCommandView: View {
             .background(Color(white: 0.06))
         }
         .background(Color.black)
-        .onAppear { ws.connect() }
+        .onAppear { if ws.state == .disconnected { ws.connect() } }
         .sheet(isPresented: $showSaveFinding) {
             KaliResultsView(command: customCmd, output: ws.outputBuffer)
+        }
+    }
+
+    private var statusColor: Color {
+        switch ws.state {
+        case .connected:    return .green
+        case .connecting:   return .yellow
+        case .disconnected: return .red
+        }
+    }
+
+    private var statusLabel: String {
+        switch ws.state {
+        case .connected:    return "RELAY CONNECTED"
+        case .connecting:   return "CONNECTING..."
+        case .disconnected: return "DISCONNECTED — tap Reconnect"
         }
     }
 
