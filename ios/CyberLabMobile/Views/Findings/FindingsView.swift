@@ -141,6 +141,7 @@ struct FindingsView: View {
             }
             cacheManager.store(findings)
             HapticFeedback.success()
+            RankManager.shared.awardXP(for: .findingTriaged)
         } else {
             HapticFeedback.error()
         }
@@ -315,11 +316,15 @@ struct FindingDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button {
-                    showCVSSCalculator = true
+                Menu {
+                    Button {
+                        showCVSSCalculator = true
+                    } label: {
+                        Label("CVSS Calculator", systemImage: "function")
+                    }
+                    IntelCardShareButton(finding: finding)
                 } label: {
-                    Label("CVSS Calc", systemImage: "function")
-                        .foregroundColor(.cyberGreen)
+                    Image(systemName: "ellipsis.circle").foregroundColor(.cyberGreen)
                 }
             }
         }
@@ -343,6 +348,7 @@ struct FindingDetailView: View {
         let req = UpdateFindingRequest(status: selectedStatus, severity: nil, remediation: nil)
         if let _: Finding = try? await client.request(Endpoints.updateFinding(finding.id, req)) {
             HapticFeedback.success()
+            RankManager.shared.awardXP(for: .findingTriaged)
         } else {
             HapticFeedback.error()
         }

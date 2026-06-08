@@ -29,6 +29,16 @@ struct OSINTView: View {
     private let client = APIClient.shared
 
     var body: some View {
+        BiometricGateView(section: "osint", label: "OSINT Results") {
+            gatedContent
+        }
+        .navigationTitle("OSINT")
+        .navigationBarTitleDisplayMode(.inline)
+        .task { await loadRecent() }
+        .onDisappear { pollTimer?.invalidate() }
+    }
+
+    private var gatedContent: some View {
         ZStack {
             Color.cyberBackground.ignoresSafeArea()
             ScrollView {
@@ -50,10 +60,6 @@ struct OSINTView: View {
                 .padding(16)
             }
         }
-        .navigationTitle("OSINT")
-        .navigationBarTitleDisplayMode(.inline)
-        .task { await loadRecent() }
-        .onDisappear { pollTimer?.invalidate() }
     }
 
     private var targetHeader: some View {

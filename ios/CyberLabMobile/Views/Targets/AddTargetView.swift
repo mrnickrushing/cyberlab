@@ -75,6 +75,7 @@ struct AddTargetView: View {
                 tags: nil
             )
             let _: Target = try await client.request(Endpoints.createTarget(req))
+            RankManager.shared.awardXP(for: .targetAdded)
             onCreated()
             dismiss()
         } catch let e as APIError {

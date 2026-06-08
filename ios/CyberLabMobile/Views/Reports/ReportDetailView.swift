@@ -10,7 +10,9 @@ struct ReportDetailView: View {
     @State private var isExporting = false
     @State private var exportURL: URL?
     @State private var showShareSheet = false
+    @AppStorage("reportsExportedCount") private var reportsExported = 0
     private let client = APIClient.shared
+    private let lockManager = BiometricLockManager.shared
 
     var body: some View {
         ZStack {
@@ -326,10 +328,18 @@ struct ReportDetailView: View {
 
     @MainActor
     private func exportPDF(_ report: FullReport) async {
+        if lockManager.isLocked("reports") {
+            let ok = await lockManager.authenticate(reason: "Unlock report export")
+            guard ok else { HapticFeedback.error(); return }
+        }
         isExporting = true
         exportURL = await PDFExporter.generate(report: report)
         isExporting = false
-        if exportURL != nil { showShareSheet = true }
+        if exportURL != nil {
+            showShareSheet = true
+            reportsExported += 1
+            RankManager.shared.awardXP(for: .reportExported)
+        }
     }
 }
 

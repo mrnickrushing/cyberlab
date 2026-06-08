@@ -590,6 +590,9 @@ struct NewScanSheet: View {
             )
             let _: ScanJob = try await client.request(Endpoints.createScan(req))
             HapticFeedback.success()
+            SoundManager.shared.play(.scanStart)
+            let targetName = targets.first { $0.id == selectedTargetId }?.name ?? "Target"
+            LiveActivityManager.shared.startScanActivity(targetName: targetName)
             onCreated()
             dismiss()
         } catch let e as APIError {

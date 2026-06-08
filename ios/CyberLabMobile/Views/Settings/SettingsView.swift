@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var authManager: AuthManager
     @EnvironmentObject var biometricManager: BiometricAuthManager
+    @StateObject private var lockManager = BiometricLockManager.shared
+    @AppStorage("soundEnabled") private var soundEnabled = true
     @State private var serverURL = ""
     @State private var showServerURLEditor = false
     @State private var savedMessage = ""
@@ -82,9 +84,58 @@ struct SettingsView: View {
                                 Image(systemName: biometricManager.biometricSystemImage)
                                     .foregroundColor(.cyberGreen)
                             }
+
+                            Toggle(isOn: $lockManager.isEnabled) {
+                                Label("Per-Section Lock", systemImage: "lock.shield")
+                                    .foregroundColor(.white)
+                            }
+                            .tint(.cyberGreen)
+
+                            if lockManager.isEnabled {
+                                ForEach(BiometricLockManager.allSections, id: \.key) { section in
+                                    Toggle(isOn: Binding(
+                                        get: { lockManager.lockedSections.contains(section.key) },
+                                        set: { lockManager.toggleSection(section.key, on: $0) }
+                                    )) {
+                                        Text(section.label)
+                                            .font(.system(size: 14))
+                                            .foregroundColor(.white.opacity(0.85))
+                                    }
+                                    .tint(.cyberGreen)
+                                }
+                            }
                         } header: {
                             Text("Security")
+                        } footer: {
+                            if lockManager.isEnabled {
+                                Text("Selected sections require a fresh \(biometricManager.biometricLabel) check each time.")
+                            }
                         }
+                    }
+
+                    // Operator
+                    Section {
+                        NavigationLink {
+                            OperatorProfileView()
+                        } label: {
+                            Label("Operator Profile", systemImage: "shield.lefthalf.filled")
+                                .foregroundColor(.white)
+                        }
+                    } header: {
+                        Text("Progression")
+                    }
+
+                    // Terminal SFX
+                    Section {
+                        Toggle(isOn: $soundEnabled) {
+                            Label("Terminal SFX", systemImage: "speaker.wave.2.fill")
+                                .foregroundColor(.white)
+                        }
+                        .tint(.cyberGreen)
+                    } header: {
+                        Text("Sound")
+                    } footer: {
+                        Text("Plays system sounds on scan start, completion, and critical findings.")
                     }
 
                     // Automation

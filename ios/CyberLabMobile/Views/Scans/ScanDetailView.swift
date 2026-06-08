@@ -11,6 +11,8 @@ struct ScanDetailView: View {
     @State private var showComparePicker = false
     @State private var compareScan: ScanJob?
     @State private var allTargetScans: [ScanJob] = []
+    @State private var showTerminal = false
+    @State private var didHandleCompletion = false
     private let client = APIClient.shared
 
     var body: some View {
@@ -24,6 +26,23 @@ struct ScanDetailView: View {
                 ScrollView {
                     VStack(spacing: 16) {
                         ScanJobCard(scan: scan)
+
+                        Button {
+                            showTerminal = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "terminal.fill")
+                                Text("Live Terminal")
+                                    .font(.system(size: 14, weight: .semibold))
+                            }
+                            .foregroundColor(.cyberGreen)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .background(Color.cyberGreen.opacity(0.1))
+                            .cornerRadius(10)
+                            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cyberGreen.opacity(0.4), lineWidth: 1))
+                        }
+
                         if let parsed = result?.parsedData {
                             ToolResultCard(tool: scan.tool, parsed: parsed)
                         }
@@ -80,6 +99,11 @@ struct ScanDetailView: View {
                 )
             }
         }
+        .sheet(isPresented: $showTerminal) {
+            if let scan {
+                TerminalStreamView(scanId: scanId, tool: scan.tool, initialRawOutput: result?.rawOutput ?? "")
+            }
+        }
         .navigationDestination(isPresented: Binding(
             get: { compareScan != nil },
             set: { if !$0 { compareScan = nil } }
@@ -96,10 +120,29 @@ struct ScanDetailView: View {
             async let r: ScanResult? = try? client.request(Endpoints.scanResults(scanId))
             scan = try await s
             result = await r
+            handleCompletionIfNeeded()
         } catch {
             self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
         }
         isLoading = false
+    }
+
+    private func handleCompletionIfNeeded() {
+        guard let scan, !didHandleCompletion else { return }
+        guard scan.status == .completed || scan.status == .failed else { return }
+        didHandleCompletion = true
+
+        let criticals = (result?.parsedData?.findings ?? []).contains { $0.severityEnum == .critical }
+
+        if scan.status == .completed {
+            SoundManager.shared.play(.scanComplete)
+            RankManager.shared.awardXP(for: .scanCompleted)
+            if criticals {
+                SoundManager.shared.play(.criticalFinding)
+                RankManager.shared.awardXP(for: .criticalFinding)
+            }
+        }
+        LiveActivityManager.shared.endScanActivity(didFindCriticals: criticals)
     }
 
     private func loadSiblingScans(tool: String, targetId: String) async {
