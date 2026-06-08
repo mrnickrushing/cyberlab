@@ -108,6 +108,10 @@
 		CC6100000000000000000001 /* ScanHistoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6000000000000000000001 /* ScanHistoryCache.swift */; };
 		CC6100000000000000000002 /* ScanHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6000000000000000000002 /* ScanHistoryView.swift */; };
 		CC6100000000000000000003 /* FindingNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6000000000000000000003 /* FindingNotesView.swift */; };
+		CC7100000000000000000001 /* KaliWSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7000000000000000000001 /* KaliWSManager.swift */; };
+		CC7100000000000000000002 /* KaliCommandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7000000000000000000002 /* KaliCommandView.swift */; };
+		CC7100000000000000000003 /* KaliResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7000000000000000000003 /* KaliResultsView.swift */; };
+		CC7100000000000000000004 /* ANSIStripper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7000000000000000000004 /* ANSIStripper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -216,6 +220,10 @@
 		CC6000000000000000000001 /* ScanHistoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanHistoryCache.swift; sourceTree = "<group>"; };
 		CC6000000000000000000002 /* ScanHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanHistoryView.swift; sourceTree = "<group>"; };
 		CC6000000000000000000003 /* FindingNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindingNotesView.swift; sourceTree = "<group>"; };
+		CC7000000000000000000001 /* KaliWSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliWSManager.swift; sourceTree = "<group>"; };
+		CC7000000000000000000002 /* KaliCommandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliCommandView.swift; sourceTree = "<group>"; };
+		CC7000000000000000000003 /* KaliResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KaliResultsView.swift; sourceTree = "<group>"; };
+		CC7000000000000000000004 /* ANSIStripper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ANSIStripper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -438,6 +446,8 @@
 				CC3000000000000000000006 /* CVESearch.swift */,
 				CC3000000000000000000007 /* SSHTerminalManager.swift */,
 				CC6000000000000000000001 /* ScanHistoryCache.swift */,
+				CC7000000000000000000001 /* KaliWSManager.swift */,
+				CC7000000000000000000004 /* ANSIStripper.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -548,6 +558,8 @@
 			children = (
 				CC4000000000000000000001 /* KaliTerminalView.swift */,
 				CC4000000000000000000002 /* KaliTerminalWrapperView.swift */,
+				CC7000000000000000000002 /* KaliCommandView.swift */,
+				CC7000000000000000000003 /* KaliResultsView.swift */,
 			);
 			path = Terminal;
 			sourceTree = "<group>";
@@ -765,6 +777,8 @@
 				CC2100000000000000000009 /* NetworkHubView.swift in Sources */,
 				CC4100000000000000000001 /* KaliTerminalView.swift in Sources */,
 				CC4100000000000000000002 /* KaliTerminalWrapperView.swift in Sources */,
+				CC7100000000000000000002 /* KaliCommandView.swift in Sources */,
+				CC7100000000000000000003 /* KaliResultsView.swift in Sources */,
 				CC3100000000000000000001 /* CertTransparencyScanner.swift in Sources */,
 				CC3100000000000000000002 /* HTTPHeadersInspector.swift in Sources */,
 				CC3100000000000000000003 /* PassiveDNSScanner.swift in Sources */,
@@ -786,6 +800,8 @@
 				CC6100000000000000000001 /* ScanHistoryCache.swift in Sources */,
 				CC6100000000000000000002 /* ScanHistoryView.swift in Sources */,
 				CC6100000000000000000003 /* FindingNotesView.swift in Sources */,
+				CC7100000000000000000001 /* KaliWSManager.swift in Sources */,
+				CC7100000000000000000004 /* ANSIStripper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
