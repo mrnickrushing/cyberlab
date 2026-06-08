@@ -15,7 +15,7 @@ enum FindingStatus: String, Codable, CaseIterable {
     case falsePositive = "false_positive"
 }
 
-struct Finding: Codable, Identifiable {
+struct Finding: Codable, Identifiable, Hashable {
     let id: String
     let userId: String
     let targetId: String
