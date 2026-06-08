@@ -35,5 +35,5 @@ struct RefreshTokenResponse: Codable {
 
 struct RegisterDeviceRequest: Codable {
     let deviceToken: String
-    let label: String
+    let label: String?
 }

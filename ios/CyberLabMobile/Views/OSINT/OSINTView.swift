@@ -70,7 +70,7 @@ struct OSINTView: View {
                     .foregroundColor(.cyberGreen.opacity(0.7))
             }
             Spacer()
-            StatusBadge(text: target.type.uppercased(), color: .cyan)
+            StatusBadge(text: target.type.rawValue.uppercased(), color: .cyan)
         }
         .padding()
         .background(Color.cyberSurface)
@@ -140,7 +140,7 @@ struct OSINTView: View {
 // ─── Per-tool card ────────────────────────────────────────────────────────────
 
 struct OSINTToolCard: View {
-    let ot: OSINTTool
+    fileprivate let ot: OSINTTool
     let scan: ScanJob?
     let result: ScanResult?
     let isExpanded: Bool

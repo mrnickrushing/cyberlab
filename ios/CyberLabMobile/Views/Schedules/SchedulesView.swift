@@ -99,12 +99,12 @@ struct SchedulesView: View {
 
     private func toggleSchedule(_ s: Schedule) async {
         let req = UpdateScheduleRequest(enabled: !s.enabled)
-        _ = try? await client.request(Endpoints.updateSchedule(s.id, req))
+        _ = try? await client.request(Endpoints.updateSchedule(s.id, req)) as EmptyResponse?
         await load()
     }
 
     private func deleteSchedule(_ s: Schedule) async {
-        _ = try? await client.request(Endpoints.deleteSchedule(s.id))
+        _ = try? await client.request(Endpoints.deleteSchedule(s.id)) as EmptyResponse?
         schedules.removeAll { $0.id == s.id }
     }
 }
