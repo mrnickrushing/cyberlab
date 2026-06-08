@@ -2,20 +2,23 @@ workflows:
 
   # ─────────────────────────────────────────────────────────────────
   # Workflow 1: Development / Ad Hoc
-  # Triggers on every push to main.
-  # Produces a signed IPA you can install directly on your device.
+  # Triggered manually. Produces a signed IPA — useful if you ever
+  # have a Mac (or OTA install tooling) to side-load builds without
+  # waiting on TestFlight processing. Auto-triggering is disabled
+  # since ios-release now covers every push to main via TestFlight.
+  # Uncomment the triggering block below to re-enable it on push.
   # ─────────────────────────────────────────────────────────────────
   ios-dev:
     name: CyberLab iOS — Dev Build (Ad Hoc)
     instance_type: mac_mini_m2
     max_build_duration: 60
 
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: main
-          include: true
+    # triggering:
+    #   events:
+    #     - push
+    #   branch_patterns:
+    #     - pattern: main
+    #       include: true
 
     integrations:
       app_store_connect: CyberLab ASC Key
@@ -55,21 +58,21 @@ workflows:
 
   # ─────────────────────────────────────────────────────────────────
   # Workflow 2: App Store Release
-  # Triggered manually. Submits to TestFlight automatically.
-  # Uncomment the triggering block to also fire on version tags.
+  # Triggers on every push to main. Builds, signs for App Store
+  # distribution, and submits straight to TestFlight — no Mac needed
+  # to install builds; just push and check TestFlight on your device.
   # ─────────────────────────────────────────────────────────────────
   ios-release:
     name: CyberLab iOS — App Store Release
     instance_type: mac_mini_m2
     max_build_duration: 90
 
-    # Uncomment to trigger on version tags (e.g. v1.2.0):
-    # triggering:
-    #   events:
-    #     - tag
-    #   tag_patterns:
-    #     - pattern: 'v*'
-    #       include: true
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
 
     integrations:
       # Add your App Store Connect API key in Codemagic UI →
