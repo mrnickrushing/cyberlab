@@ -77,6 +77,7 @@ struct ScansView: View {
                     if hasActiveScans {
                         HStack(spacing: 4) {
                             Circle().fill(Color.cyberGreen).frame(width: 6, height: 6)
+                                .pulsingGlow(.cyberGreen)
                             Text("Live").font(.system(size: 11, design: .monospaced)).foregroundColor(.cyberGreen)
                         }
                     }

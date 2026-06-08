@@ -124,12 +124,14 @@ struct SecurityScoreCard: View {
                     .stroke(color, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .frame(width: 90, height: 90)
                     .rotationEffect(.degrees(-90))
+                    .neonGlow(color, radius: 6)
                 Text("\(score)%")
                     .font(.system(size: 14, weight: .bold, design: .monospaced))
                     .foregroundColor(color)
             }
         }
         .cyberCard()
+        .hudFrame(color: color.opacity(0.6))
     }
     var scoreLabel: String {
         if score >= 80 { return "SECURE" }

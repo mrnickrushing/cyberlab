@@ -17,6 +17,7 @@ struct LoginView: View {
     var body: some View {
         ZStack {
             Color.cyberBackground.ignoresSafeArea()
+                .scanlines(beam: true, beamColor: .cyberGreen)
 
             ScrollView {
                 VStack(spacing: 32) {
@@ -25,12 +26,14 @@ struct LoginView: View {
                         Image(systemName: "terminal.fill")
                             .font(.system(size: 48))
                             .foregroundColor(.cyberGreen)
+                            .neonGlow(.cyberGreen, radius: 12)
                         Text("CyberLab")
                             .font(.system(size: 32, weight: .bold, design: .monospaced))
                             .foregroundColor(.white)
+                            .glitchEffect()
                         Text("SECURITY OPERATIONS")
                             .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                            .foregroundColor(.cyberGreen)
+                            .foregroundColor(.cyberCyan)
                             .tracking(4)
                     }
                     .padding(.top, 60)
@@ -109,6 +112,7 @@ struct LoginView: View {
                             .background(isLoading || !isFormValid ? Color.cyberGreen.opacity(0.4) : Color.cyberGreen)
                             .foregroundColor(.black)
                             .cornerRadius(8)
+                            .neonGlow(.cyberGreen, radius: isLoading || !isFormValid ? 0 : 9)
                         }
                         .disabled(isLoading || !isFormValid)
 
