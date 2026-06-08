@@ -27,7 +27,7 @@ struct ScheduleFlags: Codable {
     let flags: String?
 }
 
-struct CronPreset: Identifiable {
+struct CronPreset: Identifiable, Hashable {
     let id = UUID()
     let label: String
     let value: String

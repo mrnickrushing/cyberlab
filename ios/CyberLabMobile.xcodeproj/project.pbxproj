@@ -23,6 +23,7 @@
 		BB000000000000000000020D /* BiometricAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010D /* BiometricAuthManager.swift */; };
 		BB000000000000000000020E /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010E /* KeychainManager.swift */; };
 		BB000000000000000000020F /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000010F /* MainTabView.swift */; };
+		BB000000000000000000021E /* BootSequenceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011E /* BootSequenceView.swift */; };
 		BB0000000000000000000210 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000110 /* LoginView.swift */; };
 		BB0000000000000000000211 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000111 /* DashboardView.swift */; };
 		BB0000000000000000000212 /* TargetsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000112 /* TargetsView.swift */; };
@@ -72,6 +73,7 @@
 		BB000000000000000000010D /* BiometricAuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricAuthManager.swift; sourceTree = "<group>"; };
 		BB000000000000000000010E /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
 		BB000000000000000000010F /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		BB000000000000000000011E /* BootSequenceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BootSequenceView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000110 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000111 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000112 /* TargetsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TargetsView.swift; sourceTree = "<group>"; };
@@ -190,6 +192,7 @@
 			isa = PBXGroup;
 			children = (
 				BB000000000000000000010F /* MainTabView.swift */,
+				BB000000000000000000011E /* BootSequenceView.swift */,
 				BB0000000000000000000014 /* Login */,
 				BB0000000000000000000015 /* Dashboard */,
 				BB0000000000000000000016 /* Targets */,
@@ -421,6 +424,7 @@
 				BB000000000000000000020D /* BiometricAuthManager.swift in Sources */,
 				BB000000000000000000020E /* KeychainManager.swift in Sources */,
 				BB000000000000000000020F /* MainTabView.swift in Sources */,
+				BB000000000000000000021E /* BootSequenceView.swift in Sources */,
 				BB0000000000000000000210 /* LoginView.swift in Sources */,
 				BB0000000000000000000211 /* DashboardView.swift in Sources */,
 				BB0000000000000000000212 /* TargetsView.swift in Sources */,
