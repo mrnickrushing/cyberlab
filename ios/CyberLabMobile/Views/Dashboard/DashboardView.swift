@@ -209,7 +209,8 @@ struct SeverityBar: View {
 
 struct LabHealthCard: View {
     let health: LabHealth
-    var statusColor: Color { health.status == "healthy" ? .cyberGreen : .orange }
+    var statusColor: Color { health.apiReachable ? .cyberGreen : .red }
+    var statusLabel: String { health.apiReachable ? "ONLINE" : "OFFLINE" }
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 6) {
@@ -218,32 +219,23 @@ struct LabHealthCard: View {
                     .foregroundColor(.white.opacity(0.5))
                 HStack(spacing: 6) {
                     Circle().fill(statusColor).frame(width: 8, height: 8)
-                    Text(health.status.uppercased())
+                        .pulsingGlow(statusColor)
+                    Text(statusLabel)
                         .font(.system(size: 13, weight: .bold, design: .monospaced))
                         .foregroundColor(statusColor)
                 }
             }
             Spacer()
-            HStack(spacing: 16) {
-                HealthIndicator(label: "Worker", isOk: health.workerConnected)
-                HealthIndicator(label: "DB", isOk: health.dbConnected)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text("\(health.workerQueueDepth)")
+                    .font(.system(size: 20, weight: .bold, design: .monospaced))
+                    .foregroundColor(health.workerQueueDepth > 0 ? .orange : .cyberGreen)
+                Text("QUEUED JOBS")
+                    .font(.system(size: 9, weight: .medium, design: .monospaced))
+                    .foregroundColor(.white.opacity(0.4))
             }
         }
         .cyberCard()
-    }
-}
-
-struct HealthIndicator: View {
-    let label: String
-    let isOk: Bool
-    var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: isOk ? "checkmark.circle.fill" : "xmark.circle.fill")
-                .foregroundColor(isOk ? .cyberGreen : .red)
-            Text(label)
-                .font(.system(size: 10))
-                .foregroundColor(.white.opacity(0.4))
-        }
     }
 }
 
