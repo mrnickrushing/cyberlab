@@ -1,6 +1,6 @@
 import SwiftUI
 
-private struct OSINTTool: Identifiable {
+fileprivate struct OSINTTool: Identifiable {
     let id: String
     let tool: String
     let label: String
@@ -377,7 +377,7 @@ struct IPInfoResultView: View {
             }
             Divider().background(Color.cyberBorder)
             osintKV("IP",       parsed.ip)
-            osintKV("Hostname", parsed.hostname)
+            osintKV("Hostname", parsed.host)
             osintKV("Org/ASN",  parsed.org)
             osintKV("Timezone", parsed.timezone)
             osintKV("Postal",   parsed.postal)

@@ -32,8 +32,3 @@ struct RefreshTokenRequest: Codable {
 struct RefreshTokenResponse: Codable {
     let token: String
 }
-
-struct RegisterDeviceRequest: Codable {
-    let deviceToken: String
-    let label: String?
-}

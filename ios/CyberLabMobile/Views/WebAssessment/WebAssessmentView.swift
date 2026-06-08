@@ -1,6 +1,6 @@
 import SwiftUI
 
-private struct WebTool: Identifiable {
+fileprivate struct WebTool: Identifiable {
     let id: String
     let tool: String
     let label: String
