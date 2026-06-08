@@ -59,10 +59,6 @@
 		BB0000000000000000000415 /* WidgetDataBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050D /* WidgetDataBridge.swift */; };
 		BB0000000000000000000416 /* CyberLabIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050E /* CyberLabIntents.swift */; };
 		/* Widget Extension build files */
-		BBAAAA0000000000000000001 /* CyberLabWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAAAA0000000000000000001 /* CyberLabWidget.swift */; };
-		BBAAAA0000000000000000002 /* CyberLabWidgetViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAAAA0000000000000000002 /* CyberLabWidgetViews.swift */; };
-		BBAAAA0000000000000000003 /* CyberLabWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBAAAA0000000000000000003 /* CyberLabWidgetBundle.swift */; };
-		BBAAAA0000000000000000004 /* CyberLabWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = BBAAAA0000000000000000000 /* CyberLabWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB000000000000000000021B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011B /* Info.plist */; };
 		BB000000000000000000021C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011C /* Assets.xcassets */; };
 		BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011D /* LocalAuthentication.framework */; };
@@ -70,11 +66,6 @@
 
 /* Begin PBXFileReference section */
 		BB000000000000000000000E /* CyberLabMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CyberLabMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BBAAAA0000000000000000000 /* CyberLabWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CyberLabWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		BBAAAA0000000000000000001 /* CyberLabWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabWidget.swift; sourceTree = "<group>"; };
-		BBAAAA0000000000000000002 /* CyberLabWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabWidgetViews.swift; sourceTree = "<group>"; };
-		BBAAAA0000000000000000003 /* CyberLabWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabWidgetBundle.swift; sourceTree = "<group>"; };
-		BBAAAA0000000000000000005 /* CyberLabWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CyberLabWidget.entitlements; sourceTree = "<group>"; };
 		BB0000000000000000000100 /* CyberLabMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabMobileApp.swift; sourceTree = "<group>"; };
 		BB0000000000000000000101 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000102 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -148,7 +139,6 @@
 			isa = PBXGroup;
 			children = (
 				BB000000000000000000000F /* CyberLabMobile */,
-				BBAAAA000000000000000000A /* CyberLabWidget */,
 				BB000000000000000000001C /* Frameworks */,
 				BB0000000000000000000003 /* Products */,
 			);
@@ -158,18 +148,12 @@
 			isa = PBXGroup;
 			children = (
 				BB000000000000000000000E /* CyberLabMobile.app */,
-				BBAAAA0000000000000000000 /* CyberLabWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BBAAAA000000000000000000A /* CyberLabWidget */ = {
 			isa = PBXGroup;
 			children = (
-				BBAAAA0000000000000000001 /* CyberLabWidget.swift */,
-				BBAAAA0000000000000000002 /* CyberLabWidgetViews.swift */,
-				BBAAAA0000000000000000003 /* CyberLabWidgetBundle.swift */,
-				BBAAAA0000000000000000005 /* CyberLabWidget.entitlements */,
 			);
 			path = CyberLabWidget;
 			sourceTree = "<group>";
@@ -406,19 +390,7 @@
 		};
 /* End PBXGroup section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		BBAAAA0000000000000000010 /* Embed Foundation Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				BBAAAA0000000000000000004 /* CyberLabWidget.appex in Embed Foundation Extensions */,
-			);
-			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
+
 
 /* Begin PBXNativeTarget section */
 		BB0000000000000000000004 /* CyberLabMobile */ = {
@@ -428,7 +400,6 @@
 				BB0000000000000000000005 /* Sources */,
 				BB0000000000000000000006 /* Resources */,
 				BB0000000000000000000007 /* Frameworks */,
-				BBAAAA0000000000000000010 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -439,13 +410,8 @@
 			productReference = BB000000000000000000000E /* CyberLabMobile.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BBAAAA000000000000000000B /* CyberLabWidget */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BBAAAA000000000000000000E /* Build configuration list for PBXNativeTarget "CyberLabWidget" */;
 			buildPhases = (
-				BBAAAA000000000000000000C /* Sources */,
-				BBAAAA000000000000000000D /* Resources */,
-				BBAAAA000000000000000000F /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -453,7 +419,6 @@
 			);
 			name = CyberLabWidget;
 			productName = CyberLabWidget;
-			productReference = BBAAAA0000000000000000000 /* CyberLabWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -469,7 +434,6 @@
 					BB0000000000000000000004 = {
 						CreatedOnToolsVersion = 15.0;
 					};
-					BBAAAA000000000000000000B = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
@@ -488,7 +452,6 @@
 			projectRoot = "";
 			targets = (
 				BB0000000000000000000004 /* CyberLabMobile */,
-				BBAAAA000000000000000000B /* CyberLabWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -502,14 +465,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BBAAAA000000000000000000D /* Resources (Widget) */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BBAAAA000000000000000000F /* Frameworks (Widget) */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -577,13 +538,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BBAAAA000000000000000000C /* Sources (Widget) */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBAAAA0000000000000000001 /* CyberLabWidget.swift in Sources */,
-				BBAAAA0000000000000000002 /* CyberLabWidgetViews.swift in Sources */,
-				BBAAAA0000000000000000003 /* CyberLabWidgetBundle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,7 +716,6 @@
 			};
 			name = Release;
 		};
-		BBAAAA000000000000000000G /* Debug (Widget) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -787,7 +743,6 @@
 			};
 			name = Debug;
 		};
-		BBAAAA000000000000000000H /* Release (Widget) */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -836,11 +791,8 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BBAAAA000000000000000000E /* Build configuration list for PBXNativeTarget "CyberLabWidget" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BBAAAA000000000000000000G /* Debug */,
-				BBAAAA000000000000000000H /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
