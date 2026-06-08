@@ -16,6 +16,7 @@ class KaliWSManager: ObservableObject {
 
     private var task: URLSessionWebSocketTask?
     private var reconnectTask: Task<Void, Never>?
+    private var pingTask: Task<Void, Never>?
     private let url = URL(string: "wss://terminal.vitallity.org")!
     private var isConnected: Bool { state == .connected }
 
@@ -28,23 +29,35 @@ class KaliWSManager: ObservableObject {
     }
 
     func disconnect() {
-        reconnectTask?.cancel()
-        reconnectTask = nil
+        cancelAllTasks()
         task?.cancel(with: .goingAway, reason: nil)
         task = nil
         state = .disconnected
     }
 
     func reconnect() {
-        disconnect()
+        cancelAllTasks()
+        task?.cancel(with: .goingAway, reason: nil)
+        task = nil
+        state = .disconnected
         Task {
             try? await Task.sleep(nanoseconds: 500_000_000)
             connect()
         }
     }
 
+    private func cancelAllTasks() {
+        reconnectTask?.cancel()
+        reconnectTask = nil
+        pingTask?.cancel()
+        pingTask = nil
+    }
+
     private func openSocket() {
-        let session = URLSession(configuration: .default)
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 60
+        config.timeoutIntervalForResource = .infinity
+        let session = URLSession(configuration: config)
         let ws = session.webSocketTask(with: url)
         task = ws
         ws.resume()
@@ -56,6 +69,31 @@ class KaliWSManager: ObservableObject {
 
         state = .connected
         receive(ws)
+        schedulePing(ws)
+    }
+
+    // Send a ping every 30s to keep the connection alive and detect drops early
+    private func schedulePing(_ ws: URLSessionWebSocketTask) {
+        pingTask?.cancel()
+        pingTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 30_000_000_000) // 30 seconds
+                guard !Task.isCancelled else { break }
+                await MainActor.run {
+                    guard let self, self.task === ws, self.state == .connected else { return }
+                    ws.sendPing { [weak self] error in
+                        Task { @MainActor [weak self] in
+                            guard let self, self.task === ws else { return }
+                            if let error = error {
+                                // Ping failed — socket is dead, reconnect automatically
+                                print("[KaliWS] Ping failed: \(error.localizedDescription). Reconnecting...")
+                                self.reconnect()
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private func receive(_ ws: URLSessionWebSocketTask) {
@@ -71,11 +109,22 @@ class KaliWSManager: ObservableObject {
                     @unknown default: break
                     }
                     self.receive(ws)
-                case .failure:
-                    // Socket closed — relay dropped us (Kali not connected or timeout)
-                    // Don't auto-reconnect in a loop — wait for user to tap Reconnect
-                    self.state = .disconnected
+                case .failure(let error):
+                    // Socket closed or timed out — auto-reconnect
+                    print("[KaliWS] Receive error: \(error.localizedDescription). Auto-reconnecting...")
+                    self.pingTask?.cancel()
+                    self.pingTask = nil
                     self.task = nil
+                    self.state = .disconnected
+                    // Auto-reconnect after 2 seconds
+                    self.reconnectTask = Task {
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        guard !Task.isCancelled else { return }
+                        await MainActor.run {
+                            guard let self = self, self.state == .disconnected else { return }
+                            self.connect()
+                        }
+                    }
                 }
             }
         }
