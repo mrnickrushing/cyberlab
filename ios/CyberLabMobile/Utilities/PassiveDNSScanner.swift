@@ -42,10 +42,16 @@ final class PassiveDNSScanner: ObservableObject {
             async let hostsText = Self.fetchText(path: "hostsearch", query: domain)
             do {
                 let (dnsResult, hostsResult) = try await (dns, hostsText)
-                self.currentDNS = dnsResult
-                self.hosts = Self.parseHosts(hostsResult)
-                if self.hosts.isEmpty && self.currentDNS.isEmpty {
-                    self.errorMessage = "No passive DNS data returned for \(domain)."
+                // HackerTarget returns error text in the body rather than HTTP errors
+                let dnsLower = dnsResult.lowercased()
+                if dnsLower.hasPrefix("error") || dnsLower.contains("api count exceeded") || dnsLower.contains("you have exceeded") {
+                    self.errorMessage = dnsResult.trimmingCharacters(in: .whitespacesAndNewlines)
+                } else {
+                    self.currentDNS = dnsResult
+                    self.hosts = Self.parseHosts(hostsResult)
+                    if self.hosts.isEmpty && self.currentDNS.isEmpty {
+                        self.errorMessage = "No passive DNS data returned for \(domain)."
+                    }
                 }
             } catch {
                 self.errorMessage = "Lookup failed: \(error.localizedDescription)"

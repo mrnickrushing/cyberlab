@@ -63,7 +63,7 @@ struct KaliCommandView: View {
                 }
                 .background(Color.black)
                 .frame(maxHeight: .infinity)
-                .onChange(of: ws.outputBuffer) { _ in
+                .onChange(of: ws.outputBuffer) {
                     if autoScroll {
                         withAnimation { proxy.scrollTo("bottom", anchor: .bottom) }
                     }

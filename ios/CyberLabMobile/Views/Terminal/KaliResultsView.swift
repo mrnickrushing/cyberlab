@@ -7,8 +7,10 @@ struct KaliResultsView: View {
     @Environment(\.dismiss) var dismiss
     @State private var title: String = ""
     @State private var severity: FindingSeverity = .medium
-    @State private var targetId: String = ""
+    @State private var selectedTargetId: String = ""
+    @State private var targets: [Target] = []
     @State private var isSaving = false
+    @State private var isLoadingTargets = true
     @State private var saveError: String?
     @State private var didSave = false
 
@@ -16,6 +18,7 @@ struct KaliResultsView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
+
                     // Command preview
                     VStack(alignment: .leading, spacing: 6) {
                         Text("COMMAND")
@@ -42,6 +45,33 @@ struct KaliResultsView: View {
                             .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
 
+                    // Target picker
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("TARGET")
+                            .font(.system(.caption, design: .monospaced, weight: .bold))
+                            .foregroundColor(.cyberGreen)
+                        if isLoadingTargets {
+                            ProgressView().tint(.cyberGreen)
+                        } else if targets.isEmpty {
+                            Text("No authorized targets — create a target first")
+                                .font(.system(size: 11, design: .monospaced))
+                                .foregroundColor(.orange)
+                        } else {
+                            Picker("Select Target", selection: $selectedTargetId) {
+                                Text("— Select Target —").tag("")
+                                ForEach(targets) { t in
+                                    Text("\(t.name) (\(t.address))").tag(t.id)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .font(.system(.body, design: .monospaced))
+                            .foregroundColor(.cyberGreen)
+                            .padding(10)
+                            .background(Color(white: 0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+
                     // Severity
                     VStack(alignment: .leading, spacing: 8) {
                         Text("SEVERITY")
@@ -54,9 +84,9 @@ struct KaliResultsView: View {
                                 } label: {
                                     Text(s.rawValue.uppercased())
                                         .font(.system(size: 10, weight: .bold, design: .monospaced))
-                                        .foregroundColor(severity == s ? .black : severityColor(s))
+                                        .foregroundColor(severity == s ? .black : s.color)
                                         .padding(.horizontal, 8).padding(.vertical, 4)
-                                        .background(severity == s ? severityColor(s) : severityColor(s).opacity(0.15))
+                                        .background(severity == s ? s.color : s.color.opacity(0.15))
                                         .clipShape(Capsule())
                                 }
                             }
@@ -100,22 +130,36 @@ struct KaliResultsView: View {
                         Button("Save") { Task { await saveFinding() } }
                             .foregroundColor(.cyberGreen)
                             .font(.system(.body, design: .monospaced, weight: .bold))
-                            .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+                            .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || selectedTargetId.isEmpty)
                     }
                 }
             }
-        }
-        .onAppear {
-            title = command.isEmpty ? "Kali Terminal Output" : "[\(command.prefix(40))]"
+            .task {
+                await loadTargets()
+                title = command.isEmpty ? "Kali Terminal Output" : "[\(command.prefix(40))]"
+            }
         }
     }
 
+    private func loadTargets() async {
+        isLoadingTargets = true
+        if let fetched: [Target] = try? await APIClient.shared.request(Endpoints.targets) {
+            targets = fetched.filter { $0.authorizationStatus == .authorized && !$0.isArchived }
+            if let first = targets.first { selectedTargetId = first.id }
+        }
+        isLoadingTargets = false
+    }
+
     func saveFinding() async {
+        guard !selectedTargetId.isEmpty else {
+            saveError = "Select a target first."
+            return
+        }
         isSaving = true
         saveError = nil
         let description = "Command: \(command)\n\nOutput:\n\(String(output.prefix(2000)))"
         let req = CreateFindingRequest(
-            targetId: targetId.isEmpty ? "unknown" : targetId,
+            targetId: selectedTargetId,
             title: title,
             severity: severity,
             description: description,
@@ -123,36 +167,14 @@ struct KaliResultsView: View {
             cvssScore: nil,
             cveId: nil
         )
-        guard let url = URL(string: "\(APIClient.shared.baseURL)/findings") else { isSaving = false; return }
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let token = KeychainManager.load(.accessToken) {
-            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        }
-        request.httpBody = try? JSONEncoder().encode(req)
         do {
-            let (_, response) = try await URLSession.shared.data(for: request)
-            if let http = response as? HTTPURLResponse, http.statusCode == 201 || http.statusCode == 200 {
-                didSave = true
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                dismiss()
-            } else {
-                saveError = "Failed to save. Check target ID and try again."
-            }
+            let _: Finding = try await APIClient.shared.request(Endpoints.createFinding(req))
+            didSave = true
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            dismiss()
         } catch {
             saveError = error.localizedDescription
         }
         isSaving = false
-    }
-
-    func severityColor(_ s: FindingSeverity) -> Color {
-        switch s {
-        case .critical: return .red
-        case .high:     return .orange
-        case .medium:   return .yellow
-        case .low:      return .blue
-        case .info:     return .gray
-        }
     }
 }

@@ -111,10 +111,10 @@ struct AIAssistantView: View {
                 }
                 .padding(.horizontal, 16).padding(.top, 12).padding(.bottom, 8)
             }
-            .onChange(of: messages.count) { _ in
+            .onChange(of: messages.count) {
                 withAnimation { proxy.scrollTo("bottom") }
             }
-            .onChange(of: isLoading) { _ in
+            .onChange(of: isLoading) {
                 withAnimation { proxy.scrollTo("bottom") }
             }
         }

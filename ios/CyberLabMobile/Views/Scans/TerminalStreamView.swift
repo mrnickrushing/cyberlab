@@ -16,6 +16,7 @@ struct TerminalStreamView: View {
     @State private var status: ScanStatus = .running
     @State private var cursorOn = true
     @State private var pollTimer: Timer?
+    @State private var blinkTimer: Timer?
     private let client = APIClient.shared
 
     private var isRunning: Bool { status == .pending || status == .running }
@@ -74,7 +75,7 @@ struct TerminalStreamView: View {
             startPolling()
             Task { await poll() }
         }
-        .onDisappear { pollTimer?.invalidate(); pollTimer = nil }
+        .onDisappear { pollTimer?.invalidate(); pollTimer = nil; blinkTimer?.invalidate(); blinkTimer = nil }
     }
 
     private var headerLine: some View {
@@ -102,7 +103,8 @@ struct TerminalStreamView: View {
     }
 
     private func startBlink() {
-        Timer.scheduledTimer(withTimeInterval: 0.55, repeats: true) { _ in
+        blinkTimer?.invalidate()
+        blinkTimer = Timer.scheduledTimer(withTimeInterval: 0.55, repeats: true) { _ in
             cursorOn.toggle()
         }
     }

@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class ScanHistoryCache: ObservableObject {
     static let shared = ScanHistoryCache()
     private let key = "scan_history_cache"

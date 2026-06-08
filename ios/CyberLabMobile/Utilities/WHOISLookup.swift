@@ -61,7 +61,7 @@ final class WHOISLookup: ObservableObject {
         }
 
         // 1. Submit scan job
-        guard let submitURL = URL(string: "\(base)/api/scans") else { throw URLError(.badURL) }
+        guard let submitURL = URL(string: "\(base)/scans") else { throw URLError(.badURL) }
         var submitReq = URLRequest(url: submitURL)
         submitReq.httpMethod = "POST"
         submitReq.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -77,7 +77,7 @@ final class WHOISLookup: ObservableObject {
         }
 
         // 2. Poll for result
-        guard let pollURL = URL(string: "\(base)/api/scans/\(scanId)") else { throw URLError(.badURL) }
+        guard let pollURL = URL(string: "\(base)/scans/\(scanId)") else { throw URLError(.badURL) }
         var pollReq = URLRequest(url: pollURL)
         pollReq.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         pollReq.timeoutInterval = 30
