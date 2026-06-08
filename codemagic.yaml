@@ -95,11 +95,21 @@ workflows:
     scripts:
       - name: Increment build number from TestFlight
         script: |
-          # 1.0.1 is a new version — build numbers restart from 1
-          LATEST=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null | tr -d '[:space:]')
+          # Query highest build number across ALL versions (Apple requires globally unique build numbers)
+          LATEST=$(app-store-connect get-latest-build-number "$BUNDLE_ID" 2>/dev/null | tr -d '[:space:]')
+          # Fallback to testflight-specific query if the above returns empty
+          if [ -z "$LATEST" ] || [ "$LATEST" = "0" ]; then
+            LATEST=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null | tr -d '[:space:]')
+          fi
           LATEST=${LATEST:-0}
-          BUILD_NUMBER=$(($LATEST + 1))
-          echo "Latest TF build: $LATEST, next: $BUILD_NUMBER"
+          # Use a timestamp-based floor to guarantee we never reuse a number
+          TS_FLOOR=$(date +%s | tail -c 5)
+          if [ "$LATEST" -lt "$TS_FLOOR" ] 2>/dev/null; then
+            BUILD_NUMBER=$TS_FLOOR
+          else
+            BUILD_NUMBER=$(($LATEST + 1))
+          fi
+          echo "Latest known build: $LATEST, next: $BUILD_NUMBER"
           agvtool new-version -all $BUILD_NUMBER
         working_directory: ios
 
