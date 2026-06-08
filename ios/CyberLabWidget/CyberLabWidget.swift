@@ -22,7 +22,7 @@ struct WidgetFinding: Codable {
 
 class WidgetDataBridge {
     static let shared = WidgetDataBridge()
-    private let suiteName = "group.com.cyberlabmobile.app"
+    private let suiteName = "group.cyberlab.com"
     private let key = "cyberlab.widget.snapshot"
 
     private var defaults: UserDefaults? {

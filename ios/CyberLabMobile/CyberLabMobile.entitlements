@@ -4,7 +4,7 @@
 <dict>
     <key>com.apple.security.application-groups</key>
     <array>
-        <string>group.com.cyberlabmobile.app</string>
+        <string>group.cyberlab.com</string>
     </array>
 </dict>
 </plist>
