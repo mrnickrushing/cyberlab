@@ -87,6 +87,18 @@ struct SettingsView: View {
                         }
                     }
 
+                    // Automation
+                    Section {
+                        NavigationLink {
+                            SchedulesView()
+                        } label: {
+                            Label("Scheduled Scans", systemImage: "calendar.badge.clock")
+                                .foregroundColor(.white)
+                        }
+                    } header: {
+                        Text("Automation")
+                    }
+
                     // App Info
                     Section {
                         LabeledContent("Version", value: "1.0.0 (Phase 1)")

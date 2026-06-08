@@ -521,19 +521,19 @@ More endpoints are added each phase. The OpenAPI spec is the source of truth —
 - [ ] **Severity-color consistency pass** — unify `FindingSeverity` and `RiskLevel` color mappings on one shared palette (Critical `#FF3B30`, High `#FF9500`, Medium `#FFCC00`, Low `#34C759`, Info `#8E8E93`)
 - [ ] **"Night City" alt-theme toggle** — optional secondary palette (deep purple/magenta base) selectable from Settings for users who want a more vivid look
 
-### Phase 9 — Push Notifications + Scheduled Scans 🔄
-- [ ] `devices` table — stores APNs device tokens per user (unique per user+token)
-- [ ] `schedules` table — cron-based scan schedules (target, tool, flags, cron expression, enabled flag, last/next run timestamps)
-- [ ] `GET/POST /schedules` + `PATCH/DELETE /schedules/:id` — full CRUD with cron preset validation
-- [ ] `GET /schedules/presets` — returns valid tool list and cron presets for the iOS picker
-- [ ] `POST /devices/register` + `DELETE /devices/unregister` — APNs token lifecycle management
-- [ ] `POST /notify/internal` — internal endpoint (shared secret auth) called by worker to fire APNs pushes after scan completion
-- [ ] APNs push service in API server using `@parse/node-apn` — sends to all user devices; gracefully disabled when `APNS_KEY_ID`/`APNS_TEAM_ID`/`APNS_PRIVATE_KEY` not set
-- [ ] Worker schedule poller — background thread polls `schedules` table every 60s, enqueues due jobs via Celery, updates `last_run_at` + `next_run_at` using `croniter`
-- [ ] Worker notification dispatch — after scan completion/failure, POSTs to API `/notify/internal` with job metadata and critical finding count
-- [ ] iOS APNs registration — `AppDelegate` requests permission, receives device token, registers with API via `DeviceTokenManager`
-- [ ] iOS **SchedulesView** — list with enabled toggle (swipe to delete), create sheet with target/tool/frequency pickers, next-run countdown
-- [ ] iOS **"Scheduled Scans"** accessible from Settings tab
+### Phase 9 — Push Notifications + Scheduled Scans ✅
+- [x] `devices` table — stores APNs device tokens per user (unique per user+token)
+- [x] `schedules` table — cron-based scan schedules (target, tool, flags, cron expression, enabled flag, last/next run timestamps)
+- [x] `GET/POST /schedules` + `PATCH/DELETE /schedules/:id` — full CRUD with cron preset validation
+- [x] `GET /schedules/presets` — returns valid tool list and cron presets for the iOS picker
+- [x] `POST /devices/register` + `DELETE /devices/unregister` — APNs token lifecycle management
+- [x] `POST /notify/internal` — internal endpoint (shared secret auth) called by worker to fire APNs pushes after scan completion
+- [x] APNs push service in API server using `@parse/node-apn` — sends to all user devices; gracefully disabled when `APNS_KEY_ID`/`APNS_TEAM_ID`/`APNS_PRIVATE_KEY` not set
+- [x] Worker schedule poller — background thread polls `schedules` table every 60s, enqueues due jobs via Celery, updates `last_run_at` + `next_run_at` using `croniter`
+- [x] Worker notification dispatch — after scan completion/failure, POSTs to API `/notify/internal` with job metadata and critical finding count
+- [x] iOS APNs registration — `AppDelegate` requests permission, receives device token, registers with API via `DeviceTokenManager`
+- [x] iOS **SchedulesView** — list with enabled toggle (swipe to delete), create sheet with target/tool/frequency pickers, next-run countdown
+- [x] iOS **"Scheduled Scans"** accessible from Settings tab
 
 ### Phase 10 — Scan Diff + CISA KEV Intelligence
 - [ ] Scan result diff engine — compare any two scans of same target/tool: NEW ports/findings, GONE services, CHANGED versions
