@@ -128,13 +128,13 @@ struct NetworkDiffView: View {
     private var diffList: some View {
         List {
             ForEach(diff.filter { $0.status != .unchanged }) { item in
-                DiffRow(item: item)
+                HostDiffRow(item: item)
                     .listRowBackground(Color.cyberSurface)
             }
             if !diff.filter({ $0.status == .unchanged }).isEmpty {
                 Section(header: Text("UNCHANGED").foregroundColor(.white.opacity(0.3)).font(.system(size: 10, weight: .semibold))) {
                     ForEach(diff.filter { $0.status == .unchanged }) { item in
-                        DiffRow(item: item)
+                        HostDiffRow(item: item)
                             .listRowBackground(Color.cyberSurface)
                     }
                 }
@@ -156,7 +156,7 @@ struct NetworkDiffView: View {
     }
 }
 
-struct DiffRow: View {
+struct HostDiffRow: View {
     let item: HostDiff
 
     var statusColor: Color {
