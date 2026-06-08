@@ -107,7 +107,7 @@ workflows:
           fi
           NEXT_BUILD=$(($LATEST_BUILD + 1))
           # Floor at 5 — builds 1-4 already consumed by ASC
-          if [ $NEXT_BUILD -le 5 ]; then NEXT_BUILD=5; fi
+          if [ $NEXT_BUILD -le 7 ]; then NEXT_BUILD=7; fi
           echo "Latest ASC: $LATEST_ASC, Latest TF: $LATEST_TF, Next: $NEXT_BUILD"
           agvtool new-version -all $NEXT_BUILD
         working_directory: ios
