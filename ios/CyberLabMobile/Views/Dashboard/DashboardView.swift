@@ -1,5 +1,6 @@
 import SwiftUI
 import Charts
+import WidgetKit
 
 struct DashboardView: View {
     @EnvironmentObject var authManager: AuthManager
@@ -103,10 +104,42 @@ struct DashboardView: View {
         criticalDismissed = false
         do {
             stats = try await client.request(Endpoints.dashboard)
+            if let stats { writeWidgetSnapshot(stats) }
         } catch {
             self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
         }
         isLoading = false
+    }
+
+    /// Mirror the dashboard summary into shared storage so the home-screen
+    /// and lock-screen widgets can render without network access.
+    private func writeWidgetSnapshot(_ stats: DashboardStats) {
+        let sev = stats.findingsBySeverity
+        let topFindings: [WidgetFinding] = stats.recentScans.prefix(3).map {
+            WidgetFinding(title: $0.targetName ?? $0.targetAddress ?? $0.tool.uppercased(),
+                          severity: severityForScan(stats: stats))
+        }
+        let snapshot = WidgetSnapshot(
+            riskScore: stats.securityScore,
+            criticalCount: sev.critical,
+            highCount: sev.high,
+            topFindings: topFindings,
+            lastScanDate: stats.recentScans.first?.createdAt.isoDate,
+            targetName: stats.recentScans.first?.targetName ?? "CyberLab"
+        )
+        WidgetDataBridge.shared.write(snapshot)
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    /// Pick the most severe bucket present so widget finding dots reflect
+    /// overall posture (the dashboard feed doesn't carry per-scan severity).
+    private func severityForScan(stats: DashboardStats) -> String {
+        let sev = stats.findingsBySeverity
+        if sev.critical > 0 { return "critical" }
+        if sev.high > 0 { return "high" }
+        if sev.medium > 0 { return "medium" }
+        if sev.low > 0 { return "low" }
+        return "info"
     }
 }
 

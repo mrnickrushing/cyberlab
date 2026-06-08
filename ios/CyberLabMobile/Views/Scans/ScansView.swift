@@ -1,8 +1,10 @@
 import SwiftUI
+import WidgetKit
 
 struct ScansView: View {
     @EnvironmentObject var cacheManager: CacheManager
     @State private var scans: [ScanJobWithTarget] = []
+    @State private var completedScanIds: Set<String> = []
     @State private var isLoading = true
     @State private var error: String?
     @State private var filterStatus: ScanStatus? = nil
@@ -102,12 +104,24 @@ struct ScansView: View {
         error = nil
         do {
             scans = try await client.request(Endpoints.scans())
+            refreshWidgetsIfScanCompleted()
         } catch {
             if scans.isEmpty {
                 self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
             }
         }
         isLoading = false
+    }
+
+    /// Reload widget timelines once when a scan first reaches `.completed`,
+    /// so the home-screen risk score reflects fresh results.
+    private func refreshWidgetsIfScanCompleted() {
+        let nowCompleted = Set(scans.filter { $0.status == .completed }.map(\.id))
+        let newlyCompleted = nowCompleted.subtracting(completedScanIds)
+        completedScanIds = nowCompleted
+        if !newlyCompleted.isEmpty {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     /// Pull-to-refresh: clear per-target scan caches, then re-fetch the live list.

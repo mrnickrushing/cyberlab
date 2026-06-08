@@ -56,6 +56,8 @@
 		BB0000000000000000000412 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000509 /* CacheManager.swift */; };
 		BB0000000000000000000413 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050A /* NetworkMonitor.swift */; };
 		BB0000000000000000000414 /* CVSSCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050B /* CVSSCalculatorView.swift */; };
+		BB0000000000000000000415 /* WidgetDataBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050D /* WidgetDataBridge.swift */; };
+		BB0000000000000000000416 /* CyberLabIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050E /* CyberLabIntents.swift */; };
 		BB000000000000000000021B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011B /* Info.plist */; };
 		BB000000000000000000021C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011C /* Assets.xcassets */; };
 		BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011D /* LocalAuthentication.framework */; };
@@ -112,6 +114,9 @@
 		BB0000000000000000000509 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		BB000000000000000000050A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		BB000000000000000000050B /* CVSSCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVSSCalculatorView.swift; sourceTree = "<group>"; };
+		BB000000000000000000050D /* WidgetDataBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetDataBridge.swift; sourceTree = "<group>"; };
+		BB000000000000000000050E /* CyberLabIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabIntents.swift; sourceTree = "<group>"; };
+		BB000000000000000000050F /* CyberLabMobile.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CyberLabMobile.entitlements; sourceTree = "<group>"; };
 		BB000000000000000000011B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB000000000000000000011C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB000000000000000000011D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
@@ -153,12 +158,14 @@
 				BB0000000000000000000101 /* ContentView.swift */,
 				BB000000000000000000011B /* Info.plist */,
 				BB000000000000000000011C /* Assets.xcassets */,
+				BB000000000000000000050F /* CyberLabMobile.entitlements */,
 				BB0000000000000000000010 /* Models */,
 				BB0000000000000000000011 /* Network */,
 				BB0000000000000000000012 /* Auth */,
 				BB0000000000000000000013 /* Views */,
 				BB000000000000000000001B /* Utilities */,
 				BB000000000000000000050C /* Cache */,
+				BB0000000000000000000510 /* Intents */,
 			);
 			path = CyberLabMobile;
 			sourceTree = "<group>";
@@ -291,6 +298,7 @@
 			children = (
 				BB000000000000000000011A /* Extensions.swift */,
 				BB000000000000000000050A /* NetworkMonitor.swift */,
+				BB000000000000000000050D /* WidgetDataBridge.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -363,6 +371,14 @@
 				BB0000000000000000000509 /* CacheManager.swift */,
 			);
 			path = Cache;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000510 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000050E /* CyberLabIntents.swift */,
+			);
+			path = Intents;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -483,6 +499,8 @@
 				BB0000000000000000000412 /* CacheManager.swift in Sources */,
 				BB0000000000000000000413 /* NetworkMonitor.swift in Sources */,
 				BB0000000000000000000414 /* CVSSCalculatorView.swift in Sources */,
+				BB0000000000000000000415 /* WidgetDataBridge.swift in Sources */,
+				BB0000000000000000000416 /* CyberLabIntents.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -611,6 +629,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CyberLabMobile/CyberLabMobile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -636,6 +655,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = CyberLabMobile/CyberLabMobile.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "";

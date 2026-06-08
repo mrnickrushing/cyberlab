@@ -127,6 +127,13 @@ extension String {
 
     var relativeTime: String { formattedDate }
 
+    /// Parses an ISO8601 timestamp into a `Date` (nil if unparseable).
+    var isoDate: Date? {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return isoFormatter.date(from: self)
+    }
+
     var formattedFullDate: String {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]

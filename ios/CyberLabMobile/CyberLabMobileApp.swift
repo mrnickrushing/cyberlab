@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import UserNotifications
+import WidgetKit
 
 @main
 struct CyberLabMobileApp: App {
@@ -78,7 +79,18 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
+        // A push arriving (typically scan completion) means widget data is stale.
+        WidgetCenter.shared.reloadAllTimelines()
         completionHandler([.banner, .sound, .badge])
+    }
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        WidgetCenter.shared.reloadAllTimelines()
+        completionHandler()
     }
 }
 
