@@ -74,31 +74,9 @@ private struct ScanHistoryRow: View {
                     .foregroundColor(.gray.opacity(0.6))
             }
             Spacer()
-            StatusBadge(status: scan.status)
+            StatusBadge(text: scan.status.label, color: scan.status.color)
         }
         .padding(.vertical, 4)
-    }
-}
-
-private struct StatusBadge: View {
-    let status: ScanStatus
-    var body: some View {
-        Text(status.rawValue.uppercased())
-            .font(.system(size: 10, weight: .bold, design: .monospaced))
-            .foregroundColor(statusColor)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(statusColor.opacity(0.15))
-            .clipShape(Capsule())
-    }
-    var statusColor: Color {
-        switch status {
-        case .completed: return .green
-        case .running:   return .cyan
-        case .failed:    return .red
-        case .cancelled: return .orange
-        case .pending:   return .gray
-        }
     }
 }
 

@@ -119,11 +119,11 @@ struct FindingNotesView: View {
             tags: tagList.isEmpty ? nil : tagList
         )
         // Use the same API pattern as the rest of the app
-        guard let url = URL(string: "\(APIConfig.baseURL)/notes") else { isSaving = false; return }
+        guard let url = URL(string: "\(APIClient.shared.baseURL)/notes") else { isSaving = false; return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let token = AuthManager.shared.token {
+        if let token = KeychainManager.load(.accessToken) {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         request.httpBody = try? JSONEncoder().encode(req)

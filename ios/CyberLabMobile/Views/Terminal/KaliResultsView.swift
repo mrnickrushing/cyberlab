@@ -123,11 +123,11 @@ struct KaliResultsView: View {
             cvssScore: nil,
             cveId: nil
         )
-        guard let url = URL(string: "\(APIConfig.baseURL)/findings") else { isSaving = false; return }
+        guard let url = URL(string: "\(APIClient.shared.baseURL)/findings") else { isSaving = false; return }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        if let token = AuthManager.shared.token {
+        if let token = KeychainManager.load(.accessToken) {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         }
         request.httpBody = try? JSONEncoder().encode(req)
