@@ -89,6 +89,7 @@ workflows:
         XCODE_PROJECT: ios/CyberLabMobile.xcodeproj
         XCODE_SCHEME: CyberLabMobile
         BUNDLE_ID: com.cyberlabmobile.app
+        DEVELOPMENT_TEAM: PH4AKDQ4Q7
         # Set in Codemagic UI → App → Environment variables:
         #   DEVELOPMENT_TEAM — Apple Developer Team ID
       xcode: latest
@@ -106,11 +107,35 @@ workflows:
 
       - name: Build App Store IPA
         script: |
-          xcode-project use-profiles --targets CyberLabMobile
+          # Configure signing for main app via profiles, widget uses automatic
+          xcode-project use-profiles
+          # Write export options manually so widget extension doesn't block plist generation
+          cat > /Users/builder/export_options.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>PH4AKDQ4Q7</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.cyberlabmobile.app</key>
+              <string>CyberLab Mobile</string>
+            </dict>
+            <key>signingCertificate</key>
+            <string>Apple Distribution</string>
+          </dict>
+          </plist>
+          EOF
           xcode-project build-ipa \
             --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME" \
-            --config Release
+            --config Release \
+            --export-options-plist /Users/builder/export_options.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
