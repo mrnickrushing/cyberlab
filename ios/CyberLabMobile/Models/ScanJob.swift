@@ -113,6 +113,7 @@ struct ParsedData: Codable {
     let numDistinctUsers: Int?
     let lastReportedAt: String?
     // IPinfo
+    let hostname: String?
     let region: String?
     let loc: String?
     let timezone: String?

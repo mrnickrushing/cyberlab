@@ -21,7 +21,7 @@ enum RiskLevel: String, Codable, CaseIterable {
     case info
 }
 
-struct Target: Codable, Identifiable {
+struct Target: Codable, Identifiable, Hashable {
     let id: String
     let userId: String
     let name: String

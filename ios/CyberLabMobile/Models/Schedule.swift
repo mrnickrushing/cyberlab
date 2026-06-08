@@ -62,7 +62,3 @@ struct UpdateScheduleRequest: Codable {
     }
 }
 
-struct RegisterDeviceRequest: Codable {
-    let deviceToken: String
-    let label: String?
-}

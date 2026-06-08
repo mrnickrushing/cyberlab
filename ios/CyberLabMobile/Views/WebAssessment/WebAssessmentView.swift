@@ -144,7 +144,7 @@ struct WebAssessmentView: View {
 }
 
 struct WebToolCard: View {
-    let wt: WebTool
+    fileprivate let wt: WebTool
     let scan: ScanJob?
     let result: ScanResult?
     let isExpanded: Bool
