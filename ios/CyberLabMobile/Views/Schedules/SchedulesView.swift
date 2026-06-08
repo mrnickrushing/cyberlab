@@ -9,35 +9,33 @@ struct SchedulesView: View {
     @State private var error: String?
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                Color.black.ignoresSafeArea()
+        ZStack {
+            Color.cyberBackground.ignoresSafeArea()
 
-                if isLoading && schedules.isEmpty {
-                    ProgressView().tint(.cyberGreen)
-                } else if schedules.isEmpty {
-                    emptyState
-                } else {
-                    scheduleList
-                }
+            if isLoading && schedules.isEmpty {
+                ProgressView().tint(.cyberGreen)
+            } else if schedules.isEmpty {
+                emptyState
+            } else {
+                scheduleList
             }
-            .navigationTitle("Scheduled Scans")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button { showCreate = true } label: {
-                        Image(systemName: "plus").foregroundColor(.cyberGreen)
-                    }
-                }
-            }
-            .sheet(isPresented: $showCreate) {
-                CreateScheduleView(targets: targets) { _ in
-                    Task { await load() }
-                }
-            }
-            .task { await load() }
-            .refreshable { await load() }
         }
+        .navigationTitle("Scheduled Scans")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button { showCreate = true } label: {
+                    Image(systemName: "plus").foregroundColor(.cyberGreen)
+                }
+            }
+        }
+        .sheet(isPresented: $showCreate) {
+            CreateScheduleView(targets: targets) { _ in
+                Task { await load() }
+            }
+        }
+        .task { await load() }
+        .refreshable { await load() }
     }
 
     private var scheduleList: some View {
@@ -59,7 +57,7 @@ struct SchedulesView: View {
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
-        .background(Color.black)
+        .background(Color.cyberBackground)
     }
 
     private var emptyState: some View {
@@ -202,14 +200,14 @@ struct CreateScheduleView: View {
     @State private var isSaving = false
     @State private var error: String?
 
-    let tools = ["nmap","nuclei","nikto","whatweb","testssl","gobuster",
+    let tools = ["nmap","nuclei","nikto","whatweb","testssl","openssl","gobuster",
                  "amass","subfinder","dns","whois","shodan","virustotal",
                  "abuseipdb","ipinfo","hibp"]
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
-                Color.black.ignoresSafeArea()
+                Color.cyberBackground.ignoresSafeArea()
                 ScrollView {
                     VStack(spacing: 16) {
                         if let error {
