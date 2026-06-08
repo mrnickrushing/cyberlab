@@ -23,21 +23,25 @@ struct MainTabView: View {
                 .tabItem { Label("Networks", systemImage: "network") }
                 .tag(3)
 
+            NetworkHubView()
+                .tabItem { Label("Network", systemImage: "antenna.radiowaves.left.and.right") }
+                .tag(4)
+
             FindingsView()
                 .tabItem { Label("Findings", systemImage: "exclamationmark.triangle") }
-                .tag(4)
+                .tag(5)
 
             ReportsView()
                 .tabItem { Label("Reports", systemImage: "doc.text.magnifyingglass") }
-                .tag(5)
+                .tag(6)
 
             AIAssistantView()
                 .tabItem { Label("AI", systemImage: "brain.head.profile") }
-                .tag(6)
+                .tag(7)
 
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(7)
+                .tag(8)
         }
         .tint(.cyberGreen)
         .overlay(alignment: .top) {

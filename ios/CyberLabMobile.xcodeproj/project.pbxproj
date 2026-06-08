@@ -73,6 +73,17 @@
 		CC0000000000000000000006 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1000000000000000000006 /* SoundManager.swift */; };
 		CC0000000000000000000007 /* BiometricLockManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1000000000000000000007 /* BiometricLockManager.swift */; };
 		CC0000000000000000000008 /* LiveActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1000000000000000000008 /* LiveActivityManager.swift */; };
+		CC2100000000000000000001 /* WiFiScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000010 /* WiFiScanner.swift */; };
+		CC2100000000000000000002 /* SubnetScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000011 /* SubnetScanner.swift */; };
+		CC2100000000000000000003 /* PortScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000012 /* PortScanner.swift */; };
+		CC2100000000000000000004 /* VPNDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000013 /* VPNDetector.swift */; };
+		CC2100000000000000000005 /* WiFiScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000014 /* WiFiScannerView.swift */; };
+		CC2100000000000000000006 /* SubnetSweepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000015 /* SubnetSweepView.swift */; };
+		CC2100000000000000000007 /* PortCheckerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000016 /* PortCheckerView.swift */; };
+		CC2100000000000000000008 /* NetworkStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000017 /* NetworkStatusView.swift */; };
+		CC2100000000000000000009 /* NetworkHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000018 /* NetworkHubView.swift */; };
+		CC2100000000000000000020 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000020 /* SystemConfiguration.framework */; };
+		CC2100000000000000000021 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC2000000000000000000021 /* NetworkExtension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -146,6 +157,17 @@
 		CC1000000000000000000006 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		CC1000000000000000000007 /* BiometricLockManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricLockManager.swift; sourceTree = "<group>"; };
 		CC1000000000000000000008 /* LiveActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityManager.swift; sourceTree = "<group>"; };
+		CC2000000000000000000010 /* WiFiScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiScanner.swift; sourceTree = "<group>"; };
+		CC2000000000000000000011 /* SubnetScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetScanner.swift; sourceTree = "<group>"; };
+		CC2000000000000000000012 /* PortScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortScanner.swift; sourceTree = "<group>"; };
+		CC2000000000000000000013 /* VPNDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNDetector.swift; sourceTree = "<group>"; };
+		CC2000000000000000000014 /* WiFiScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiScannerView.swift; sourceTree = "<group>"; };
+		CC2000000000000000000015 /* SubnetSweepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubnetSweepView.swift; sourceTree = "<group>"; };
+		CC2000000000000000000016 /* PortCheckerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortCheckerView.swift; sourceTree = "<group>"; };
+		CC2000000000000000000017 /* NetworkStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkStatusView.swift; sourceTree = "<group>"; };
+		CC2000000000000000000018 /* NetworkHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHubView.swift; sourceTree = "<group>"; };
+		CC2000000000000000000020 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		CC2000000000000000000021 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +176,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */,
+				CC2100000000000000000020 /* SystemConfiguration.framework in Frameworks */,
+				CC2100000000000000000021 /* NetworkExtension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -270,6 +294,7 @@
 				BB0000000000000000000503 /* Reports */,
 				BB0000000000000000000504 /* Schedules */,
 				BB0000000000000000000505 /* WebAssessment */,
+				CC2200000000000000000001 /* Network */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -346,6 +371,10 @@
 				BB000000000000000000050D /* WidgetDataBridge.swift */,
 				CC1000000000000000000006 /* SoundManager.swift */,
 				CC1000000000000000000007 /* BiometricLockManager.swift */,
+				CC2000000000000000000010 /* WiFiScanner.swift */,
+				CC2000000000000000000011 /* SubnetScanner.swift */,
+				CC2000000000000000000012 /* PortScanner.swift */,
+				CC2000000000000000000013 /* VPNDetector.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -354,6 +383,8 @@
 			isa = PBXGroup;
 			children = (
 				BB000000000000000000011D /* LocalAuthentication.framework */,
+				CC2000000000000000000020 /* SystemConfiguration.framework */,
+				CC2000000000000000000021 /* NetworkExtension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -434,6 +465,18 @@
 				CC1000000000000000000008 /* LiveActivityManager.swift */,
 			);
 			path = LiveActivities;
+			sourceTree = "<group>";
+		};
+		CC2200000000000000000001 /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				CC2000000000000000000018 /* NetworkHubView.swift */,
+				CC2000000000000000000014 /* WiFiScannerView.swift */,
+				CC2000000000000000000015 /* SubnetSweepView.swift */,
+				CC2000000000000000000016 /* PortCheckerView.swift */,
+				CC2000000000000000000017 /* NetworkStatusView.swift */,
+			);
+			path = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -614,6 +657,15 @@
 				CC0000000000000000000006 /* SoundManager.swift in Sources */,
 				CC0000000000000000000007 /* BiometricLockManager.swift in Sources */,
 				CC0000000000000000000008 /* LiveActivityManager.swift in Sources */,
+				CC2100000000000000000001 /* WiFiScanner.swift in Sources */,
+				CC2100000000000000000002 /* SubnetScanner.swift in Sources */,
+				CC2100000000000000000003 /* PortScanner.swift in Sources */,
+				CC2100000000000000000004 /* VPNDetector.swift in Sources */,
+				CC2100000000000000000005 /* WiFiScannerView.swift in Sources */,
+				CC2100000000000000000006 /* SubnetSweepView.swift in Sources */,
+				CC2100000000000000000007 /* PortCheckerView.swift in Sources */,
+				CC2100000000000000000008 /* NetworkStatusView.swift in Sources */,
+				CC2100000000000000000009 /* NetworkHubView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
