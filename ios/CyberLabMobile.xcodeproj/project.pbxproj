@@ -83,21 +83,21 @@
 		BB0000000000000000000118 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000119 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		BB000000000000000000011A /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		BB0000000000000000000300 /* AIAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/AI/AIAssistantView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000301 /* AIChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/AIChat.swift; sourceTree = "<group>"; };
-		BB0000000000000000000302 /* NetworkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkDetailView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000303 /* NetworkDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkDiffView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000304 /* NetworkMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/NetworkMap.swift; sourceTree = "<group>"; };
-		BB0000000000000000000305 /* NetworkTopologyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworkTopologyView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000306 /* NetworksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Networks/NetworksView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000307 /* OSINTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/OSINT/OSINTView.swift; sourceTree = "<group>"; };
-		BB0000000000000000000308 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/PDFExporter.swift; sourceTree = "<group>"; };
-		BB0000000000000000000309 /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Report.swift; sourceTree = "<group>"; };
-		BB000000000000000000030A /* ReportDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/ReportDetailView.swift; sourceTree = "<group>"; };
-		BB000000000000000000030B /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Reports/ReportsView.swift; sourceTree = "<group>"; };
-		BB000000000000000000030C /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models/Schedule.swift; sourceTree = "<group>"; };
-		BB000000000000000000030D /* SchedulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/Schedules/SchedulesView.swift; sourceTree = "<group>"; };
-		BB000000000000000000030E /* WebAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Views/WebAssessment/WebAssessmentView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000300 /* AIAssistantView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000301 /* AIChat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIChat.swift; sourceTree = "<group>"; };
+		BB0000000000000000000302 /* NetworkDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDetailView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000303 /* NetworkDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDiffView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000304 /* NetworkMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMap.swift; sourceTree = "<group>"; };
+		BB0000000000000000000305 /* NetworkTopologyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTopologyView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000306 /* NetworksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworksView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000307 /* OSINTView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSINTView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000308 /* PDFExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFExporter.swift; sourceTree = "<group>"; };
+		BB0000000000000000000309 /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Report.swift; sourceTree = "<group>"; };
+		BB000000000000000000030A /* ReportDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportDetailView.swift; sourceTree = "<group>"; };
+		BB000000000000000000030B /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
+		BB000000000000000000030C /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
+		BB000000000000000000030D /* SchedulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchedulesView.swift; sourceTree = "<group>"; };
+		BB000000000000000000030E /* WebAssessmentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebAssessmentView.swift; sourceTree = "<group>"; };
 		BB000000000000000000011B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB000000000000000000011C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB000000000000000000011D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
@@ -159,6 +159,10 @@
 				BB0000000000000000000107 /* DashboardStats.swift */,
 				BB0000000000000000000108 /* ScanProfile.swift */,
 				BB0000000000000000000109 /* AuditLog.swift */,
+				BB0000000000000000000301 /* AIChat.swift */,
+				BB0000000000000000000304 /* NetworkMap.swift */,
+				BB0000000000000000000309 /* Report.swift */,
+				BB000000000000000000030C /* Schedule.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -193,6 +197,12 @@
 				BB0000000000000000000018 /* Findings */,
 				BB0000000000000000000019 /* Notes */,
 				BB000000000000000000001A /* Settings */,
+				BB0000000000000000000500 /* AI */,
+				BB0000000000000000000501 /* Networks */,
+				BB0000000000000000000502 /* OSINT */,
+				BB0000000000000000000503 /* Reports */,
+				BB0000000000000000000504 /* Schedules */,
+				BB0000000000000000000505 /* WebAssessment */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -270,6 +280,60 @@
 				BB000000000000000000011D /* LocalAuthentication.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+
+		BB0000000000000000000500 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000300 /* AIAssistantView.swift */,
+			);
+			path = AI;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000501 /* Networks */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000302 /* NetworkDetailView.swift */,
+				BB0000000000000000000303 /* NetworkDiffView.swift */,
+				BB0000000000000000000305 /* NetworkTopologyView.swift */,
+				BB0000000000000000000306 /* NetworksView.swift */,
+			);
+			path = Networks;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000502 /* OSINT */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000307 /* OSINTView.swift */,
+			);
+			path = OSINT;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000503 /* Reports */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000308 /* PDFExporter.swift */,
+				BB000000000000000000030A /* ReportDetailView.swift */,
+				BB000000000000000000030B /* ReportsView.swift */,
+			);
+			path = Reports;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000504 /* Schedules */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000030D /* SchedulesView.swift */,
+			);
+			path = Schedules;
+			sourceTree = "<group>";
+		};
+		BB0000000000000000000505 /* WebAssessment */ = {
+			isa = PBXGroup;
+			children = (
+				BB000000000000000000030E /* WebAssessmentView.swift */,
+			);
+			path = WebAssessment;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
