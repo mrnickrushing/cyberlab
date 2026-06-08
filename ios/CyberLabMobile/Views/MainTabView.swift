@@ -1,5 +1,9 @@
 import SwiftUI
 
+extension Notification.Name {
+    static let showCommandPalette = Notification.Name("ShowCommandPalette")
+}
+
 struct MainTabView: View {
     @State private var selectedTab = 0
     @State private var showCommandPalette = false
@@ -19,37 +23,13 @@ struct MainTabView: View {
                 .tabItem { Label("Scans", systemImage: "scanner") }
                 .tag(2)
 
-            NetworksView()
-                .tabItem { Label("Networks", systemImage: "network") }
-                .tag(3)
-
-            NetworkHubView()
-                .tabItem { Label("Network", systemImage: "antenna.radiowaves.left.and.right") }
-                .tag(4)
-
-            FindingsView()
-                .tabItem { Label("Findings", systemImage: "exclamationmark.triangle") }
-                .tag(5)
-
-            ReportsView()
-                .tabItem { Label("Reports", systemImage: "doc.text.magnifyingglass") }
-                .tag(6)
-
-            AIAssistantView()
-                .tabItem { Label("AI", systemImage: "brain.head.profile") }
-                .tag(7)
-
-            ReconHubView()
-                .tabItem { Label("Recon", systemImage: "magnifyingglass.circle") }
-                .tag(8)
-
             KaliTerminalWrapperView()
                 .tabItem { Label("Terminal", systemImage: "terminal") }
-                .tag(9)
+                .tag(3)
 
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(10)
+            MoreMenuView()
+                .tabItem { Label("More", systemImage: "ellipsis.circle") }
+                .tag(4)
         }
         .tint(.cyberGreen)
         .overlay(alignment: .top) {
@@ -59,6 +39,9 @@ struct MainTabView: View {
         }
         .sheet(isPresented: $showCommandPalette) {
             CommandPaletteView()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .showCommandPalette)) { _ in
+            showCommandPalette = true
         }
         .animation(.easeInOut(duration: 0.3), value: networkMonitor.isConnected)
     }

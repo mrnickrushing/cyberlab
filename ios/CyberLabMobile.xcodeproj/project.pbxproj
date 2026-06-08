@@ -104,6 +104,7 @@
 		CC310000000000000000000F /* ReconHubView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC300000000000000000000F /* ReconHubView.swift */; };
 		CC3100000000000000000010 /* PentestChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000010 /* PentestChecklistView.swift */; };
 		CC3100000000000000000011 /* SSHTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000011 /* SSHTerminalView.swift */; };
+		CC5100000000000000000001 /* MoreMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5000000000000000000001 /* MoreMenuView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -208,6 +209,7 @@
 		CC300000000000000000000F /* ReconHubView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReconHubView.swift; sourceTree = "<group>"; };
 		CC3000000000000000000010 /* PentestChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PentestChecklistView.swift; sourceTree = "<group>"; };
 		CC3000000000000000000011 /* SSHTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTerminalView.swift; sourceTree = "<group>"; };
+		CC5000000000000000000001 /* MoreMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreMenuView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -560,6 +562,7 @@
 			children = (
 				CC3000000000000000000010 /* PentestChecklistView.swift */,
 				CC3000000000000000000011 /* SSHTerminalView.swift */,
+				CC5000000000000000000001 /* MoreMenuView.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -770,6 +773,7 @@
 				CC310000000000000000000F /* ReconHubView.swift in Sources */,
 				CC3100000000000000000010 /* PentestChecklistView.swift in Sources */,
 				CC3100000000000000000011 /* SSHTerminalView.swift in Sources */,
+				CC5100000000000000000001 /* MoreMenuView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

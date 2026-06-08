@@ -82,6 +82,11 @@ struct DashboardView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     HStack(spacing: 12) {
+                        Button {
+                            NotificationCenter.default.post(name: .showCommandPalette, object: nil)
+                        } label: {
+                            Image(systemName: "magnifyingglass").foregroundColor(.cyberGreen)
+                        }
                         Button { Task { await loadData() } } label: {
                             Image(systemName: "arrow.clockwise").foregroundColor(.cyberGreen)
                         }
