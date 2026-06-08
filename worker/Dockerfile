@@ -15,13 +15,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     whois \
     whatweb \
     gobuster \
-    nikto \
     git \
     ruby \
+    perl \
+    libnet-ssleay-perl \
     openssl \
     ca-certificates \
     unzip \
     && rm -rf /var/lib/apt/lists/*
+
+# Install nikto from source (not available in Debian Trixie repos)
+RUN git clone --depth 1 https://github.com/sullo/nikto.git /opt/nikto \
+    && ln -s /opt/nikto/program/nikto.pl /usr/local/bin/nikto \
+    && chmod +x /opt/nikto/program/nikto.pl
 
 # Install testssl.sh
 RUN git clone --depth 1 https://github.com/drwetter/testssl.sh.git /opt/testssl.sh \
