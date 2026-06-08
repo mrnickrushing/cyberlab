@@ -87,6 +87,9 @@ struct FindingsView: View {
 
 struct FindingRow: View {
     let finding: Finding
+    @State private var isKEV = false
+    private let client = APIClient.shared
+
     var body: some View {
         HStack(spacing: 10) {
             Rectangle()
@@ -101,6 +104,9 @@ struct FindingRow: View {
                 HStack(spacing: 6) {
                     SeverityBadge(severity: finding.severity)
                     StatusBadge(text: finding.status.label, color: finding.status.color)
+                    if isKEV {
+                        KEVBadge()
+                    }
                     if let cvss = finding.cvssScore {
                         Text("CVSS \(String(format: "%.1f", cvss))")
                             .font(.system(size: 10, design: .monospaced))
@@ -113,6 +119,11 @@ struct FindingRow: View {
             }
         }
         .padding(.vertical, 4)
+        .task {
+            guard let cve = finding.cveId else { return }
+            let resp: KEVCheckResponse? = try? await client.request(Endpoints.kevCheck(cveId: cve))
+            isKEV = resp?.isKnownExploited ?? false
+        }
     }
 }
 
@@ -121,6 +132,8 @@ struct FindingDetailView: View {
     @State private var timeline: [FindingEvent] = []
     @State private var isUpdating = false
     @State private var selectedStatus: FindingStatus
+    @State private var kevEntry: KEVEntry?
+    @State private var kevChecked = false
     private let client = APIClient.shared
 
     init(finding: Finding) {
@@ -144,6 +157,9 @@ struct FindingDetailView: View {
                                     .padding(.horizontal, 6).padding(.vertical, 2)
                                     .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color.cyberGreen.opacity(0.4), lineWidth: 1))
                             }
+                            if kevEntry != nil {
+                                KEVBadge()
+                            }
                             Spacer()
                             if let cvss = finding.cvssScore {
                                 Text("CVSS \(String(format: "%.1f", cvss))")
@@ -161,6 +177,11 @@ struct FindingDetailView: View {
                         }
                     }
                     .cyberCard()
+
+                    // KEV detail panel
+                    if let kev = kevEntry {
+                        KEVDetailCard(entry: kev)
+                    }
 
                     // Status update
                     VStack(alignment: .leading, spacing: 10) {
@@ -231,6 +252,11 @@ struct FindingDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task {
             timeline = (try? await client.request(Endpoints.findingTimeline(finding.id))) ?? []
+            if let cve = finding.cveId, !kevChecked {
+                kevChecked = true
+                let resp: KEVCheckResponse? = try? await client.request(Endpoints.kevCheck(cveId: cve))
+                if resp?.isKnownExploited == true { kevEntry = resp?.entry }
+            }
         }
     }
 

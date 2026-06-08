@@ -8,6 +8,9 @@ struct ScanDetailView: View {
     @State private var error: String?
     @State private var showRaw = false
     @State private var refreshTimer: Timer?
+    @State private var showComparePicker = false
+    @State private var compareScan: ScanJob?
+    @State private var allTargetScans: [ScanJob] = []
     private let client = APIClient.shared
 
     var body: some View {
@@ -27,6 +30,26 @@ struct ScanDetailView: View {
                         if let raw = result?.rawOutput, !raw.isEmpty {
                             RawOutputCard(raw: raw, isExpanded: $showRaw)
                         }
+                        // Compare with another scan
+                        if scan.status == .completed {
+                            Button {
+                                Task { await loadSiblingScans(tool: scan.tool, targetId: scan.targetId) }
+                                showComparePicker = true
+                            } label: {
+                                HStack {
+                                    Image(systemName: "arrow.left.arrow.right")
+                                    Text("Compare With…")
+                                        .font(.system(size: 14, weight: .semibold))
+                                }
+                                .foregroundColor(.cyberCyan)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                                .background(Color.cyberCyan.opacity(0.1))
+                                .cornerRadius(10)
+                                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.cyberCyan.opacity(0.4), lineWidth: 1))
+                            }
+                        }
+
                         if scan.status.isActive {
                             Button("Cancel Scan") {
                                 Task {
@@ -48,6 +71,23 @@ struct ScanDetailView: View {
         .task { await loadData() }
         .onAppear { startPolling() }
         .onDisappear { stopPolling() }
+        .sheet(isPresented: $showComparePicker) {
+            if let scan {
+                ScanComparePicker(
+                    currentScan: scan,
+                    allScans: allTargetScans,
+                    selectedScan: $compareScan
+                )
+            }
+        }
+        .navigationDestination(isPresented: Binding(
+            get: { compareScan != nil },
+            set: { if !$0 { compareScan = nil } }
+        )) {
+            if let scan, let compare = compareScan {
+                ScanDiffView(scanA: scan, scanB: compare)
+            }
+        }
     }
 
     private func loadData() async {
@@ -60,6 +100,12 @@ struct ScanDetailView: View {
             self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
         }
         isLoading = false
+    }
+
+    private func loadSiblingScans(tool: String, targetId: String) async {
+        let scans: [ScanJob] = (try? await client.request(
+            Endpoints.scans(targetId: targetId, status: "completed"))) ?? []
+        allTargetScans = scans.filter { $0.id != scanId && $0.tool == tool }
     }
 
     private func startPolling() {

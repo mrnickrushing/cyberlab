@@ -175,6 +175,17 @@ enum Endpoints {
     // Dashboard
     static var dashboard: APIEndpoint { APIEndpoint(path: "/dashboard") }
 
+    // Scan Diff
+    static func scanDiff(_ id: String, compareId: String) -> APIEndpoint {
+        APIEndpoint(path: "/scans/\(id)/diff/\(compareId)")
+    }
+
+    // CISA KEV
+    static func kevCheck(cveId: String) -> APIEndpoint {
+        APIEndpoint(path: "/kev/\(cveId)")
+    }
+    static var kevCatalog: APIEndpoint { APIEndpoint(path: "/kev") }
+
     // Health
     static var health: APIEndpoint { APIEndpoint(path: "/healthz") }
 }

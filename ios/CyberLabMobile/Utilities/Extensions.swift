@@ -352,3 +352,114 @@ struct StatusBadge: View {
             .cornerRadius(4)
     }
 }
+
+// ─── KEV Badge ─────────────────────────────────────────────────────────────────
+// Shown on any finding whose CVE appears in the CISA Known Exploited
+// Vulnerabilities catalog.
+
+struct KEVBadge: View {
+    @State private var glowing = false
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 8, weight: .bold))
+            Text("ACTIVELY EXPLOITED")
+                .font(.system(size: 8, weight: .black, design: .monospaced))
+                .kerning(0.3)
+        }
+        .foregroundColor(.white)
+        .padding(.horizontal, 6)
+        .padding(.vertical, 3)
+        .background(
+            LinearGradient(
+                colors: [Color.severityCritical, Color.severityCritical.opacity(0.75)],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        )
+        .cornerRadius(4)
+        .shadow(color: .severityCritical.opacity(glowing ? 0.85 : 0.3), radius: glowing ? 7 : 3)
+        .glitchEffect()
+        .onAppear {
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
+                glowing = true
+            }
+        }
+    }
+}
+
+// ─── KEV Detail Card ───────────────────────────────────────────────────────────
+
+struct KEVDetailCard: View {
+    let entry: KEVEntry
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Header
+            HStack(spacing: 8) {
+                Image(systemName: "shield.lefthalf.filled.trianglebadge.exclamationmark")
+                    .font(.system(size: 16))
+                    .foregroundColor(.severityCritical)
+                    .neonGlow(.severityCritical, radius: 5)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("CISA KEV Catalog")
+                        .font(.system(size: 11, weight: .bold, design: .monospaced))
+                        .foregroundColor(.severityCritical)
+                    Text("This vulnerability is actively exploited in the wild")
+                        .font(.system(size: 11))
+                        .foregroundColor(.white.opacity(0.6))
+                }
+                Spacer()
+            }
+
+            Divider().background(Color.severityCritical.opacity(0.3))
+
+            Group {
+                kevKV("Vendor",    entry.vendorProject)
+                kevKV("Product",   entry.product)
+                kevKV("Name",      entry.vulnerabilityName)
+                kevKV("Added",     entry.dateAdded)
+                if let due = entry.dueDate { kevKV("Due Date", due) }
+            }
+
+            // Required action
+            VStack(alignment: .leading, spacing: 4) {
+                Text("REQUIRED ACTION")
+                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                    .foregroundColor(.severityCritical.opacity(0.8))
+                Text(entry.requiredAction)
+                    .font(.system(size: 12))
+                    .foregroundColor(.white.opacity(0.75))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(14)
+        .background(
+            LinearGradient(
+                colors: [Color.severityCritical.opacity(0.12), Color.cyberSurface],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        )
+        .cornerRadius(10)
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.severityCritical.opacity(0.45), lineWidth: 1)
+        )
+        .hudFrame(color: .severityCritical.opacity(0.5), length: 12)
+    }
+
+    private func kevKV(_ label: String, _ value: String) -> some View {
+        HStack(alignment: .top) {
+            Text(label)
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundColor(.white.opacity(0.4))
+                .frame(width: 72, alignment: .leading)
+            Text(value)
+                .font(.system(size: 11, design: .monospaced))
+                .foregroundColor(.white.opacity(0.85))
+                .textSelection(.enabled)
+        }
+    }
+}
