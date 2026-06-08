@@ -42,8 +42,6 @@ class APIClient: ObservableObject {
         session = URLSession(configuration: config)
 
         decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        encoder.keyEncodingStrategy = .convertToSnakeCase
     }
 
     var baseURL: String {
