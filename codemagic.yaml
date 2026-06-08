@@ -95,9 +95,11 @@ workflows:
     scripts:
       - name: Increment build number from TestFlight
         script: |
-          # Use Unix timestamp as build number — guaranteed unique, never collides
-          BUILD_NUMBER=$(date +%s)
-          echo "Setting build number to: $BUILD_NUMBER"
+          # 1.0.1 is a new version — build numbers restart from 1
+          LATEST=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null | tr -d '[:space:]')
+          LATEST=${LATEST:-0}
+          BUILD_NUMBER=$(($LATEST + 1))
+          echo "Latest TF build: $LATEST, next: $BUILD_NUMBER"
           agvtool new-version -all $BUILD_NUMBER
         working_directory: ios
 
