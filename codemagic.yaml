@@ -95,7 +95,10 @@ workflows:
       - name: Increment build number from TestFlight
         script: |
           LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID")
-          agvtool new-version -all $(($LATEST_BUILD + 1))
+          NEXT_BUILD=$(($LATEST_BUILD + 1))
+          # Ensure we never reuse build 1 which was already rejected by ASC
+          if [ $NEXT_BUILD -le 1 ]; then NEXT_BUILD=2; fi
+          agvtool new-version -all $NEXT_BUILD
         working_directory: ios
 
       - name: Build App Store IPA
