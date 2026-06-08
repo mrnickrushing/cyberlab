@@ -95,10 +95,17 @@ workflows:
     scripts:
       - name: Increment build number from TestFlight
         script: |
-          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID")
+          LATEST_ASC=$(app-store-connect get-latest-app-store-build-number "$BUNDLE_ID" 2>/dev/null || echo "0")
+          LATEST_TF=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo "0")
+          # Use whichever is higher
+          if [ "$LATEST_ASC" -gt "$LATEST_TF" ] 2>/dev/null; then
+            LATEST_BUILD=$LATEST_ASC
+          else
+            LATEST_BUILD=$LATEST_TF
+          fi
           NEXT_BUILD=$(($LATEST_BUILD + 1))
-          # Builds 1 and 2 already consumed by ASC — ensure we start at 3+
-          if [ $NEXT_BUILD -le 2 ]; then NEXT_BUILD=3; fi
+          if [ $NEXT_BUILD -le 4 ]; then NEXT_BUILD=4; fi
+          echo "Latest ASC: $LATEST_ASC, Latest TF: $LATEST_TF, Next: $NEXT_BUILD"
           agvtool new-version -all $NEXT_BUILD
         working_directory: ios
 
