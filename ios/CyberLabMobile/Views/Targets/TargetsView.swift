@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct TargetsView: View {
+    @EnvironmentObject var cacheManager: CacheManager
     @State private var targets: [Target] = []
     @State private var isLoading = true
     @State private var error: String?
@@ -83,26 +84,45 @@ struct TargetsView: View {
                 }
             }
             .sheet(isPresented: $showAddTarget) {
-                AddTargetView { Task { await loadTargets() } }
+                AddTargetView { Task { await refresh() } }
             }
-            .refreshable { await loadTargets() }
+            .refreshable { await refresh() }
         }
         .task { await loadTargets() }
     }
 
+    /// Stale-while-revalidate: paint cached targets immediately, then fetch fresh.
     private func loadTargets() async {
-        isLoading = true; error = nil
+        let cached = cacheManager.cachedTargets()
+        if !cached.isEmpty {
+            targets = cached
+            isLoading = false
+        } else {
+            isLoading = true
+        }
+        error = nil
         do {
-            targets = try await client.request(Endpoints.targets)
+            let fresh: [Target] = try await client.request(Endpoints.targets)
+            targets = fresh
+            cacheManager.store(fresh)
         } catch {
-            self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+            if targets.isEmpty {
+                self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+            }
         }
         isLoading = false
+    }
+
+    /// Pull-to-refresh: drop the cache, then re-fetch.
+    private func refresh() async {
+        cacheManager.invalidateAll()
+        await loadTargets()
     }
 
     private func deleteTarget(_ target: Target) async {
         do {
             try await client.requestVoid(Endpoints.deleteTarget(target.id))
+            cacheManager.invalidate(targetId: target.id)
             await loadTargets()
         } catch {}
     }
@@ -110,6 +130,7 @@ struct TargetsView: View {
     private func archiveTarget(_ target: Target) async {
         do {
             let _: Target = try await client.request(Endpoints.archiveTarget(target.id))
+            cacheManager.invalidateAll()
             await loadTargets()
         } catch {}
     }

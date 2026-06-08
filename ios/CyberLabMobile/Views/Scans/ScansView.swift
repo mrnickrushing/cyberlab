@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ScansView: View {
+    @EnvironmentObject var cacheManager: CacheManager
     @State private var scans: [ScanJobWithTarget] = []
     @State private var isLoading = true
     @State private var error: String?
@@ -89,7 +90,7 @@ struct ScansView: View {
                     }
                 }
             }
-            .refreshable { await loadScans() }
+            .refreshable { await refresh() }
             .onAppear { startAutoRefresh() }
             .onDisappear { stopAutoRefresh() }
         }
@@ -97,17 +98,27 @@ struct ScansView: View {
     }
 
     private func loadScans() async {
-        isLoading = true; error = nil
+        if scans.isEmpty { isLoading = true }
+        error = nil
         do {
             scans = try await client.request(Endpoints.scans())
         } catch {
-            self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+            if scans.isEmpty {
+                self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+            }
         }
         isLoading = false
     }
 
+    /// Pull-to-refresh: clear per-target scan caches, then re-fetch the live list.
+    private func refresh() async {
+        cacheManager.invalidateAll()
+        await loadScans()
+    }
+
     private func cancelScan(_ scan: ScanJobWithTarget) async {
         try? await client.requestVoid(Endpoints.cancelScan(scan.id))
+        cacheManager.invalidate(targetId: scan.targetId)
         await loadScans()
     }
 

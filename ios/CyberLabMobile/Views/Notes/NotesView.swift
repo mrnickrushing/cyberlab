@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct NotesView: View {
+    @EnvironmentObject var cacheManager: CacheManager
     @State private var notes: [Note] = []
     @State private var isLoading = true
     @State private var error: String?
@@ -63,22 +64,43 @@ struct NotesView: View {
                 }
             }
             .sheet(isPresented: $showAdd) {
-                AddNoteView { Task { await loadNotes() } }
+                AddNoteView { Task { await refresh() } }
             }
-            .refreshable { await loadNotes() }
+            .refreshable { await refresh() }
         }
         .task { await loadNotes() }
     }
 
+    /// Stale-while-revalidate: paint cached notes immediately, then fetch fresh.
     private func loadNotes() async {
-        isLoading = true; error = nil
-        do { notes = try await client.request(Endpoints.notes()) }
-        catch { self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription }
+        let cached = cacheManager.cachedNotes()
+        if !cached.isEmpty {
+            notes = cached
+            isLoading = false
+        } else {
+            isLoading = true
+        }
+        error = nil
+        do {
+            let fresh: [Note] = try await client.request(Endpoints.notes())
+            notes = fresh
+            cacheManager.store(fresh)
+        } catch {
+            if notes.isEmpty {
+                self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+            }
+        }
         isLoading = false
+    }
+
+    private func refresh() async {
+        cacheManager.store([Note]())
+        await loadNotes()
     }
 
     private func deleteNote(_ note: Note) async {
         try? await client.requestVoid(Endpoints.deleteNote(note.id))
+        cacheManager.store(notes.filter { $0.id != note.id })
         await loadNotes()
     }
 }

@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct FindingsView: View {
+    @EnvironmentObject var cacheManager: CacheManager
     @State private var findings: [Finding] = []
     @State private var isLoading = true
     @State private var error: String?
@@ -99,20 +100,37 @@ struct FindingsView: View {
                     }
                 }
             }
-            .refreshable { await loadFindings() }
+            .refreshable { await refresh() }
         }
         .task { await loadFindings() }
     }
 
+    /// Stale-while-revalidate: paint cached findings immediately, then fetch fresh.
     private func loadFindings() async {
-        isLoading = true; error = nil
+        let cached = cacheManager.cachedFindings()
+        if !cached.isEmpty {
+            findings = cached
+            isLoading = false
+        } else {
+            isLoading = true
+        }
+        error = nil
         do {
-            findings = try await client.request(Endpoints.findings())
+            let fresh: [Finding] = try await client.request(Endpoints.findings())
+            findings = fresh
+            cacheManager.store(fresh)
         } catch {
-            self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
-            HapticFeedback.error()
+            if findings.isEmpty {
+                self.error = (error as? APIError)?.errorDescription ?? error.localizedDescription
+                HapticFeedback.error()
+            }
         }
         isLoading = false
+    }
+
+    private func refresh() async {
+        cacheManager.store([Finding]())
+        await loadFindings()
     }
 
     private func updateFindingStatus(_ finding: Finding, status: FindingStatus) async {
@@ -121,6 +139,7 @@ struct FindingsView: View {
             if let idx = findings.firstIndex(where: { $0.id == updated.id }) {
                 findings[idx] = updated
             }
+            cacheManager.store(findings)
             HapticFeedback.success()
         } else {
             HapticFeedback.error()
@@ -177,6 +196,7 @@ struct FindingDetailView: View {
     @State private var selectedStatus: FindingStatus
     @State private var kevEntry: KEVEntry?
     @State private var kevChecked = false
+    @State private var showCVSSCalculator = false
     private let client = APIClient.shared
 
     init(finding: Finding) {
@@ -293,6 +313,19 @@ struct FindingDetailView: View {
         }
         .navigationTitle("Finding")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    showCVSSCalculator = true
+                } label: {
+                    Label("CVSS Calc", systemImage: "function")
+                        .foregroundColor(.cyberGreen)
+                }
+            }
+        }
+        .sheet(isPresented: $showCVSSCalculator) {
+            CVSSCalculatorView()
+        }
         .task {
             timeline = (try? await client.request(Endpoints.findingTimeline(finding.id))) ?? []
             if let cve = finding.cveId, !kevChecked {

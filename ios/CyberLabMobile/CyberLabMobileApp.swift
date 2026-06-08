@@ -1,11 +1,34 @@
 import SwiftUI
+import SwiftData
 import UserNotifications
 
 @main
 struct CyberLabMobileApp: App {
     @StateObject private var authManager = AuthManager.shared
     @StateObject private var biometricManager = BiometricAuthManager()
+    @StateObject private var networkMonitor = NetworkMonitor()
+    @StateObject private var cacheManager: CacheManager
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
+    private let modelContainer: ModelContainer
+
+    init() {
+        let container: ModelContainer
+        do {
+            container = try ModelContainer(
+                for: CachedTarget.self, CachedFinding.self, CachedScan.self, CachedNote.self
+            )
+        } catch {
+            // In-memory fallback keeps the app functional if the on-disk store fails.
+            let config = ModelConfiguration(isStoredInMemoryOnly: true)
+            container = try! ModelContainer(
+                for: CachedTarget.self, CachedFinding.self, CachedScan.self, CachedNote.self,
+                configurations: config
+            )
+        }
+        modelContainer = container
+        _cacheManager = StateObject(wrappedValue: CacheManager(context: container.mainContext))
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -13,6 +36,9 @@ struct CyberLabMobileApp: App {
                 .environmentObject(authManager)
                 .environmentObject(biometricManager)
                 .environmentObject(APIClient.shared)
+                .environmentObject(networkMonitor)
+                .environmentObject(cacheManager)
+                .modelContainer(modelContainer)
                 .preferredColorScheme(.dark)
         }
     }

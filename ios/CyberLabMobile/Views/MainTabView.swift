@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var selectedTab = 0
+    @EnvironmentObject var networkMonitor: NetworkMonitor
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -38,5 +39,11 @@ struct MainTabView: View {
                 .tag(7)
         }
         .tint(.cyberGreen)
+        .overlay(alignment: .top) {
+            if !networkMonitor.isConnected {
+                OfflineBanner()
+            }
+        }
+        .animation(.easeInOut(duration: 0.3), value: networkMonitor.isConnected)
     }
 }

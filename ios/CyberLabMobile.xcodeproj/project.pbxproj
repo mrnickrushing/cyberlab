@@ -53,6 +53,9 @@
 		BB000000000000000000040F /* ScanDiff.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000506 /* ScanDiff.swift */; };
 		BB0000000000000000000410 /* ScanDiffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000507 /* ScanDiffView.swift */; };
 		BB0000000000000000000411 /* EditTargetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000508 /* EditTargetView.swift */; };
+		BB0000000000000000000412 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB0000000000000000000509 /* CacheManager.swift */; };
+		BB0000000000000000000413 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050A /* NetworkMonitor.swift */; };
+		BB0000000000000000000414 /* CVSSCalculatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000050B /* CVSSCalculatorView.swift */; };
 		BB000000000000000000021B /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011B /* Info.plist */; };
 		BB000000000000000000021C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011C /* Assets.xcassets */; };
 		BB000000000000000000021D /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB000000000000000000011D /* LocalAuthentication.framework */; };
@@ -106,6 +109,9 @@
 		BB0000000000000000000506 /* ScanDiff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDiff.swift; sourceTree = "<group>"; };
 		BB0000000000000000000507 /* ScanDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDiffView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000508 /* EditTargetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTargetView.swift; sourceTree = "<group>"; };
+		BB0000000000000000000509 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
+		BB000000000000000000050A /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
+		BB000000000000000000050B /* CVSSCalculatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CVSSCalculatorView.swift; sourceTree = "<group>"; };
 		BB000000000000000000011B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB000000000000000000011C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB000000000000000000011D /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
@@ -152,6 +158,7 @@
 				BB0000000000000000000012 /* Auth */,
 				BB0000000000000000000013 /* Views */,
 				BB000000000000000000001B /* Utilities */,
+				BB000000000000000000050C /* Cache */,
 			);
 			path = CyberLabMobile;
 			sourceTree = "<group>";
@@ -258,6 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				BB0000000000000000000117 /* FindingsView.swift */,
+				BB000000000000000000050B /* CVSSCalculatorView.swift */,
 			);
 			path = Findings;
 			sourceTree = "<group>";
@@ -282,6 +290,7 @@
 			isa = PBXGroup;
 			children = (
 				BB000000000000000000011A /* Extensions.swift */,
+				BB000000000000000000050A /* NetworkMonitor.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -346,6 +355,14 @@
 				BB000000000000000000030E /* WebAssessmentView.swift */,
 			);
 			path = WebAssessment;
+			sourceTree = "<group>";
+		};
+		BB000000000000000000050C /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				BB0000000000000000000509 /* CacheManager.swift */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -463,6 +480,9 @@
 				BB000000000000000000040F /* ScanDiff.swift in Sources */,
 				BB0000000000000000000410 /* ScanDiffView.swift in Sources */,
 				BB0000000000000000000411 /* EditTargetView.swift in Sources */,
+				BB0000000000000000000412 /* CacheManager.swift in Sources */,
+				BB0000000000000000000413 /* NetworkMonitor.swift in Sources */,
+				BB0000000000000000000414 /* CVSSCalculatorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
