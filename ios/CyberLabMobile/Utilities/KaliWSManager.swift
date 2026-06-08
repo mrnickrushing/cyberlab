@@ -121,7 +121,7 @@ class KaliWSManager: ObservableObject {
                         try? await Task.sleep(nanoseconds: 2_000_000_000)
                         guard !Task.isCancelled else { return }
                         await MainActor.run {
-                            guard let self = self, self.state == .disconnected else { return }
+                            guard self.state == .disconnected else { return }
                             self.connect()
                         }
                     }
