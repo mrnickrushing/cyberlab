@@ -82,6 +82,7 @@
 		BBAA10000000000000000002 /* CyberLabWidgetViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabWidgetViews.swift; sourceTree = "<group>"; };
 		BBAA10000000000000000003 /* CyberLabWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabWidgetBundle.swift; sourceTree = "<group>"; };
 		BBAA10000000000000000004 /* CyberLabWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CyberLabWidget.entitlements; sourceTree = "<group>"; };
+		BBAA10000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BB0000000000000000000100 /* CyberLabMobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CyberLabMobileApp.swift; sourceTree = "<group>"; };
 		BB0000000000000000000101 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BB0000000000000000000102 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -805,10 +806,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = PH4AKDQ4Q7;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CyberLabWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				INFOPLIST_KEY_CFBundleDisplayName = CyberLabWidget;
-				INFOPLIST_KEY_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks");
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cyberlabmobile.app.widget";
@@ -826,10 +826,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = PH4AKDQ4Q7;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = CyberLabWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				INFOPLIST_KEY_CFBundleDisplayName = CyberLabWidget;
-				INFOPLIST_KEY_NSExtensionPointIdentifier = "com.apple.widgetkit-extension";
 				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@executable_path/../../Frameworks");
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cyberlabmobile.app.widget";
