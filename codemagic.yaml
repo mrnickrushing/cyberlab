@@ -99,8 +99,8 @@ workflows:
         script: |
           LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID")
           NEXT_BUILD=$(($LATEST_BUILD + 1))
-          # Ensure we never reuse build 1 which was already rejected by ASC
-          if [ $NEXT_BUILD -le 1 ]; then NEXT_BUILD=2; fi
+          # Builds 1 and 2 already consumed by ASC — ensure we start at 3+
+          if [ $NEXT_BUILD -le 2 ]; then NEXT_BUILD=3; fi
           agvtool new-version -all $NEXT_BUILD
         working_directory: ios
 
