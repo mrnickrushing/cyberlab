@@ -2,7 +2,7 @@ import apn from "@parse/node-apn";
 import { db } from "@workspace/db";
 import { devicesTable } from "@workspace/db/schema";
 import { eq } from "drizzle-orm";
-import logger from "./logger";
+import { logger } from "./logger";
 
 let provider: apn.Provider | null = null;
 
