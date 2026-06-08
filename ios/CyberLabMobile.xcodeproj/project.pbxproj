@@ -105,6 +105,9 @@
 		CC3100000000000000000010 /* PentestChecklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000010 /* PentestChecklistView.swift */; };
 		CC3100000000000000000011 /* SSHTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3000000000000000000011 /* SSHTerminalView.swift */; };
 		CC5100000000000000000001 /* MoreMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5000000000000000000001 /* MoreMenuView.swift */; };
+		CC6100000000000000000001 /* ScanHistoryCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6000000000000000000001 /* ScanHistoryCache.swift */; };
+		CC6100000000000000000002 /* ScanHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6000000000000000000002 /* ScanHistoryView.swift */; };
+		CC6100000000000000000003 /* FindingNotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC6000000000000000000003 /* FindingNotesView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -210,6 +213,9 @@
 		CC3000000000000000000010 /* PentestChecklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PentestChecklistView.swift; sourceTree = "<group>"; };
 		CC3000000000000000000011 /* SSHTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SSHTerminalView.swift; sourceTree = "<group>"; };
 		CC5000000000000000000001 /* MoreMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreMenuView.swift; sourceTree = "<group>"; };
+		CC6000000000000000000001 /* ScanHistoryCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanHistoryCache.swift; sourceTree = "<group>"; };
+		CC6000000000000000000002 /* ScanHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanHistoryView.swift; sourceTree = "<group>"; };
+		CC6000000000000000000003 /* FindingNotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindingNotesView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -380,6 +386,7 @@
 				BB0000000000000000000116 /* ScanDetailView.swift */,
 				BB0000000000000000000507 /* ScanDiffView.swift */,
 				CC1000000000000000000002 /* TerminalStreamView.swift */,
+				CC6000000000000000000002 /* ScanHistoryView.swift */,
 			);
 			path = Scans;
 			sourceTree = "<group>";
@@ -390,6 +397,7 @@
 				BB0000000000000000000117 /* FindingsView.swift */,
 				BB000000000000000000050B /* CVSSCalculatorView.swift */,
 				CC1000000000000000000005 /* IntelCardView.swift */,
+				CC6000000000000000000003 /* FindingNotesView.swift */,
 			);
 			path = Findings;
 			sourceTree = "<group>";
@@ -429,6 +437,7 @@
 				CC3000000000000000000005 /* WHOISLookup.swift */,
 				CC3000000000000000000006 /* CVESearch.swift */,
 				CC3000000000000000000007 /* SSHTerminalManager.swift */,
+				CC6000000000000000000001 /* ScanHistoryCache.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -774,6 +783,9 @@
 				CC3100000000000000000010 /* PentestChecklistView.swift in Sources */,
 				CC3100000000000000000011 /* SSHTerminalView.swift in Sources */,
 				CC5100000000000000000001 /* MoreMenuView.swift in Sources */,
+				CC6100000000000000000001 /* ScanHistoryCache.swift in Sources */,
+				CC6100000000000000000002 /* ScanHistoryView.swift in Sources */,
+				CC6100000000000000000003 /* FindingNotesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
