@@ -17,12 +17,14 @@ struct KaliTerminalWrapperView: View {
 
             Divider().background(Color.cyberGreen.opacity(0.2))
 
-            Group {
-                if selectedTab == 0 {
-                    KaliTerminalView()
-                } else {
-                    KaliCommandView()
-                }
+            ZStack {
+                KaliTerminalView()
+                    .opacity(selectedTab == 0 ? 1 : 0)
+                    .allowsHitTesting(selectedTab == 0)
+
+                KaliCommandView()
+                    .opacity(selectedTab == 1 ? 1 : 0)
+                    .allowsHitTesting(selectedTab == 1)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
