@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, timestamp, boolean, pgEnum, index } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { usersTable } from "./users";
@@ -33,7 +33,9 @@ export const scanProfilesTable = pgTable("scan_profiles", {
   isSystem: boolean("is_system").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => [
+  index("scan_profiles_user_id_idx").on(t.userId),
+]);
 
 export const insertScanProfileSchema = createInsertSchema(scanProfilesTable).omit({
   id: true,

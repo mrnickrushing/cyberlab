@@ -5,6 +5,7 @@ import {
   timestamp,
   pgEnum,
   real,
+  index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -54,7 +55,12 @@ export const findingsTable = pgTable("findings", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [
+  index("findings_user_id_idx").on(t.userId),
+  index("findings_target_id_idx").on(t.targetId),
+  index("findings_scan_job_id_idx").on(t.scanJobId),
+  index("findings_status_idx").on(t.status),
+]);
 
 export const findingEventsTable = pgTable("finding_events", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -70,7 +76,9 @@ export const findingEventsTable = pgTable("finding_events", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [
+  index("finding_events_finding_id_idx").on(t.findingId),
+]);
 
 export const insertFindingSchema = createInsertSchema(findingsTable).omit({
   id: true,

@@ -6,6 +6,7 @@ import {
   jsonb,
   pgEnum,
   integer,
+  index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -47,7 +48,12 @@ export const scanJobsTable = pgTable("scan_jobs", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [
+  index("scan_jobs_user_id_idx").on(t.userId),
+  index("scan_jobs_target_id_idx").on(t.targetId),
+  index("scan_jobs_profile_id_idx").on(t.profileId),
+  index("scan_jobs_status_idx").on(t.status),
+]);
 
 export const scanResultsTable = pgTable("scan_results", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -59,7 +65,9 @@ export const scanResultsTable = pgTable("scan_results", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [
+  index("scan_results_scan_job_id_idx").on(t.scanJobId),
+]);
 
 export const insertScanJobSchema = createInsertSchema(scanJobsTable).omit({
   id: true,

@@ -1,4 +1,4 @@
-import { pgTable, text, uuid, timestamp, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, uuid, timestamp, pgEnum, index } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
 import { usersTable } from "./users";
@@ -34,7 +34,11 @@ export const auditLogsTable = pgTable("audit_logs", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [
+  index("audit_logs_user_id_idx").on(t.userId),
+  index("audit_logs_target_id_idx").on(t.targetId),
+  index("audit_logs_created_at_idx").on(t.createdAt),
+]);
 
 export const insertAuditLogSchema = createInsertSchema(auditLogsTable).omit({
   id: true,
