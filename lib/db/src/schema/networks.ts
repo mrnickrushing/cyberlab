@@ -5,6 +5,7 @@ import {
   timestamp,
   boolean,
   jsonb,
+  index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -25,7 +26,10 @@ export const networkMapsTable = pgTable("network_maps", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [
+  index("network_maps_user_id_idx").on(t.userId),
+  index("network_maps_target_id_idx").on(t.targetId),
+]);
 
 export const networkHostsTable = pgTable("network_hosts", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -41,7 +45,9 @@ export const networkHostsTable = pgTable("network_hosts", {
   isGateway: boolean("is_gateway").notNull().default(false),
   firstSeen: timestamp("first_seen", { withTimezone: true }).notNull().defaultNow(),
   lastSeen: timestamp("last_seen", { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => [
+  index("network_hosts_network_map_id_idx").on(t.networkMapId),
+]);
 
 export const insertNetworkMapSchema = createInsertSchema(networkMapsTable).omit({
   id: true,
